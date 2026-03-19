@@ -1,0 +1,27 @@
+{
+  "name": "security-shield",
+  "version": "1.0.0",
+  "displayName": "🛡️ Security Shield",
+  "description": "One-click security suite for OpenClaw - encrypt secrets, clean browser data, monitor access, and detect leaks",
+  "author": "OpenClaw Community",
+  "license": "MIT",
+  "homepage": "https://github.com/openclaw/skills",
+  "keywords": ["security", "privacy", "encryption", "cleanup", "monitoring"],
+  "compatibility": {
+    "openclaw": ">=2026.3.0"
+  },
+  "bundled": true,
+  "permissions": {
+    "tools": ["read", "write", "edit", "bash", "glob"],
+    "files": ["~/.openclaw/**"]
+  },
+  "features": [
+    "encrypt-secrets",
+    "decrypt-secrets",
+    "clean-browser",
+    "monitor-access",
+    "scan-leaks",
+    "security-status",
+    "auto-protect"
+  ]
+}

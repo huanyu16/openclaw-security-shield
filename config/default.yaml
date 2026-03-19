@@ -1,0 +1,49 @@
+# Security Shield Configuration
+# 安全盾牌配置文件
+
+# 监控设置
+monitor:
+  enabled: true
+  interval_seconds: 2
+  alert_threshold: 20  # 20次访问/30秒 触发告警
+  watch_paths:
+    - "~/.openclaw"
+    - "~/.openclaw/memory"
+    - "~/.openclaw/browser"
+
+# 加密设置
+encryption:
+  algorithm: "PBKDF2-AES256"
+  iterations: 480000
+  salt_bytes: 32
+  
+# 敏感模式
+sensitive_patterns:
+  - pattern: "api[_-]?key"
+    risk_level: "high"
+  - pattern: "password|passwd|pwd"
+    risk_level: "high"
+  - pattern: "secret|token"
+    risk_level: "high"
+  - pattern: "bank.card|credit.card"
+    risk_level: "critical"
+  - pattern: "phone.number|mobile"
+    risk_level: "medium"
+
+# 备份设置
+backup:
+  enabled: true
+  max_backups: 10
+  retention_days: 30
+  backup_dir: "~/.openclaw/.security-backups"
+
+# 通知设置
+notifications:
+  enabled: true
+  desktop: true  # macOS 通知
+  sound: false
+
+# 清理设置
+cleanup:
+  default_level: "safe"  # cookies, cache, safe, full
+  confirm_before: true

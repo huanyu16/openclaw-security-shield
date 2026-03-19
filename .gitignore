@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Backups (keep these local only)
+.security-backups/
+.backups/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
