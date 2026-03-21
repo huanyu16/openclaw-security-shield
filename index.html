@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>文章索引 · huanyu16</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: #fff;
+    color: #1a1a1a;
+    line-height: 1.8;
+    font-size: 16px;
+  }
+  a { color: inherit; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* ─── nav ─── */
+  nav {
+    border-bottom: 1px solid #eee;
+    padding: 0 48px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    height: 56px;
+    position: sticky;
+    top: 0;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+  }
+  nav .logo {
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: -0.3px;
+    flex-shrink: 0;
+  }
+  nav .logo span { color: #888; font-weight: 400; }
+  nav a.nav-link {
+    font-size: 14px;
+    color: #666;
+    transition: color 0.15s;
+  }
+  nav a.nav-link:hover { color: #1a1a1a; text-decoration: none; }
+
+  /* ─── container ─── */
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 72px 48px 120px;
+  }
+
+  /* ─── hero ─── */
+  .hero { margin-bottom: 64px; }
+  .hero-eyebrow {
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #999;
+    margin-bottom: 14px;
+  }
+  .hero h1 {
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 16px;
+    letter-spacing: -0.5px;
+  }
+  .hero p {
+    font-size: 18px;
+    color: #666;
+    max-width: 560px;
+    margin-bottom: 24px;
+  }
+  .hero-divider { width: 40px; height: 3px; background: #1a1a1a; }
+
+  /* ─── reading path ─── */
+  .reading-path {
+    background: #f8f8f8;
+    border: 1px solid #e8e8e8;
+    border-radius: 8px;
+    padding: 28px 32px;
+    margin-bottom: 64px;
+  }
+  .reading-path-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 20px;
+  }
+  .path-steps {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+    row-gap: 12px;
+  }
+  .path-step {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .path-num {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #1a1a1a;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .path-num.placeholder {
+    background: #ccc;
+  }
+  .path-text {
+    font-size: 14px;
+    color: #333;
+    font-weight: 500;
+  }
+  .path-text.placeholder { color: #aaa; }
+  .path-arrow {
+    color: #ccc;
+    font-size: 18px;
+    margin: 0 10px;
+    flex-shrink: 0;
+  }
+  .path-more {
+    font-size: 13px;
+    color: #aaa;
+    margin-left: 8px;
+  }
+
+  /* ─── stats ─── */
+  .stats {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 64px;
+  }
+  .stat {}
+  .stat-num {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -1px;
+  }
+  .stat-label {
+    font-size: 13px;
+    color: #888;
+    margin-top: 2px;
+  }
+
+  /* ─── series ─── */
+  .series-group { margin-bottom: 56px; }
+  .series-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .series-icon { font-size: 20px; }
+  .series-name {
+    font-size: 20px;
+    font-weight: 700;
+  }
+  .series-count {
+    font-size: 13px;
+    color: #999;
+  }
+  .series-divider {
+    flex: 1;
+    height: 1px;
+    background: #eee;
+  }
+
+  /* ─── article cards ─── */
+  .article-list { display: flex; flex-direction: column; gap: 12px; }
+  .article-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 18px 20px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .article-card:hover {
+    border-color: #ccc;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .article-card.soon {
+    background: #fafafa;
+    border-style: dashed;
+  }
+
+  .card-status {
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: block;
+  }
+  .status-dot.live { background: #22c55e; }
+  .status-dot.upcoming { background: #e5e5e5; border: 1px solid #ccc; }
+
+  .card-body { flex: 1; min-width: 0; }
+  .card-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title .soon-tag {
+    font-size: 11px;
+    font-weight: 600;
+    color: #888;
+    background: #f0f0f0;
+    padding: 1px 7px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+  }
+  .card-title a { color: #1a6cf5; }
+  .card-title a:hover { text-decoration: underline; }
+  .card-meta {
+    font-size: 13px;
+    color: #999;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .card-series-label {
+    font-size: 12px;
+    color: #aaa;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+
+  /* ─── prev/next nav ─── */
+  .article-nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 64px;
+    padding-top: 40px;
+    border-top: 1px solid #eee;
+  }
+  .nav-prev, .nav-next {
+    padding: 20px 24px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    transition: border-color 0.15s;
+  }
+  .nav-prev:hover, .nav-next:hover {
+    border-color: #bbb;
+    text-decoration: none;
+  }
+  .nav-next { text-align: right; }
+  .nav-label {
+    font-size: 12px;
+    color: #aaa;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .nav-title { font-size: 15px; font-weight: 600; }
+
+  /* ─── footer ─── */
+  footer {
+    margin-top: 80px;
+    padding-top: 32px;
+    border-top: 1px solid #eee;
+    font-size: 13px;
+    color: #bbb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  @media (max-width: 640px) {
+    nav { padding: 0 20px; }
+    .container { padding: 48px 20px 80px; }
+    .hero h1 { font-size: 26px; }
+    .stats { gap: 24px; }
+    .article-nav { grid-template-columns: 1fr; }
+    .path-arrow { margin: 0 6px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">huanyu16 <span>/ 文章索引</span></div>
+  <a href="https://huanyu16.github.io/openclaw-security-shield/" class="nav-link">首页</a>
+  <a href="#series-1" class="nav-link">OpenClaw 进阶</a>
+  <a href="#series-2" class="nav-link">工具开发</a>
+  <a href="#series-3" class="nav-link">OpenHanako</a>
+  <a href="#series-4" class="nav-link">工作日志</a>
+</nav>
+
+<div class="container">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-eyebrow">Articles</div>
+    <h1>所有文章</h1>
+    <p>围绕 OpenClaw / OpenHanako 的实战记录、工具开发和行为分析。按系列组织，顺着读下去。</p>
+    <div class="hero-divider"></div>
+  </div>
+
+  <!-- Recommended Reading Path -->
+  <div class="reading-path">
+    <div class="reading-path-title">推荐阅读路径 · 从这里开始</div>
+    <div class="path-steps">
+      <div class="path-step">
+        <div class="path-num">1</div>
+        <div class="path-text"><a href="https://huanyu16.github.io/openclaw-security-shield/" style="color:#1a6cf5">🦞 AI助手正在裸奔</a></div>
+      </div>
+      <div class="path-arrow">→</div>
+      <div class="path-step">
+        <div class="path-num">2</div>
+        <div <span class="path-text">Hanako 执行力差异</div>
+      </div>
+      <div class="path-arrow">→</div>
+      <div class="path-step">
+        <div class="path-num">3</div>
+        <div <span class="path-text">Agent 撞墙与 Bypass</div>
+      </div>
+      <div class="path-arrow">→</div>
+      <div class="path-step">
+        <div class="path-num">4</div>
+        <div <span class="path-text">浏览器操作方案对比</div>
+      </div>
+      <div class="path-more">+ 更多系列</div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num">9</div>
+      <div class="stat-label">已发布文章</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">0</div>
+      <div class="stat-label">待发布文章</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">4</div>
+      <div class="stat-label">系列</div>
+    </div>
+  </div>
+
+  <!-- Series 1: OpenClaw 进阶实战 -->
+  <div class="series-group" id="series-1">
+    <div class="series-header">
+      <span class="series-icon">🚀</span>
+      <div class="series-name">OpenClaw 进阶实战</div>
+      <div class="series-count">4 篇 · Agent 工程</div>
+      <div class="series-divider"></div>
+    </div>
+    <div class="article-list">
+
+      <div class="article-card">
+        <div class="card-status"><div class="status-dot live"></div></div>
+        <div class="card-body">
+          <div class="card-title">
+            <a href="#series-1">同样的 Hanako，执行能力天差地别？</a>
+            
+          </div>
+          <div class="card-meta">
+            <span>🚀 OpenClaw 进阶</span>
+            <span>2026-03-20</span>
+            <span>分析 · 配置与模型</span>
+          </div>
+        </div>
+        <div class="card-series-label">#1</div>
+      </div>
+
+      <div class="article-card">
+        <div class="card-status"><div class="status-dot live"></div></div>
+        <div class="card-body">
+          <div class="card-title">
+            <a href="#series-1">我写了一个分析 Agent 执行力的文章，然后做了一个 Skill 来解决它</a>
+            
+          </div>
+          <div class="card-meta">
+            <span>🚀 OpenClaw 进阶</span>
+            <span>2026-03-19</span>
+            <span>Bypass Skill · 问题解决</span>
+          </div>
+        </div>
+        <div class="card-series-label">#2</div>
+      </div>
+
+      <div class="article-card">
+        <div class="card-status"><div class="status-dot live"></div></div>
+        <div class="card-body">
+          <div class="card-title">
+            <a href="#series-1">你的 Agent 应该怎样选择浏览器操作方案</a>
+            
+          </div>
+          <div class="card-meta">
+            <span>🚀 OpenClaw 进阶</span>
+            <span>2026-03-21</span>
+            <span>浏览器自动化 · 方案对比</span>
+          </div>
+        </div>
+        <div class="card-series-label">#3</div>
+      </div>
+
+      <div class="article-card">
+        <div class="card-status"><div class="status-dot live"></div></div>
+        <div class="card-body">
+          <div class="card-title">
+            <a href="#series-1">OpenClaw 费用看板：UsageTab 开发全记录</a>
+            
+          </div>
+          <div class="card-meta">
+            <span>🚀 OpenClaw 进阶</span>
+            <span>2026-03-21</span>
+            <span>工具开发 · PR 实战</span>
+          </div>
+        </div>
+        <div class="card-series-label">#4</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Series 2: 工具开发 -->
+  <div class="series-group" id="series-2">
+    <div class="series-header">
+      <span class="series-icon">🛠️</span>
+      <div class="series-name">工具开发记录</div>
+      <div class="series-count">3 篇 · Skill 与工具</div>
+      <div class="series-divider"></div>
+    </div>
+    <div class="article-list">
+
+      <div class="article-card">
+        <div class="card-status"><span class="status-dot live"></span></div>
+        <div class="card-body">
+          <div class="card-title">
+            <a href="https://huanyu16.github.io/openclaw-security-shield/">🛡️ OpenClaw Security Shield — 一键守护你的智能体</a>
+          </div>
+          <div class="card-meta">
+            <span>🛠️ 工具开发</span>
+            <span>2026-03-20</span>
+            <span>安全 · 开源工具</span>
+          </div>
+        </div>
+        <div class="card-series-label">#1</div>
+      </div>
+
+      <div class="article-card">
+        <div class="card-status"><div class="status-dot live"></div></div>
+        <div class="card-body">
+          <div class="card-title">
+            <a href="#series-2">Bypass Skill：从"反复撞墙"到"绕路走通"</a>
+            
+          </div>
+          <div class="card-meta">
+            <span>🛠️ 工具开发</span>
+            <span>2026-03-20</span>
+            <span>Bypass · 错误恢复</span>
+          </div>
+        </div>
+        <div class="card-series-label">#2</div>
+      </div>
+
+      <div class="article-card">
+        <div class="card-status"><div class="status-dot live"></div></div>
+        <div class="card-body">
+          <div class="card-title">
+            <a href="#series-2">A2A Pipeline：多 Agent 协作的另一种姿势</a>
+            
+          </div>
+          <div class="card-meta">
+            <span>🛠️ 工具开发</span>
+            <span>2026-03-20</span>
+            <span>A2A · 多 Agent</span>
+          </div>
+        </div>
+        <div class="card-series-label">#3</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Series 3: OpenHanako 深度研究 -->
+  <div class="series-group" id="series-3">
+    <div class="series-header">
+      <span class="series-icon">🌸</span>
+      <div class="series-name">OpenHanako 深度研究</div>
+      <div class="series-count">2 篇 · 项目对比与分析</div>
+      <div class="series-divider"></div>
+    </div>
+    <div class="article-list">
+
+      <div class="article-card">
+        <div class="card-status"><span class="status-dot live"></span></div>
+        <div class="card-body">
+          <div class="card-title">
+            <a href="https://huanyu16.github.io/openhanako-vs-openclaw/">OpenHanako vs OpenClaw：深度对比分析</a>
+          </div>
+          <div class="card-meta">
+            <span>🌸 OpenHanako</span>
+            <span>2026-03-19</span>
+            <span>对比 · 架构分析</span>
+          </div>
+        </div>
+        <div class="card-series-label">#1</div>
+      </div>
+
+      <div class="article-card">
+        <div class="card-status"><div class="status-dot live"></div></div>
+        <div class="card-body">
+          <div class="card-title">
+            <a href="#series-3">OpenHanako 自动交易架构全解析</a>
+            
+          </div>
+          <div class="card-meta">
+            <span>🌸 OpenHanako</span>
+            <span>2026-03-20</span>
+            <span>架构 · 交易系统</span>
+          </div>
+        </div>
+        <div class="card-series-label">#2</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Series 4: 工作日志 -->
+  <div class="series-group" id="series-4">
+    <div class="series-header">
+      <span class="series-icon">📓</span>
+      <div class="series-name">工作日志</div>
+      <div class="series-count">2 篇 · 过程记录</div>
+      <div class="series-divider"></div>
+    </div>
+    <div class="article-list">
+
+      <div class="article-card">
+        <div class="card-status"><div class="status-dot live"></div></div>
+        <div class="card-body">
+          <div class="card-title">
+            <a href="#series-4">漫长的一天 · 2026.03.20</a>
+            
+          </div>
+          <div class="card-meta">
+            <span>📓 工作日志</span>
+            <span>2026-03-20</span>
+            <span>日记</span>
+          </div>
+        </div>
+        <div class="card-series-label">#1</div>
+      </div>
+
+      <div class="article-card">
+        <div class="card-status"><div class="status-dot live"></div></div>
+        <div class="card-body">
+          <div class="card-title">
+            <a href="#series-4">微信日记 · 2026.03.18</a>
+            
+          </div>
+          <div class="card-meta">
+            <span>📓 工作日志</span>
+            <span>2026-03-18</span>
+            <span>日记</span>
+          </div>
+        </div>
+        <div class="card-series-label">#2</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Prev/Next navigation between articles -->
+  <div class="article-nav">
+    <div class="nav-prev">
+      <div class="nav-label">← 上一篇</div>
+      <div class="nav-title"><a href="https://huanyu16.github.io/openclaw-security-shield/">🦞 AI助手正在裸奔</a></div>
+    </div>
+    <div class="nav-next">
+      <div class="nav-label">下一篇</div>
+      <div class="nav-title" style="color:#aaa">待发布 · Hanako 执行力差异</div>
+    </div>
+  </div>
+
+  <footer>
+    <span>huanyu16 · 所有原创内容</span>
+    <span>2026-03-21</span>
+  </footer>
+
+</div>
+</body>
+</html>
