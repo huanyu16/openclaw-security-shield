@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>hanako——可能是目前最优雅的 agent</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+
+  :root {
+    --hanako: #e879a8;
+    --hanako-bg: rgba(232,121,168,0.08);
+    --hanako-border: rgba(232,121,168,0.25);
+    --claw: #60a5fa;
+    --claw-bg: rgba(96,165,250,0.08);
+    --claw-border: rgba(96,165,250,0.25);
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface2: #1a1a26;
+    --border: #2a2a3a;
+    --text: #e4e4ec;
+    --text2: #9898b0;
+    --text3: #6a6a82;
+    --green: #4ade80;
+    --amber: #fbbf24;
+    --purple: #a78bfa;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'Inter', 'Noto Sans SC', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  .bg-glow {
+    position: fixed;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 800px;
+    height: 600px;
+    background: radial-gradient(ellipse, rgba(232,121,168,0.06) 0%, rgba(96,165,250,0.04) 50%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .bg-glow-2 {
+    position: fixed;
+    bottom: -300px;
+    right: -200px;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(ellipse, rgba(96,165,250,0.05) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  header {
+    padding: 80px 0 40px;
+    text-align: center;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text2);
+    margin-bottom: 24px;
+  }
+
+  h1 {
+    font-size: clamp(32px, 6vw, 56px);
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+
+  h1 .h-name { color: var(--hanako); }
+  h1 .vs { color: var(--text3); font-weight: 400; font-size: 0.7em; margin: 0 8px; }
+  h1 .c-name { color: var(--claw); }
+
+  .subtitle {
+    font-size: 16px;
+    color: var(--text2);
+    max-width: 520px;
+    margin: 0 auto;
+    font-weight: 300;
+  }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin: 48px 0;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--text3);
+  }
+
+  .stat-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text3);
+    margin-bottom: 8px;
+  }
+
+  .stat-values {
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    gap: 16px;
+  }
+
+  .stat-val {
+    font-size: 28px;
+    font-weight: 700;
+  }
+
+  .stat-val.h { color: var(--hanako); }
+  .stat-val.c { color: var(--claw); }
+
+  .stat-sep { color: var(--text3); font-size: 14px; }
+
+  section { margin: 64px 0; }
+
+  .section-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-desc {
+    color: var(--text2);
+    font-size: 14px;
+    margin-bottom: 28px;
+  }
+
+  .vs-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    font-size: 14px;
+  }
+
+  .vs-table thead th {
+    padding: 16px 20px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .vs-table thead th:first-child { color: var(--text3); }
+  .vs-table thead th:nth-child(2) { color: var(--hanako); }
+  .vs-table thead th:nth-child(3) { color: var(--claw); }
+
+  .vs-table tbody td {
+    padding: 14px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    vertical-align: top;
+  }
+
+  .vs-table tbody tr:last-child td { border-bottom: none; }
+  .vs-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+
+  .vs-table tbody td:first-child {
+    font-weight: 500;
+    color: var(--text2);
+    white-space: nowrap;
+    width: 140px;
+  }
+
+  .check { color: var(--green); }
+  .cross { color: #f87171; }
+
+  .advantages-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .adv-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+
+  .adv-card:hover { transform: translateY(-2px); }
+  .adv-card.h-card:hover { border-color: var(--hanako-border); }
+  .adv-card.c-card:hover { border-color: var(--claw-border); }
+
+  .adv-card-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .h-card .adv-card-title { color: var(--hanako); }
+  .c-card .adv-card-title { color: var(--claw); }
+
+  .adv-card-sub {
+    font-size: 12px;
+    color: var(--text3);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .adv-list { list-style: none; }
+
+  .adv-list li {
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 14px;
+  }
+
+  .adv-list li:last-child { border-bottom: none; }
+
+  .adv-list .icon {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    margin-top: 1px;
+  }
+
+  .h-card .icon { background: var(--hanako-bg); }
+  .c-card .icon { background: var(--claw-bg); }
+
+  .adv-list .text { color: var(--text2); }
+  .adv-list .text strong { color: var(--text); font-weight: 600; }
+
+  .arch-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .arch-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .arch-header {
+    padding: 16px 20px;
+    font-weight: 700;
+    font-size: 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .arch-header .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+  }
+
+  .h-arch .arch-header { color: var(--hanako); }
+  .h-arch .dot { background: var(--hanako); }
+  .c-arch .arch-header { color: var(--claw); }
+  .c-arch .dot { background: var(--claw); }
+
+  .arch-body {
+    padding: 16px 20px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 12px;
+    line-height: 1.8;
+    color: var(--text2);
+    overflow-x: auto;
+  }
+
+  .arch-body .dir { color: var(--text); font-weight: 600; }
+  .arch-body .comment { color: var(--text3); font-style: italic; }
+  .arch-body .highlight-h { color: var(--hanako); }
+  .arch-body .highlight-c { color: var(--claw); }
+
+  .summary-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
+  }
+
+  .summary-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+
+  .summary-table {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto 24px;
+    font-size: 14px;
+  }
+
+  .summary-table th {
+    padding: 10px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text3);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .summary-table td {
+    padding: 12px 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .summary-table td:first-child { color: var(--text2); font-weight: 500; }
+  .summary-table td:nth-child(2) { color: var(--hanako); }
+  .summary-table td:nth-child(3) { color: var(--claw); }
+
+  .analogy {
+    background: var(--surface2);
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 24px;
+    font-size: 15px;
+    color: var(--text2);
+    border-left: 3px solid var(--purple);
+    text-align: left;
+  }
+
+  .analogy strong { color: var(--text); }
+
+  footer {
+    text-align: center;
+    padding: 48px 0;
+    font-size: 12px;
+    color: var(--text3);
+  }
+
+  footer a {
+    color: var(--text2);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border);
+    transition: border-color 0.2s;
+  }
+
+  footer a:hover { border-color: var(--text2); }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 700px) {
+    .advantages-grid, .arch-row { grid-template-columns: 1fr; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .vs-table { font-size: 12px; }
+    .vs-table thead th, .vs-table tbody td { padding: 10px 12px; }
+    .vs-table tbody td:first-child { width: auto; white-space: normal; }
+    .summary-box { padding: 24px; }
+    header { padding: 48px 0 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+<div class="bg-glow-2"></div>
+
+<div class="container">
+
+  <header>
+    <div class="badge">Deep Comparison Report</div>
+    <h1>
+      <span class="h-name">OpenHanako</span>
+      <span class="vs">vs</span>
+      <span class="c-name">OpenClaw</span>
+    </h1>
+    <p class="subtitle">两个开源 AI 助手项目的架构、设计与核心能力全面对比</p>
+  </header>
+
+  <div class="stats-row fade-in">
+    <div class="stat-card">
+      <div class="stat-label">⭐ Stars</div>
+      <div class="stat-values">
+        <span class="stat-val h">220</span>
+        <span class="stat-sep">vs</span>
+        <span class="stat-val c">321K</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">📝 Commits</div>
+      <div class="stat-values">
+        <span class="stat-val h">56</span>
+        <span class="stat-sep">vs</span>
+        <span class="stat-val c">20K</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">🔖 Releases</div>
+      <div class="stat-values">
+        <span class="stat-val h">38</span>
+        <span class="stat-sep">vs</span>
+        <span class="stat-val c">—</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">📜 License</div>
+      <div class="stat-values">
+        <span class="stat-val" style="color:var(--text);font-size:18px;">Apache 2.0</span>
+      </div>
+    </div>
+  </div>
+
+  <section class="fade-in">
+    <div class="section-title">🧭 设计哲学</div>
+    <div class="section-desc">不同的产品哲学决定不同的架构走向</div>
+    <div class="advantages-grid">
+      <div class="adv-card h-card">
+        <div class="adv-card-title">OpenHanako</div>
+        <div class="adv-card-sub">有灵魂的个人助手</div>
+        <ul class="adv-list">
+          <li><span class="icon">🧠</span><span class="text"><strong>Memory + Personality + Autonomy</strong> — 记忆、人格、自主行动三位一体</span></li>
+          <li><span class="icon">💫</span><span class="text">每个 Agent 都有独立的<strong>意识模板</strong>和身份模板，真正"有性格"</span></li>
+          <li><span class="icon">🎯</span><span class="text">面向<strong>所有人</strong>，不要求用户会写代码</span></li>
+        </ul>
+      </div>
+      <div class="adv-card c-card">
+        <div class="adv-card-title">OpenClaw</div>
+        <div class="adv-card-sub">全平台 AI 通信中枢</div>
+        <ul class="adv-list">
+          <li><span class="icon">🌐</span><span class="text"><strong>Gateway = 控制平面</strong>，产品是助手本身</span></li>
+          <li><span class="icon">📡</span><span class="text">通过你<strong>已有的聊天渠道</strong>为你服务</span></li>
+          <li><span class="icon">⚙️</span><span class="text">强调<strong>多渠道接入</strong>和全平台覆盖</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="fade-in">
+    <div class="section-title">🏗️ 项目架构</div>
+    <div class="section-desc">目录结构反映设计思路的差异</div>
+    <div class="arch-row">
+      <div class="arch-block h-arch">
+        <div class="arch-header"><span class="dot"></span>OpenHanako</div>
+        <div class="arch-body">
+<span class="dir">core/</span> <span class="comment">← 引擎层</span>
+  engine.js <span class="comment">← 统一门面 (Facade)</span>
+  agent-manager.js
+  model-manager.js
+  session-coordinator.js
+  skill-manager.js
+  preferences-manager.js
+
+<span class="dir">lib/</span> <span class="comment">← 核心库</span>
+  <span class="highlight-h">memory/</span> <span class="comment">← 衰减式记忆</span>
+  <span class="highlight-h">sandbox/</span> <span class="comment">← 双层隔离</span>
+  <span class="highlight-h">ishiki-templates/</span> <span class="comment">← 意识模板</span>
+  <span class="highlight-h">desk/</span> <span class="comment">← 书桌空间</span>
+  <span class="highlight-h">diary/</span> <span class="comment">← 日记系统</span>
+  bridge/ channels/ tools/
+
+<span class="dir">hub/</span> <span class="comment">← 后台中枢</span>
+  scheduler / event-bus / channel-router
+
+<span class="dir">server/</span> <span class="comment">← Fastify 5</span>
+<span class="dir">desktop/</span> <span class="comment">← Electron 38 + React 19</span>
+        </div>
+      </div>
+      <div class="arch-block c-arch">
+        <div class="arch-header"><span class="dot"></span>OpenClaw</div>
+        <div class="arch-body">
+<span class="dir">src/</span> <span class="comment">← 超大型模块化</span>
+  <span class="highlight-c">gateway/</span> <span class="comment">← 控制平面</span>
+  <span class="highlight-c">channels/</span> <span class="comment">← 20+ 频道适配</span>
+  <span class="highlight-c">context-engine/</span> <span class="comment">← 上下文引擎</span>
+  <span class="highlight-c">plugin-sdk/</span> <span class="comment">← 插件 SDK</span>
+  <span class="highlight-c">canvas-host/</span> <span class="comment">← 实时画布</span>
+  <span class="highlight-c">tts/</span> <span class="comment">← 语音合成</span>
+  providers/ sessions/ agents/
+  hooks/ i18n/ secrets/ security/
+  daemon/ wizard/ tui/
+
+<span class="dir">apps/</span> <span class="comment">← 原生应用</span>
+  <span class="highlight-c">ios/</span> <span class="highlight-c">android/</span> <span class="highlight-c">macos/</span>
+
+<span class="dir">packages/</span> <span class="comment">← monorepo 子包</span>
+<span class="dir">extensions/</span> <span class="comment">← 扩展系统</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="fade-in">
+    <div class="section-title">⚡ 核心能力对比</div>
+    <div class="section-desc">关键功能维度的一对一对照</div>
+    <table class="vs-table">
+      <thead>
+        <tr>
+          <th>维度</th>
+          <th>🌸 OpenHanako</th>
+          <th>🦞 OpenClaw</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>运行形态</td><td>Electron 桌面应用（单体）</td><td>CLI + Daemon + 原生 App + Web UI</td></tr>
+        <tr><td>记忆系统</td><td>🧠 <strong>衰减式记忆</strong>：近期清晰、远期淡出 + 日记 + 经验提取</td><td>标准记忆模块</td></tr>
+        <tr><td>人格系统</td><td>💫 Ishiki（意识）模板 + Identity 模板，人格即文件</td><td>— 无内置人格系统</td></tr>
+        <tr><td>沙箱隔离</td><td>🛡️ PathGuard（4级权限）+ OS 级 Seatbelt/Bubblewrap</td><td>🐳 Docker 容器隔离</td></tr>
+        <tr><td>多平台桥接</td><td>Telegram, Feishu, QQ</td><td><strong>20+ 频道</strong>：WhatsApp, Slack, Discord, Signal, iMessage…</td></tr>
+        <tr><td>原生应用</td><td><span class="cross">✕</span> 仅 Electron</td><td><span class="check">✓</span> iOS / Android / macOS 原生</td></tr>
+        <tr><td>语音能力</td><td><span class="cross">✕</span></td><td><span class="check">✓</span> 内置 TTS</td></tr>
+        <tr><td>实时画布</td><td><span class="cross">✕</span></td><td><span class="check">✓</span> Canvas Host</td></tr>
+        <tr><td>插件/技能</td><td>Skills 生态 + GitHub 安装 + 安全审查</td><td>Plugin SDK + 扩展系统</td></tr>
+        <tr><td>国际化</td><td>部分（中英双语）</td><td><span class="check">✓</span> 完整 i18n 模块</td></tr>
+        <tr><td>包管理</td><td>单一 package.json</td><td>pnpm monorepo</td></tr>
+        <tr><td>测试体系</td><td>Vitest（单一配置）</td><td>Vitest（7+ 配置矩阵）</td></tr>
+        <tr><td>部署方式</td><td>下载 .dmg / .exe 即装即用</td><td>npx / Docker / Nix</td></tr>
+        <tr><td>书桌/协作空间</td><td>📁 <strong>Desk</strong>：异步协作 + 拖拽 + 预览</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="fade-in">
+    <div class="section-title">🏆 各自的独特优势</div>
+    <div class="section-desc">互补而非零和</div>
+    <div class="advantages-grid">
+      <div class="adv-card h-card">
+        <div class="adv-card-title">OpenHanako 的优势</div>
+        <div class="adv-card-sub">以人为本 · 交互深度</div>
+        <ul class="adv-list">
+          <li><span class="icon">🧠</span><span class="text"><strong>衰减式记忆</strong> — 模拟人类记忆的时间衰减，近期清晰远期淡出</span></li>
+          <li><span class="icon">💫</span><span class="text"><strong>意识模板</strong> — Agent 真正有"性格"，人格是 Markdown 文件，备份即拷贝</span></li>
+          <li><span class="icon">🛡️</span><span class="text"><strong>原生双层沙箱</strong> — 不依赖 Docker，用 OS 级隔离，对普通用户更友好</span></li>
+          <li><span class="icon">📁</span><span class="text"><strong>书桌空间</strong> — 人机异步协作的独特交互模式</span></li>
+          <li><span class="icon">📔</span><span class="text"><strong>日记 + 经验提取</strong> — Agent 能自我反思和持续学习</span></li>
+          <li><span class="icon">📦</span><span class="text"><strong>零配置开箱即用</strong> — 下载安装即可，不需要命令行或 Docker</span></li>
+        </ul>
+      </div>
+      <div class="adv-card c-card">
+        <div class="adv-card-title">OpenClaw 的优势</div>
+        <div class="adv-card-sub">以功能为本 · 覆盖广度</div>
+        <ul class="adv-list">
+          <li><span class="icon">🌐</span><span class="text"><strong>全渠道覆盖</strong> — 20+ 消息平台适配，远超竞品</span></li>
+          <li><span class="icon">📱</span><span class="text"><strong>原生 App</strong> — iOS/Android/macOS 原生应用，体验更轻量</span></li>
+          <li><span class="icon">🔌</span><span class="text"><strong>Plugin SDK</strong> — 成熟的插件开发接口和扩展系统</span></li>
+          <li><span class="icon">🏗️</span><span class="text"><strong>企业级工程</strong> — 20K commits、完整 CI/CD、多层测试矩阵</span></li>
+          <li><span class="icon">🔊</span><span class="text"><strong>语音 + 画布</strong> — 内置 TTS 语音合成和实时 Canvas 渲染</span></li>
+          <li><span class="icon">🌍</span><span class="text"><strong>完整国际化</strong> — i18n 模块支持多语言</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="fade-in">
+    <div class="summary-box">
+      <div class="summary-title">📝 一句话总结</div>
+      <table class="summary-table">
+        <thead>
+          <tr><th></th><th>🌸 OpenHanako</th><th>🦞 OpenClaw</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>适合谁</td><td>想要有温度、有记忆、有性格的 AI 搭子</td><td>需要全平台、全渠道、可扩展的 AI 网关</td></tr>
+          <tr><td>核心优势</td><td>人格 · 记忆 · 书桌 · 零配置</td><td>规模 · 渠道 · 原生 App · 插件生态</td></tr>
+          <tr><td>设计取向</td><td>以人为本，Agent 有"灵魂"</td><td>以功能为本，Agent 是工具</td></tr>
+        </tbody>
+      </table>
+      <div class="analogy">
+        <strong>打个比方：</strong>如果 AI 助手是一部手机——<br><br>
+        OpenClaw 像 <strong>Android</strong>：开放、可定制、适配所有场景，功能覆盖极广。<br>
+        OpenHanako 像 <strong>iPhone</strong>：一体化、精致、开箱即用，在交互深度上打磨到极致。<br><br>
+        两者不完全是竞品，更像<strong>不同的产品哲学</strong>——一个追求覆盖广度，一个追求交互深度。✨
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>数据来源：<a href="https://github.com/liliMozi/openhanako" target="_blank">github.com/liliMozi/openhanako</a> &nbsp;·&nbsp; <a href="https://github.com/openclaw/openclaw" target="_blank">github.com/openclaw/openclaw</a></p>
+    <p style="margin-top:8px;">Generated by Hanako · 2026-03-18</p>
+  </footer>
+
+</div>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
