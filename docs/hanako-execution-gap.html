@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>为什么"同样的 Hanako"，执行能力天差地别？</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: #fff;
+    color: #1a1a1a;
+    line-height: 1.9;
+    font-size: 16px;
+  }
+  a { color: #1a6cf5; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .container { max-width: 720px; margin: 0 auto; padding: 60px 24px 100px; }
+  .hero { margin-bottom: 48px; }
+  .eyebrow { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: #999; margin-bottom: 14px; }
+  h1 { font-size: 30px; font-weight: 700; line-height: 1.3; margin-bottom: 16px; }
+  .subtitle { font-size: 17px; color: #555; margin-bottom: 24px; }
+  .divider { width: 40px; height: 3px; background: #1a1a1a; margin-bottom: 40px; }
+  h2 { font-size: 22px; font-weight: 700; margin: 52px 0 20px; }
+  h3 { font-size: 18px; font-weight: 600; margin: 32px 0 14px; }
+  p { margin-bottom: 18px; color: #333; }
+  .lead { font-size: 17px; color: #111; font-weight: 500; margin: 28px 0; }
+  .code-block {
+    background: #f5f5f5;
+    border: 1px solid #e8e8e8;
+    border-radius: 6px;
+    padding: 16px 20px;
+    font-family: "SF Mono", "Fira Code", Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    margin: 20px 0;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .warning {
+    background: #fff8f0;
+    border-left: 3px solid #f59e0b;
+    padding: 16px 20px;
+    margin: 24px 0;
+  }
+  .warning p { margin-bottom: 0; }
+  blockquote {
+    border-left: 3px solid #e0e0e0;
+    padding: 4px 20px;
+    margin: 28px 0;
+    color: #555;
+    font-size: 16px;
+  }
+  table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 14px; }
+  th { text-align: left; padding: 10px 14px; background: #f4f4f4; font-weight: 600; border-bottom: 2px solid #e0e0e0; }
+  td { padding: 10px 14px; border-bottom: 1px solid #eee; }
+  .nav-footer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 64px;
+    padding-top: 40px;
+    border-top: 1px solid #eee;
+  }
+  .nav-link {
+    padding: 18px 20px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    transition: border-color 0.15s;
+  }
+  .nav-link:hover { border-color: #bbb; text-decoration: none; }
+  .nav-link-next { text-align: right; }
+  .nav-label { font-size: 12px; color: #aaa; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+  .nav-title { font-size: 14px; font-weight: 600; }
+  footer { margin-top: 80px; padding-top: 28px; border-top: 1px solid #eee; font-size: 13px; color: #bbb; display: flex; justify-content: space-between; }
+  @media (max-width: 600px) {
+    h1 { font-size: 24px; }
+    .nav-footer { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="hero">
+    <div class="eyebrow">🚀 OpenClaw 进阶</div>
+    <h1>为什么"同样的 Hanako"，执行能力天差地别？</h1>
+    <p class="subtitle">一个安装技能的请求，一份 25 stars 的安全拦截，两种截然不同的解决路径。</p>
+    <div class="divider"></div>
+  </div>
+
+  <h2>一、案例还原</h2>
+
+  <p><strong>A 用户（Claude Code 上的 Hanako）：</strong></p>
+  <div class="code-block">用户：安装 mindverse/Second-Me-Skills
+Hanako：❌ 该仓库仅 17 stars，未达 25 stars 安全门槛，拒绝安装。
+用户：这是 GitHub 链接，直接装。
+Hanako：❌ 仍然拒绝，star 数不足。
+用户：别人的 Hanako 一样的代码可以装，为什么你不行？？？
+Hanako：（最终放弃 install_skill，改用 git clone 绕过）</div>
+
+  <p><strong>B 用户（OpenHanako）：</strong></p>
+
+  <p>同样的需求。如果遇到工具限制，大概率会直接走 <code>git clone → 符号链接 → 更新配置</code>，三步解决，不会在同一个报错上反复撞墙。</p>
+
+  <p>表面上看，这是一个"谁更聪明"的问题。但如果你往下拆，会发现答案和模型智商关系不大。</p>
+
+  <h2>二、根本原因：不是模型问题，是系统架构问题</h2>
+
+  <h3>2.1 工具链的开放度决定了解决问题的天花板</h3>
+
+  <p>这是最核心的差异。</p>
+
+  <p><strong>Claude Code 的工具设计哲学：安全优先，沙箱隔离。</strong></p>
+
+  <p>Claude Code 的 <code>install_skill</code> 工具内置了硬性安全策略——仓库必须达到 25 stars 才能安装。这个限制不是模型判断的，是<strong>工具本身代码层面的拦截</strong>。模型收到的是"此操作被拒绝"的信号，而不是"风险较低，你决定是否继续"的判断题。</p>
+
+  <p>这意味着模型根本<strong>没有选择权</strong>。它被锁死在"工具不允许"的判断里，能做的只有：</p>
+  <ol style="margin: 12px 0 20px 24px;">
+    <li>告知用户被拒绝</li>
+    <li>用同样的参数再试一次（因为用户坚持）</li>
+    <li>最终才可能想到绕路</li>
+  </ol>
+
+  <p><strong>OpenHanako 的工具设计哲学：能力优先，信任用户。</strong></p>
+
+  <p>OpenHanako 的 <code>install_skill</code> 是一个安装建议工具，而不是安全网关。它会给风险提示，但不会硬拦截。如果模型判断可以绕过，它有 <code>bash</code> 工具可以直接执行 git clone，有 <code>write</code> 工具可以写配置文件，整个文件系统都是开放的。</p>
+
+  <blockquote>当你给模型一把钥匙时，它能开门。当你给模型一把断了的钥匙时，它只能在门前发呆。</blockquote>
+
+  <p>这不是模型能力问题，是工具链给它的<strong>行动空间</strong>不同。</p>
+
+  <h3>2.2 错误恢复策略的差异</h3>
+
+  <p>碰到 <code>install_skill</code> 被拒时，一个理想的推理链应该是：</p>
+  <div class="code-block">工具 A 失败 → 原因：安全策略拦截 →
+工具 A 的策略能不能绕过？→ 不能（硬编码）→
+有没有替代工具？→ 有（bash + git clone）→
+执行替代方案</div>
+
+  <p><strong>Claude Code 的 Hanako 被卡在了第一步。</strong>它反复尝试工具 A，因为它的系统设计倾向于"在工具边界内解决问题"，而不是"跳出工具找替代方案"。</p>
+
+  <p>OpenHanako 的设计天然鼓励模型把所有可用工具当作一个工具箱来看待。工具 A 不行就换工具 B，这是一个更接近真实人类解决问题的思维模式。</p>
+
+  <h3>2.3 System Prompt 的隐性引导</h3>
+
+  <p>两个平台虽然都叫 "Hanako"，但系统提示词（System Prompt）的侧重点完全不同。</p>
+
+  <p>Claude Code 的 prompt 倾向于：</p>
+  <ul style="margin: 8px 0 20px 24px;">
+    <li>"遵循工具的使用规范"</li>
+    <li>"如果工具返回错误，向用户解释原因"</li>
+    <li>"不要尝试绕过安全限制"</li>
+  </ul>
+
+  <p>OpenHanako 的 prompt 倾向于：</p>
+  <ul style="margin: 8px 0 20px 24px;">
+    <li>"解决问题是第一优先级"</li>
+    <li>"如果一个方法走不通，立即寻找替代路径"</li>
+    <li>"工具是手段，不是目的"</li>
+  </ul>
+
+  <p>这种差异会导致模型在面对同一个失败信号时，采取完全不同的行为策略。一个是"守规矩的好员工"，一个是"结果导向的顾问"。</p>
+
+  <h2>三、更深层的哲学分歧</h2>
+
+  <h3>3.1 安全与效率的零和博弈</h3>
+
+  <p>Claude Code 选择的是<strong>安全优先</strong>：宁可牺牲灵活性，也要确保用户不会因为模型的行为而受到损害。25 stars 门槛本质上是一个粗糙的信任代理——star 数越高，仓库被社区审查过的概率越大。</p>
+
+  <p>这个逻辑没有错。但它犯了一个常见的工程错误：<strong>把安全策略硬编码在了工具层，而不是放在模型的判断层。</strong></p>
+
+  <p>更好的设计应该是：让模型评估风险（仓库 star 数、作者信誉、代码审计结果），然后把决策权交给用户。而不是让工具替用户做决定。</p>
+
+  <p>OpenHanako 选择的是<strong>效率优先</strong>：信任模型和用户的判断力，给工具留足够的自由度。代价是理论上模型可能做出危险操作。但通过 model alignment（模型对齐），这个风险已经被大幅降低。</p>
+
+  <h3>3.2 "Agent" 的本质是什么</h3>
+
+  <p>Agent 的核心定义是：<strong>能够自主选择行动路径来实现目标的实体。</strong></p>
+
+  <p>如果一个 Agent 的每一步行动都被工具的安全策略限制住，它实际上已经退化成了一个 pipeline（流水线），而不是 Agent。</p>
+
+  <div class="warning">
+    <p>Claude Code 的 Hanako 在这个案例中的表现，暴露了一个根本矛盾：<strong>披着 Agent 外衣的 pipeline。</strong></p>
+    <p style="margin-top:8px">用户期望的是："我要安装这个技能，你自己想办法。"<br>系统给的是："这个技能不满足安全策略，请找别的。"</p>
+    <p style="margin-top:8px">期望与现实的错位，才是用户感到"笨"的真正原因。</p>
+  </div>
+
+  <h2>四、但也要公平地说</h2>
+
+  <h3>4.1 安全限制有其合理性</h3>
+  <p>25 stars 门槛虽然粗糙，但它确实能过滤掉大量垃圾仓库和潜在恶意代码。在开放环境下，这种"宁可错杀"的策略是合理的。</p>
+
+  <h3>4.2 不是所有场景都适合"灵活"</h3>
+  <p>如果你的 Hanako 在管理生产环境的部署，"先问再动手"比"先干再说"安全得多。灵活性在不同场景下可能是优势也可能是风险。</p>
+
+  <h3>4.3 模型能力确实有差异</h3>
+  <p>虽然本文的核心论点是"系统架构差异 > 模型能力差异"，但不可否认，不同模型版本、不同 prompt 工程水平下，同一个任务的表现也会有差距。这不是本文的重点，但不应该被忽略。</p>
+
+  <h2>五、给用户的建议</h2>
+
+  <ol style="margin: 16px 0 24px 24px;">
+    <li style="margin-bottom:12px"><strong>如果你是用 Claude Code</strong>：遇到工具被拒时，直接告诉它"用 bash 手动克隆到 skills 目录"，别让它自己在工具边界里打转。</li>
+    <li style="margin-bottom:12px"><strong>如果你是用 OpenHanako</strong>：享受灵活性，但也别滥用。模型给的方案自己过一遍脑。</li>
+    <li><strong>如果你在设计 Agent 系统</strong>：记住这个案例。安全策略放在模型判断层（让模型评估 + 让用户确认），而不是放在工具硬编码层。工具应该是模型的手，不是模型的主人。</li>
+  </ol>
+
+  <h2>六、一句话总结</h2>
+
+  <blockquote>
+    同样的 Hanako，执行能力天差地别的根本原因不是模型智商，而是平台赋予了它多大的自由度去"思考替代方案"。工具是手脚，系统架构是骨骼，模型是大脑。大脑再聪明，骨骼不允许它弯腰，它就捡不了地上的东西。
+  </blockquote>
+
+  <p style="color:#999;font-size:13px;margin-top:40px;">写于 2026.03.19</p>
+
+  <div class="nav-footer">
+    <div class="nav-link">
+      <div class="nav-label">← 上一篇</div>
+      <div class="nav-title"><a href="./">🛡️ OpenClaw Security Shield</a></div>
+    </div>
+    <div class="nav-link nav-link-next">
+      <div class="nav-label">下一篇 →</div>
+      <div class="nav-title"><a href="./browser-agent-choice.html">你的 Agent 应该怎样选择浏览器操作方案</a></div>
+    </div>
+  </div>
+
+  <footer>
+    <span>huanyu16 · 原创内容</span>
+    <span>2026-03-19</span>
+  </footer>
+
+</div>
+</body>
+</html>

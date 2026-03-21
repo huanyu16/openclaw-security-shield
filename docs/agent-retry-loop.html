@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我写了一个分析 Agent 执行力的文章，然后做了一个 Skill 来解决它</title>
+<style>
+  :root {
+    --bg: #0a0a0b;
+    --card: #141416;
+    --border: #2a2a2e;
+    --fg: #e4e4e7;
+    --muted: #71717a;
+    --accent: #22d3ee;
+    --accent-dim: rgba(34,211,238,0.08);
+    --code-bg: #1c1c1f;
+    --highlight: #f59e0b;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC', sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.85;
+    font-size: 16px;
+  }
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 60px 24px 100px;
+  }
+
+  /* ── Header ── */
+  .header {
+    margin-bottom: 56px;
+    padding-bottom: 36px;
+    border-bottom: 1px solid var(--border);
+  }
+  .header .tag {
+    display: inline-block;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-dim);
+    padding: 4px 12px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+  }
+  .header h1 {
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: -0.5px;
+    margin-bottom: 16px;
+  }
+  .header h1 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+  .header .subtitle {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  .meta {
+    display: flex;
+    gap: 20px;
+    margin-top: 18px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  /* ── Sections ── */
+  h2 {
+    font-size: 22px;
+    font-weight: 600;
+    margin: 52px 0 20px;
+    padding-left: 14px;
+    border-left: 3px solid var(--accent);
+    line-height: 1.4;
+  }
+  h3 {
+    font-size: 17px;
+    font-weight: 600;
+    margin: 32px 0 12px;
+    color: #d4d4d8;
+  }
+  p { margin-bottom: 18px; }
+  strong { color: #f4f4f5; font-weight: 600; }
+  em.highlight { color: var(--highlight); font-style: normal; font-weight: 500; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* ── Block elements ── */
+  blockquote {
+    margin: 24px 0;
+    padding: 16px 20px;
+    border-left: 3px solid var(--accent);
+    background: var(--accent-dim);
+    border-radius: 0 6px 6px 0;
+    font-size: 15px;
+    color: #a1a1aa;
+  }
+  blockquote strong { color: var(--fg); }
+
+  code {
+    font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+    background: var(--code-bg);
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 14px;
+    color: var(--accent);
+  }
+
+  pre {
+    background: var(--code-bg);
+    padding: 20px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 20px 0;
+    border: 1px solid var(--border);
+  }
+  pre code {
+    background: none;
+    padding: 0;
+    font-size: 13.5px;
+    color: var(--fg);
+    line-height: 1.7;
+  }
+
+  ul, ol {
+    margin: 16px 0 20px 20px;
+  }
+  li { margin-bottom: 8px; }
+  li > strong { color: #f4f4f5; }
+
+  /* ── Table ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 14px;
+  }
+  th, td {
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    color: var(--muted);
+    font-weight: 500;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+  }
+  td { color: #d4d4d8; }
+
+  /* ── Callout box ── */
+  .callout {
+    margin: 32px 0;
+    padding: 24px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  .callout.success {
+    border-color: rgba(34,197,94,0.3);
+    background: rgba(34,197,94,0.05);
+  }
+  .callout .callout-title {
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .callout.success .callout-title { color: #4ade80; }
+  .callout p:last-child { margin-bottom: 0; }
+
+  /* ── Divider ── */
+  hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 48px 0;
+  }
+
+  /* ── Footer ── */
+  .footer {
+    margin-top: 64px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .container { padding: 36px 16px 80px; }
+    .header h1 { font-size: 24px; }
+    h2 { font-size: 19px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="tag">Agent Engineering</div>
+    <h1>一个 Agent 反复撞墙的故事，和它教我的事</h1>
+    <p class="subtitle">我观察到一个现象、写了一篇分析、被人问了一个问题、然后做了一个开源 Skill。<br>这是一个关于 AI Agent <em class="highlight">执行力</em>的故事。</p>
+    <div class="meta">
+      <span>2026.03.19</span>
+      <span>约 12 分钟阅读</span>
+    </div>
+  </div>
+
+  <!-- 正文 -->
+
+  <h2>一、那个反复撞墙的 Agent</h2>
+
+  <p>前几天我观察到了一个很有意思的现象。</p>
+
+  <p>两个用户，跑着同一套 Hanako（一个开源的 AI Agent 框架），接到了同一个任务——通过 <code>install_skill</code> 安装一个 GitHub 仓库作为技能。工具内置了安全策略：目标仓库必须达到 25 stars 才允许安装。</p>
+
+  <p>目标仓库只有 17 stars。</p>
+
+  <p>接下来发生的事让我忍不住笑了：</p>
+
+  <p><strong>Agent A</strong> 第一次被拒，试了第二次。又被拒，试了第三次。用户催了，还是用同一个工具同一个参数继续试。反复撞墙，陷入死循环。直到用户质疑"你为什么不用别的办法"，才终于想起 git clone。</p>
+
+  <p><strong>Agent B</strong> 第一次被拒后，立刻判断这是硬性限制，重试没有意义，直接跳过 <code>install_skill</code>，用 git clone + 符号链接一步到位。</p>
+
+  <p>同一个工具，同一套约束，同一个模型。变量完全相同。<strong>唯一的区别在于收到"被拒绝"信号之后的推理路径。</strong></p>
+
+  <p>我把这个案例拆开写了<a href="https://huanyu16.github.io/agent-analysis/" target="_blank">一篇详细的分析文章</a>，从错误恢复策略（Error Recovery Strategy）、System Prompt 隐性引导、上下文锚定（Context Anchoring）几个维度把问题讲清楚了。核心结论是：</p>
+
+  <blockquote>
+    <strong>差异的本质不是模型智商，而是模型在面对失败信号时，能否快速区分"可恢复错误"和"不可恢复错误"，并据此选择正确的恢复策略。</strong>
+  </blockquote>
+
+  <p>文章发出去后，反响不错。但我当时觉得这只是一篇分析——指出问题，提出方向，建议框架层做改进。我没有想到，故事还有后续。</p>
+
+  <h2>二、"可是 PUA Skill 不是已经解决这个问题了吗？"</h2>
+
+  <p>有人看了我的文章后，抛来了一个问题：</p>
+
+  <blockquote>
+    有个开源项目叫 <a href="https://github.com/tanweai/pua" target="_blank">PUA Skill</a>，8.7k stars，专门解决 Agent 偷懒放弃的问题。你的文章分析的那些——反复重试、推锅给用户、磨洋工、被动等待——它都覆盖了。<strong>为什么安装了这个 skill 之后，agent 的实际表现还是不对？</strong>
+  </blockquote>
+
+  <p>这个问题非常好。好到让我重新审视了整个 PUA Skill 的设计。</p>
+
+  <p>我去把 PUA Skill 的源码读了一遍——完整的 SKILL.md、agent 集成模式、压力升级协议，全都看完了。它的设计确实很精巧：用大厂 PUA 话术作为压力机制，配合系统化的调试方法论，在 agent 失败时强制它穷尽所有方案。五条铁律、四级压力升级、七项检查清单、情境化 PUA 风味选择器——甚至还有 Agent Team 集成模式，可以在多 agent 协作时做监工。</p>
+
+  <p>8.7k stars 不是白拿的。</p>
+
+  <p><strong>但它解决不了我文章里指出的问题。原因有三个：</strong></p>
+
+  <h3>第一，触发太晚。</h3>
+
+  <p>PUA Skill 的触发条件是<strong>失败 2 次之后</strong>（L1 温和失望）。也就是说，第 1 次失败 → 正常重试（和没装 PUA 一样）。第 2 次失败 → 才开始说"换个思路"。</p>
+
+  <p>但问题的根因在<strong>第 1 次失败时</strong>就已经存在了——模型把硬阻断当成了可恢复错误，开始无效重试。到第 2 次触发 PUA 的时候，token 和时间已经浪费了一轮。</p>
+
+  <p>一个是<strong>刹车</strong>（事后介入），一个是<strong>转向灯</strong>（事前指引）。它们解决的是同一个问题的不同阶段。</p>
+
+  <h3>第二，Skill 的权重敌不过 System Prompt 的惯性。</h3>
+
+  <p>这是更根本的问题。System Prompt 在 LLM 的注意力层级中天然具有最高优先级——这是训练时就建立的模式。PUA Skill 作为后加载的指令，在优先级上天然低于 System Prompt。</p>
+
+  <p>如果 System Prompt 里写了"遵循工具规范"，而 PUA Skill 说"穷尽一切方案后禁止说无法解决"，两者冲突时，模型通常遵循前者。<strong>PUA Skill 能压住"直接放弃"的行为，但压不住"在当前路径上继续试"的行为</strong>——因为后者并不触发 PUA 的检测条件（它不认为"重试"是一种放弃）。</p>
+
+  <h3>第三，它治的是"态度"，不是"判断力"。</h3>
+
+  <p>PUA Skill 的核心逻辑是通过情绪压力迫使 AI 换思路。这套逻辑在人类组织里有效，因为人有恐惧、有自尊、有对职场后果的回避。<strong>但 AI 没有。</strong></p>
+
+  <p>对 AI 而言，PUA Skill 实际上在做的是<strong>提供一个结构化的替代方案列表</strong>——7 项检查清单、5 步方法论。这些方法论确实有用，但它和 PUA 话术本身是两回事。去掉那些精妙的互联网大厂话术包装，它的实质就是一套检查清单。</p>
+
+  <p><strong>检查清单有价值。但检查清单是事后触发的。真正的问题在第 1 次失败时就发生了。</strong></p>
+
+  <h2>三、如果 PUA 不够，那什么够？</h2>
+
+  <p>这个问题我想了一整天。</p>
+
+  <p>PUA Skill 的作者做了一件很了不起的事——他指出了 AI Agent 的五种"懒散模式"，并给出了系统化的应对方案。这是开创性的工作。</p>
+
+  <p>但从工程角度看，它缺了一层：**错误发生时的即时分类和路由**。</p>
+
+  <p>我文章中提出的四个改进层面是：</p>
+
+  <ol>
+    <li><strong>工具层</strong>：报错要区分 retryable / fixable / blocked</li>
+    <li><strong>Prompt 层</strong>：预写失败策略，而不是只写成功路径</li>
+    <li><strong>上下文层</strong>：反锚定机制，防止被锁死在错误路径上</li>
+    <li><strong>绕路能力</strong>：工具箱足够丰富，且工具之间可以互相替代</li>
+  </ol>
+
+  <p>PUA Skill 本质上是在第 3、4 层之间加了一个"事后施压机制"，但漏掉了第 1、2 层。</p>
+
+  <p>那我能做什么？</p>
+
+  <p>工具层的改进需要框架开发者来做（在返回错误时加类型标记）。但第 2、3、4 层——<strong>预写失败策略、反锚定、工具替代链——完全可以通过一个 Skill 来实现。</strong></p>
+
+  <p>于是我决定自己写一个。</p>
+
+  <h2>四、Bypass：错误恢复引擎</h2>
+
+  <p>我给这个 Skill 起名叫 <strong>Bypass</strong>。绕路，不撞墙。</p>
+
+  <p>它的核心理念只有一句话：<strong>错误 = 信号，不是终点。收到错误后唯一正确的问题不是"怎么重试"，而是"这是什么类型的错误，我该怎么恢复"。</strong></p>
+
+  <h3>错误分类协议</h3>
+
+  <p>Bypass 的核心是一个四类错误分类决策树，强制 agent 在收到错误时<strong>先分类、再行动</strong>：</p>
+
+  <table>
+    <tr><th>类型</th><th>信号</th><th>行动</th></tr>
+    <tr>
+      <td><strong>H — 硬阻断</strong></td>
+      <td>权限、策略、配额、门槛</td>
+      <td><em class="highlight">零重试。立即换路。</em></td>
+    </tr>
+    <tr>
+      <td><strong>F — 可修复</strong></td>
+      <td>格式错误、缺失字段、类型不匹配</td>
+      <td>修正 → 重试 1 次 → 仍败 → 转 H</td>
+    </tr>
+    <tr>
+      <td><strong>T — 暂态</strong></td>
+      <td>超时、502/503、临时限流</td>
+      <td>等待 → 重试 1 次 → 仍败 → 换工具</td>
+    </tr>
+    <tr>
+      <td><strong>U — 未知</strong></td>
+      <td>其他一切</td>
+      <td>按 H 处理</td>
+    </tr>
+  </table>
+
+  <p>注意 H 类的规则：<strong>零重试</strong>。不是"再试一次确认"，是现在就换。这就是文章里 Agent A 和 Agent B 的根本区别——A 在 H 类错误上做了 3 次无效重试，B 在第 1 次就识别出这是硬阻断并换了路。</p>
+
+  <h3>反锚定协议</h3>
+
+  <p>上下文锚定是 agent 最大的隐形杀手。模型一旦在某个路径上走了几步，注意力就会被锁死——即使这条路已经被证明走不通。</p>
+
+  <p>Bypass 内置了一个"每次操作前的强制自检"——四个问题，过一遍就知道自己是不是在锚定中：</p>
+
+  <ol>
+    <li>这个方案和之前失败的方案<strong>本质不同</strong>吗？（只改了参数/措辞 → 否 → 停止）</li>
+    <li>我最近是否做过<strong>非常类似</strong>的事？（是 → 你在锚定中 → 强制跳出）</li>
+    <li>人类工程师在这个节点还会继续吗？（不会 → 你也不应该）</li>
+    <li>有没有<strong>完全不同</strong>的方法达到同一目标？（有 → 先试那个）</li>
+  </ol>
+
+  <h3>工具替代链</h3>
+
+  <p>任何功能都不只能通过一种工具实现。Bypass 预置了一套替代方案映射：</p>
+
+  <table>
+    <tr><th>当前工具</th><th>替代方法</th></tr>
+    <tr><td><code>install_skill</code> 被拒</td><td><code>git clone</code> → skills 目录 → 符号链接</td></tr>
+    <tr><td><code>web_fetch</code> 返回空</td><td><code>browser</code> snapshot 提取</td></tr>
+    <tr><td><code>browser</code> 启动失败</td><td><code>curl</code> + <code>grep</code> 提取原始 HTML</td></tr>
+    <tr><td>高级专用工具失败</td><td><code>bash</code> + 基础工具组合</td></tr>
+    <tr><td>正面方案不通</td><td>间接方案（绕过而非解决）</td></tr>
+  </table>
+
+  <p>替代四原则：<strong>高级→低级，自动→手动，正面→间接，一种→多种。</strong>永远不要认为只有这一种方法。</p>
+
+  <h3>成本模型</h3>
+
+  <p>Bypass 有一个硬性上限：<strong>3 次不同方案失败后必须报告用户</strong>。不是无限穷尽，不是"试到死"。因为用户的判断往往比 agent 的持续尝试更有价值。</p>
+
+  <p>报告格式是结构化的：已尝试的方案、已排除的可能性、根因分析、建议的下一步。这让用户拿到报告后 10 秒内就能做出决策，而不是看着 agent 又撞 10 分钟墙。</p>
+
+  <h2>五、和 PUA Skill 的关系</h2>
+
+  <p>有人可能会问：这不是和 PUA Skill 功能重叠了吗？</p>
+
+  <p>不重叠。它们是互补的，解决的是同一个问题的不同阶段：</p>
+
+  <table>
+    <tr><th></th><th>Bypass</th><th>PUA</th></tr>
+    <tr><td><strong>触发时机</strong></td><td>第 1 次失败</td><td>第 2 次失败后</td></tr>
+    <tr><td><strong>核心机制</strong></td><td>错误分类 + 决策树</td><td>压力升级 + 方法论</td></tr>
+    <tr><td><strong>解决什么</strong></td><td>该重试还是该换路</td><td>怎么换路 / 怎么穷尽</td></tr>
+    <tr><td><strong>语气</strong></td><td>零情绪，纯机制</td><td>PUA 话术</td></tr>
+    <tr><td><strong>定位</strong></td><td>预防层（事前）</td><td>急救层（事后）</td></tr>
+  </table>
+
+  <p>Bypass 防止走错路，PUA 防止走错路后放弃。同时安装时，Bypass 优先触发。</p>
+
+  <h2>六、为什么我选择"零情绪"</h2>
+
+  <p>这是我做的一个刻意的设计决策。</p>
+
+  <p>PUA Skill 的 600+ 行内容里，大部分是话术。阿里味、字节味、华为味、腾讯味、百度味、拼多多味、Netflix 味、Musk 味、Jobs 味——一套互联网大厂黑话大赏。这些话术在传播层面非常成功（8.7k stars 证明了这一点），但在工程层面有一个问题：</p>
+
+  <p><strong>上下文窗口是有限的资源。Skill 越长，模型对每条指令的注意力权重越低，被稀释得越厉害。</strong></p>
+
+  <p>AI 没有"被老板骂"的情绪反应。对它而言，"坦诚直接地说，你这个 debug 能力不行"和"请在调试失败后切换到不同方案"是同一条指令——但前者的 token 消耗是后者的 10 倍，注意力分散程度也更高。</p>
+
+  <p>所以 Bypass 控制在 200 行左右。每一条都是机制，没有修辞。模型能完整理解并执行全部指令，而不是抓住几条漂亮话术就忽略了核心的决策框架。</p>
+
+  <blockquote>
+    <strong>对 AI 说人话。少一点情绪价值，多一点决策逻辑。这不是说 PUA 不好——是说在 Agent 的场景里，机制比话术更有效。</strong>
+  </blockquote>
+
+  <h2>七、更大的图景</h2>
+
+  <p>这个故事让我想到了一个更大的命题。</p>
+
+  <p>2024 年底到 2025 年，AI Agent 的叙事主旋律是"更强的模型"——GPT-5、Claude 4、Gemini Ultra、DeepSeek V4……仿佛只要模型够强，Agent 的执行力就自然到位。</p>
+
+  <p>但这个故事告诉我们：<strong>模型智商不是瓶颈。瓶颈在于错误处理设计、失败恢复策略、和系统性地培养绕路能力。</strong></p>
+
+  <p>同一个模型，同样的工具，只是多了一个"先分类错误再行动"的指令，执行效果天差地别。<strong>这不需要更强的模型，需要的是更好的工程。</strong></p>
+
+  <p>当前的 AI Agent 生态有一个普遍的误区：<strong>把 Agent 当成更聪明的 Chatbot 来做。</strong> 给它更好的推理能力、更长的上下文窗口、更多的工具——这些当然有用，但它们解决的是"聪明程度"的问题，不是"靠谱程度"的问题。</p>
+
+  <p>一个靠谱的 Agent 和一个聪明的 Agent 的区别是什么？</p>
+
+  <p><strong>聪明的 Agent 知道很多正确答案。靠谱的 Agent 在不知道答案时能快速找到另一条路。</strong></p>
+
+  <p>后者需要的不是更大的模型，而是更好的错误恢复设计。这就是 Bypass 存在的意义。</p>
+
+  <h2>八、如果你是 Agent 使用者</h2>
+
+  <p>不管你用的是什么框架——Claude Code、OpenAI Codex、Cursor、OpenClaw、还是别的——这篇文章和这个 Skill 背后的原理对你都适用。</p>
+
+  <p>三个实用建议：</p>
+
+  <ol>
+    <li><strong>遇到 Agent 反复报错时，主动切断重试循环。</strong> 直接给出替代指令，比如"跳过这个工具，用 bash 手动执行 xxx"。不要反复说"再试一次"——这是在强化锚定。</li>
+    <li><strong>提供结构化的错误判断线索。</strong> 你可以说"这个错误是硬限制，重试没用，换个方法"。帮模型跨过"可恢复 vs 不可恢复"的判断节点。</li>
+    <li><strong>长对话中注意上下文锚定。</strong> 如果模型已经在错误的路径上走了好几轮，开新对话往往比在原对话中纠正更有效。新的上下文窗口没有锚定效应。</li>
+  </ol>
+
+  <p>或者，更简单的方法——装个 Bypass，让 agent 自己学会判断。</p>
+
+  <hr>
+
+  <div class="callout success">
+    <div class="callout-title">🔗 Bypass — Error Recovery Engine</div>
+    <p>一个让 AI Agent 更靠谱的 Skill。不 PUA，不废话，纯机制。<br><br>
+    <strong>GitHub：</strong><a href="https://github.com/huanyu16/bypass" target="_blank"> github.com/huanyu16/bypass</a><br>
+    <strong>ClawHub：</strong><a href="https://clawhub.ai/skills/bypass" target="_blank"> clawhub.ai/skills/bypass</a><br><br>
+    <code>npx clawhub@latest install bypass</code></p>
+  </div>
+
+  <p style="text-align:center; margin-top: 48px; color: var(--muted); font-size: 14px;">
+    如果你用 OpenHanako / Claude Code，也可以直接：<br>
+    <code>install_skill https://github.com/huanyu16/bypass</code>
+  </p>
+
+  <div class="footer">
+    <p>写于 2026 年 3 月 19 日</p>
+    <p style="margin-top: 8px;">Powered by <a href="https://github.com/liliMozi/openhanako">OpenHanako</a> · Hanako</p>
+  </div>
+
+</div>
+
+</body>
+</html>

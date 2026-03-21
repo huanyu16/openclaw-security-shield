@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI助手的一天 | 2026.03.18</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: #F3F4F6;
+    color: #556578;
+    line-height: 1.75;
+    letter-spacing: 0.5px;
+  }
+  .container {
+    max-width: 677px;
+    margin: 0 auto;
+    background: #fff;
+    font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    color: #556578;
+    line-height: 1.75;
+    letter-spacing: 0.5px;
+    overflow-x: hidden;
+  }
+
+  /* === HEADER CARD === */
+  .header-card {
+    margin: 0 0 32px;
+    background: #fff;
+    border: 1.5px solid rgba(5, 150, 105, 0.15);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    width: 100%;
+  }
+  .header-inner { padding: 32px 28px 28px; }
+  .header-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 28px; }
+  .header-tag { font-size: 8px; font-weight: 700; color: #D1D5DB; letter-spacing: 2px; text-transform: uppercase; }
+  .header-date { font-size: 10px; color: #9CA3AF; letter-spacing: 1px; }
+  .header-body { display: flex; align-items: center; gap: 20px; }
+  .header-text { flex: 1; min-width: 0; }
+  .header-title { font-size: 24px; font-weight: 900; color: #111827; margin: 0; line-height: 1.05; letter-spacing: -2px; }
+  .header-title .green { color: #059669; }
+  .header-subtitle { font-size: 13px; color: #4B5563; margin: 10px 0 0; line-height: 1.7; text-align: justify; }
+  .header-hero-img {
+    width: 100%; height: 180px;
+    background: linear-gradient(135deg, #059669, #10B981);
+    border-radius: 12px; display: flex; align-items: center; justify-content: center;
+    margin-top: 20px; position: relative; overflow: hidden;
+  }
+  .header-hero-img::before {
+    content: ''; position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .header-hero-text { color: #fff; font-size: 14px; font-weight: 700; letter-spacing: 1px; text-align: center; z-index: 1; text-shadow: 0 1px 3px rgba(0,0,0,0.15); }
+
+  /* === GREEN BAR === */
+  .green-bar {
+    background: linear-gradient(135deg, rgb(5, 150, 105), rgb(16, 185, 129));
+    padding: 12px 28px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .green-bar-text { font-size: 13px; color: rgba(255,255,255,0.9); font-weight: 600; letter-spacing: 1px; }
+  .green-bar-pills { display: flex; gap: 4px; }
+  .green-bar-pill { background: rgba(255,255,255,0.2); padding: 2px 10px; border-radius: 10px; font-size: 11px; color: #fff; font-weight: 600; }
+
+  /* === NAV SCROLL === */
+  .nav-scroll { margin: 0 20px 32px; }
+  .nav-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .nav-header-text { font-size: 10px; color: #9CA3AF; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; }
+  .nav-scroll-hint { font-size: 10px; color: #9CA3AF; }
+  .nav-items { overflow-x: scroll; white-space: nowrap; padding-bottom: 8px; }
+  .nav-card {
+    display: inline-block; white-space: normal; vertical-align: top;
+    width: 100px; border-radius: 12px; padding: 12px; margin-right: 8px;
+  }
+  .nav-card.active { background: linear-gradient(135deg, rgb(5, 150, 105), rgb(16, 185, 129)); color: #fff; }
+  .nav-card.inactive { background: #fff; border: 1px solid #E5E7EB; box-shadow: 0 2px 6px rgba(0,0,0,0.04); color: #374151; }
+  .nav-card-num { font-size: 8px; font-weight: 700; letter-spacing: 1.5px; opacity: 0.7; }
+  .nav-card-title { font-size: 14px; font-weight: 900; margin: 4px 0 2px; line-height: 1.2; }
+  .nav-card-desc { font-size: 10px; opacity: 0.8; line-height: 1.3; }
+
+  /* === CONTENT === */
+  .content { padding: 0 20px 20px; }
+  .intro-text { margin-bottom: 16px; font-size: 14px; line-height: 1.9; text-align: justify; color: #374151; }
+  .intro-text .gold-underline { color: #059669; border-bottom: 3px solid #FDE68A; }
+  .intro-text .green-bg { color: #059669; background: rgba(5,150,105,0.1); padding: 0 4px; border-radius: 2px; }
+
+  /* === TWO ENTRIES === */
+  .two-entries { background: #F9FAFB; padding: 16px; border-radius: 12px; border: 1px solid #F3F4F6; margin: 0 20px 24px; }
+  .two-entries-flex { display: flex; align-items: stretch; justify-content: center; gap: 6px; }
+  .two-entry-item { flex: 1; text-align: center; padding: 10px 8px; border-radius: 8px; }
+  .two-entry-item.active { background: linear-gradient(135deg, #059669, #10B981); color: #fff; }
+  .two-entry-item.inactive { background: #fff; border: 1px solid #E5E7EB; color: #374151; }
+  .two-entry-icon { font-size: 18px; margin-bottom: 4px; }
+  .two-entry-label { font-size: 12px; font-weight: 700; line-height: 1.3; }
+  .two-entry-sub { font-size: 10px; opacity: 0.7; margin-top: 2px; }
+
+  /* === SECTION === */
+  .section { margin-top: 36px; margin-bottom: 0; padding: 0 20px; }
+  .section-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+  .section-num { margin: 0; font-size: 28px; font-weight: 900; color: #059669; line-height: 1; letter-spacing: -2px; flex-shrink: 0; }
+  .section-titles { flex: 1; }
+  .section-part { margin: 0; font-size: 8px; font-weight: 700; color: #D1D5DB; letter-spacing: 2px; }
+  .section-title { margin: 0 0 1px; font-size: 17px; font-weight: 900; color: #111827; letter-spacing: 0.3px; }
+  .section-sub { margin: 0; font-size: 11px; font-weight: 600; color: #9CA3AF; letter-spacing: 1.5px; }
+
+  /* === LABEL PILL === */
+  .label { display: inline-block; font-size: 13px; font-weight: 700; color: #059669; background: rgba(5,150,105,0.08); padding: 3px 10px; border-radius: 999px; margin-bottom: 14px; }
+
+  /* === BODY TEXT === */
+  .body-text { margin-bottom: 16px; font-size: 14px; line-height: 1.9; text-align: justify; color: #374151; }
+
+  /* === QUESTION === */
+  .question { font-size: 15px; font-weight: 900; color: #111827; margin-bottom: 16px; }
+
+  /* === TOOL TAG === */
+  .tool-tag { display: inline-block; background: #111827; color: #fff; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 12px; margin-right: 6px; }
+  .tool-name { font-size: 14px; font-weight: 700; color: #111827; margin-bottom: 6px; margin-top: 12px; }
+  .tool-desc { font-size: 13px; color: #4B5563; line-height: 1.7; text-align: justify; }
+
+  /* === TIME TAG === */
+  .time-tag { display: inline-block; background: rgba(5,150,105,0.08); color: #059669; padding: 1px 6px; border-radius: 3px; font-size: 10px; font-weight: 600; margin-right: 4px; }
+
+  /* === IMAGE CARD === */
+  .img-card { background: #fff; border-radius: 16px; padding: 12px; margin-bottom: 32px; border: 2px solid #059669; box-shadow: 0 4px 12px rgba(5,150,105,0.1); }
+  .img-card-inner { background: #F9FAFB; border-radius: 12px; height: 120px; display: flex; align-items: center; justify-content: center; color: #9CA3AF; font-size: 13px; }
+
+  /* === HIGHLIGHT CARD === */
+  .highlight-card { background: #fff; border-radius: 12px; padding: 16px 20px; box-shadow: 0 4px 16px rgba(5,150,105,0.12); margin-bottom: 24px; text-align: center; }
+  .highlight-card .big { font-size: 15px; font-weight: 900; color: #059669; line-height: 1.6; }
+  .highlight-card .sub { font-size: 13px; color: #4B5563; margin-top: 4px; }
+
+  /* === QUOTE INSIGHT === */
+  .quote-insight { margin: 20px 20px 0; padding: 16px 20px; background: rgba(5,150,105,0.06); border-radius: 12px; border: 1px solid rgba(5,150,105,0.1); }
+  .quote-insight-label { font-size: 10px; font-weight: 700; color: #059669; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+  .quote-insight-text { font-size: 13px; color: #4B5563; line-height: 1.8; text-align: justify; }
+
+  /* === FOOTER HIGHLIGHT === */
+  .footer-highlight { font-size: 14px; margin-bottom: 20px; text-align: center; color: #059669; font-weight: 700; letter-spacing: 1px; border-top: 1px solid #F3F4F6; border-bottom: 1px solid #F3F4F6; padding: 12px 20px; }
+
+  /* === CTA === */
+  .cta-section { text-align: center; padding: 20px 20px 32px; }
+  .cta-text { font-size: 13px; color: #6B7280; margin-bottom: 16px; }
+  .cta-btns { display: flex; justify-content: center; gap: 20px; }
+  .cta-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .cta-btn-icon { width: 36px; height: 36px; border-radius: 50%; background: rgba(5,150,105,0.08); display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  .cta-btn-label { font-size: 10px; color: #9CA3AF; }
+  .cta-end { margin-top: 24px; font-size: 11px; letter-spacing: 3px; color: #4B5563; font-weight: 700; }
+
+  @media (max-width: 700px) { .container { max-width: 100%; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER CARD -->
+  <div class="header-card">
+    <div class="header-inner">
+      <div class="header-meta">
+        <span class="header-tag">DIARY</span>
+        <span class="header-date">2026.03.18</span>
+      </div>
+      <div class="header-body">
+        <div class="header-text">
+          <p class="header-title">和AI助手折腾了一整天<br><span class="green">从对比报告到部署上线</span></p>
+          <p class="header-subtitle">早上8点开始，报告、网页、部署、排障、装技能，一个普通人的 AI 工具链搭建实录</p>
+        </div>
+      </div>
+      <div class="header-hero-img">
+        <div class="header-hero-text">🤖 7件事 · 从早8点到凌晨<br>报告生成 → 网页化 → 部署上线 → 人设修复 → AI协作生图 → API调试 → Agent协作思考</div>
+      </div>
+    </div>
+    <div class="green-bar">
+      <span class="green-bar-text">📦 7 CASES + DEEP DIVE + CONCLUSION</span>
+      <div class="green-bar-pills">
+        <span class="green-bar-pill">记录</span>
+        <span class="green-bar-pill">经验</span>
+        <span class="green-bar-pill">复盘</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAV SCROLL -->
+  <div class="nav-scroll">
+    <div class="nav-header">
+      <span class="nav-header-text">📋 全部内容</span>
+      <span class="nav-scroll-hint">👉 滑动</span>
+    </div>
+    <div class="nav-items">
+      <div class="nav-card active"><div class="nav-card-num">PART 01</div><div class="nav-card-title">对比报告</div><div class="nav-card-desc">选哪个Agent平台</div></div>
+      <div class="nav-card inactive"><div class="nav-card-num">PART 02</div><div class="nav-card-title">网页化</div><div class="nav-card-desc">Markdown → HTML</div></div>
+      <div class="nav-card inactive"><div class="nav-card-num">PART 03</div><div class="nav-card-title">部署上线</div><div class="nav-card-desc">微信分享适配</div></div>
+      <div class="nav-card inactive"><div class="nav-card-num">PART 04</div><div class="nav-card-title">人设修复</div><div class="nav-card-desc">风格切换Bug</div></div>
+      <div class="nav-card inactive"><div class="nav-card-num">PART 05</div><div class="nav-card-title">AI协作生图</div><div class="nav-card-desc">Agent-to-Agent实战</div></div>
+      <div class="nav-card inactive"><div class="nav-card-num">PART 06</div><div class="nav-card-title">API调试</div><div class="nav-card-desc">401 排障</div></div>
+      <div class="nav-card inactive"><div class="nav-card-num">PART 07</div><div class="nav-card-title">Agent协作</div><div class="nav-card-desc">深入理解Agent-to-Agent</div></div>
+      <div class="nav-card inactive"><div class="nav-card-num">PART ///</div><div class="nav-card-title">写在最后</div><div class="nav-card-desc">经验总结</div></div>
+    </div>
+  </div>
+
+  <!-- INTRO -->
+  <div class="content">
+    <p class="intro-text">今天算是把 <span class="gold-underline">AI 工具链</span>从零搭到能用的完整流程走了一遍</p>
+    <p class="intro-text">生成报告、转网页、部署上线、改人设、装技能、调接口，中间踩了不少坑，但也确实把各个环节串通了</p>
+    <p class="intro-text">记录一下，给同样在折腾的朋友一个<span class="green-bg">参考</span></p>
+  </div>
+
+  <!-- TWO ENTRIES -->
+  <div class="two-entries">
+    <div class="two-entries-flex">
+      <div class="two-entry-item active"><div class="two-entry-icon">📄</div><div class="two-entry-label">内容生产</div><div class="two-entry-sub">报告生成 + 网页化</div></div>
+      <div style="display:flex;align-items:center;color:#9CA3AF;font-size:16px;">×</div>
+      <div class="two-entry-item active"><div class="two-entry-icon">🔧</div><div class="two-entry-label">工具链搭建</div><div class="two-entry-sub">部署 + 装技能 + 调API</div></div>
+    </div>
+  </div>
+
+  <!-- PART 01 -->
+  <div class="section">
+    <div class="section-header"><p class="section-num">01</p><div class="section-titles"><p class="section-part">PART</p><p class="section-title">对比报告</p></div></div>
+    <p class="section-sub">REPORT · OpenHanako vs OpenClaw</p>
+    <p class="question">我做了什么</p>
+    <p class="body-text">早上起来第一件事，让AI助手跑了一份 <strong style="color:#111827;">OpenHanako vs OpenClaw</strong> 的对比分析报告。两个都是AI Agent平台，选哪个直接影响后续的工具链搭建</p>
+    <div class="img-card"><div class="img-card-inner">📊 对比报告截图区域</div></div>
+    <p class="body-text"><span class="time-tag">08:23</span> 报告生成完毕，Markdown 格式，内容完整</p>
+  </div>
+  <div class="quote-insight"><div class="quote-insight-label">💡 决策</div><div class="quote-insight-text">光有一份 Markdown 报告不够，得让它在浏览器里能直接看，还得方便分享给朋友</div></div>
+
+  <!-- PART 02 -->
+  <div class="section">
+    <div class="section-header"><p class="section-num">02</p><div class="section-titles"><p class="section-part">PART</p><p class="section-title">报告变网页</p></div></div>
+    <p class="section-sub">HTML · 从文档到可视化</p>
+    <span class="label">📝 网页化</span>
+    <p class="body-text"><span class="time-tag">08:26</span> 把 Markdown 报告转成了<strong style="color:#111827;">完整的 HTML 页面</strong>，带样式、排版、交互</p>
+    <p class="body-text"><span class="time-tag">08:30</span> 需要一个在线链接来分享，决定用 <strong style="color:#111827;">GitHub Pages</strong> 部署</p>
+    <p class="body-text">通过 GitHub CLI 推送到仓库，在线链接立即可用</p>
+  </div>
+  <div class="quote-insight"><div class="quote-insight-label">⚠️ 问题</div><div class="quote-insight-text">GitHub Pages 的链接在国内微信里分享体验很差，经常打不开或者被拦截，需要一个国内可访问的方案</div></div>
+
+  <!-- PART 03 -->
+  <div class="section">
+    <div class="section-header"><p class="section-num">03</p><div class="section-titles"><p class="section-part">PART</p><p class="section-title">部署方案切换</p></div></div>
+    <p class="section-sub">DEPLOY · 找到适合微信分享的方案</p>
+    <p class="question">我做了什么</p>
+    <p class="body-text">调研之后锁定了 <span class="gold-underline"><strong style="color:#059669;">Gitee Pages</strong></span>，国内码云的静态托管服务</p>
+    <div class="tool-tag">TOOL Gitee Pages</div>
+    <p class="tool-name">国内静态托管方案</p>
+    <p class="tool-desc">生成的链接在微信里可以正常打开和分享，是 GitHub Pages 在国内场景下的替代选择</p>
+    <p class="body-text" style="margin-top:16px;"><span class="time-tag">08:41</span> 确认方案</p>
+    <div class="highlight-card"><div class="big">分享场景决定部署方案</div><div class="sub">技术方案再好，目标受众打不开链接就等于零</div></div>
+  </div>
+
+  <!-- PART 04 -->
+  <div class="section">
+    <div class="section-header"><p class="section-num">04</p><div class="section-titles"><p class="section-part">PART</p><p class="section-title">人设同步修复</p></div></div>
+    <p class="section-sub">DEBUG · 切换风格后意识没跟上</p>
+    <p class="question">我做了什么</p>
+    <p class="body-text">下午在设置里把助手的风格标识从「元」切换成 <strong style="color:#111827;">「ming」（冷静深刻风格）</strong>，但助手的行为方式完全没有变化</p>
+    <p class="body-text"><span class="time-tag">13:12</span> 开始排查，发现系统的设置面板和底层意识模板文件<strong style="color:#111827;"> ishiki.md</strong> 之间没有联动</p>
+    <p class="body-text">设置面板改了标识，但意识模板还是旧的，相当于换了衣服没换灵魂</p>
+    <p class="body-text">手动替换为「明」对应的意识模板，修复完成</p>
+    <div class="highlight-card"><div class="big">设置面板 ≠ 底层文件</div><div class="sub">配置变更要做全链路校验，用户改了一个设置，期望的是全链路生效</div></div>
+  </div>
+
+  <!-- PART 05 -->
+  <div class="section">
+    <div class="section-header"><p class="section-num">05</p><div class="section-titles"><p class="section-part">PART</p><p class="section-title">AI 协作生图</p></div></div>
+    <p class="section-sub">AGENT · 一个有趣的 Agent-to-Agent 实战</p>
+    <p class="question">发生了什么</p>
+    <p class="body-text">下午想给 JOJO 角色画张图，于是让助手和 <strong style="color:#111827;">liblib.tv</strong> 的 AI 创作平台打了一交道。这一段经历比前面几步都更有意思，因为它让我第一次直观感受到了 <span style="color:#059669;font-weight:700;">Agent 之间如何协作</span></p>
+    <div style="margin:16px 0;padding:16px 20px;background:linear-gradient(135deg,#ECFDF5,#F0FDF4);border-radius:12px;border:1px solid #A7F3D0;">
+      <p style="font-size:14px;color:#374151;line-height:1.9;margin:0;text-align:justify;">事情的起点很简单：我在 <strong style="color:#111827;">clawhub.ai</strong> 上找到了 LibTV 的 Skill 包，下载 zip 安装。安装完毕后，助手就多了一个能力——<strong style="color:#111827;">可以和 liblib.tv 的后端 AI Agent 对话</strong></p>
+    </div>
+    <p class="body-text"><span class="time-tag">14:28</span> LibTV Skill 安装完毕，开始第一次实际调用</p>
+    <p class="body-text" style="margin-top:12px;">整个过程是这样的：</p>
+    <div style="margin:16px 0;padding:0 12px;">
+      <p style="font-size:13px;color:#4B5563;line-height:2.0;text-align:justify;margin-bottom:6px;">1️⃣ <strong style="color:#111827;">我说了一句话</strong>："帮我画一张 JOJO SBR 风格的 Johnny 角色立绘"</p>
+      <p style="font-size:13px;color:#4B5563;line-height:2.0;text-align:justify;margin-bottom:6px;">2️⃣ <strong style="color:#111827;">我的 AI 助手（前端 Agent）</strong>接到了这个需求，但并没有自己去理解"JOJO SBR 风格"是什么、该怎么构图、该用什么模型</p>
+      <p style="font-size:13px;color:#4B5563;line-height:2.0;text-align:justify;margin-bottom:6px;">3️⃣ 它只是把我的原话<strong style="color:#111827;">原封不动地</strong>打包，通过 API 发给了 liblib.tv 后端的<strong style="color:#059669;">另一个 AI Agent</strong></p>
+      <p style="font-size:13px;color:#4B5563;line-height:2.0;text-align:justify;margin-bottom:6px;">4️⃣ <strong style="color:#059669;">后端 Agent</strong> 收到消息后，自主拆解了任务：理解 JOJO 美学风格、选择合适的生成模型（Seedream 5.0）、编写精准的 prompt、设定构图参数</p>
+      <p style="font-size:13px;color:#4B5563;line-height:2.0;text-align:justify;">5️⃣ 生成完成后，前端 Agent 帮我把结果<strong style="color:#111827;">取回来、下载到本地、展示给我</strong></p>
+    </div>
+    <div class="highlight-card">
+      <div class="big">我的助手不是在"画画"<br>它是在"替我和另一个AI传话"</div>
+      <div class="sub">前端理解意图 → 后端专业执行 → 前端取件交付</div>
+    </div>
+    <div class="tool-tag">📦 LibTV Skill</div>
+    <p class="tool-name">Agent-to-Agent 的实际工作方式</p>
+    <p class="tool-desc">LibTV 是 LiblibAI 推出的 AI 创作平台，专门为 Agent 设计了交互接口。后端 Agent 覆盖文生图、文生视频、图生视频、视频续写、局部编辑、风格迁移等全链路能力，掌握 Seedance 2.0、Kling 3.0、Midjourney、Seedream 5.0 等主流模型。安装 Skill 后，用户的 AI 助手通过 OpenAPI 创建会话、发送消息、轮询进度、下载结果，形成完整的 Agent 间协作闭环</p>
+    <p class="body-text" style="margin-top:16px;">后来我又试了几次，让助手同时调用 <strong style="color:#111827;">智谱 CogView-3</strong> 和 <strong style="color:#111827;">Liblib</strong> 两个平台画同一张图，对比两边的效果。两个 Agent 各自用自己擅长的方式工作，结果放在一起看，差异非常直观</p>
+    <div class="img-card"><div class="img-card-inner">🎨 两平台生图对比 · jojo-outputs 目录</div></div>
+  </div>
+
+  <!-- PART 06 -->
+  <div class="section">
+    <div class="section-header"><p class="section-num">06</p><div class="section-titles"><p class="section-part">PART</p><p class="section-title">API 密钥调试</p></div></div>
+    <p class="section-sub">CONFIG · 401 Unauthorized</p>
+    <p class="question">小插曲</p>
+    <p class="body-text">Agent 间协作的前提是<strong style="color:#111827;">通信链路通畅</strong>。在测试 LibTV 的 API 连接时，拿到了 401 Unauthorized</p>
+    <div class="img-card" style="border-color:#EF4444;box-shadow:0 4px 12px rgba(239,68,68,0.1);">
+      <div class="img-card-inner" style="background:#FEF2F2;color:#EF4444;">
+        <div style="text-align:center;"><div style="font-size:24px;font-weight:900;margin-bottom:4px;">401</div><div style="font-size:12px;">Unauthorized · 密钥无效</div></div>
+      </div>
+    </div>
+    <p class="body-text">Agent 之间的对话靠的是 API 密钥做身份认证。密钥不对，两个 Agent 就像两个人拿着错误的接头暗号，根本对不上话</p>
+    <div class="highlight-card" style="box-shadow:0 4px 16px rgba(239,68,68,0.08);">
+      <div class="big" style="color:#EF4444;">装技能前先验密钥</div>
+      <div class="sub">API 密钥是前提条件，先确认再干活，否则后面的调试全部是在错误前提下绕圈子</div>
+    </div>
+  </div>
+
+  <!-- PART 07 -->
+  <div class="section">
+    <div class="section-header"><p class="section-num">07</p><div class="section-titles"><p class="section-part">PART</p><p class="section-title">Agent-to-Agent</p></div></div>
+    <p class="section-sub">INSIGHT · 当 AI 开始和 AI 协作</p>
+    <p class="question">这到底是什么</p>
+    <p class="body-text">今天的第 5 件事（AI 协作生图）让我第一次亲眼看到 <strong style="color:#111827;">Agent-to-Agent</strong> 是怎么工作的。事后想想，这件事比单纯的"装了个生图技能"有意义得多</p>
+    <div style="margin:16px 0;padding:16px 20px;background:linear-gradient(135deg,#F9FAFB,#F3F4F6);border-radius:12px;border:1px solid #E5E7EB;">
+      <p style="font-size:13px;color:#374151;line-height:1.9;margin:0;text-align:justify;">简单说，Agent-to-Agent 就是：<strong style="color:#111827;">让 AI 助手去调用另一个 AI 服务</strong>。不是人去操作两个系统，而是你的 AI 助手替你和另一个 AI 打交道</p>
+    </div>
+    <p class="body-text" style="margin-top:16px;"><strong style="color:#111827;">具体怎么实现的？</strong></p>
+    <p class="body-text">分三层来看：</p>
+    <div style="margin:12px 0;padding:0 8px;">
+      <p style="font-size:13px;color:#4B5563;line-height:2.0;text-align:justify;margin-bottom:10px;"><span style="color:#059669;font-weight:700;">第一层：技能安装（Skill）</span><br>从 clawhub.ai 下载 LibTV 的 Skill 包，安装到本地。这个 Skill 本质上是一套<strong style="color:#111827;">API 调用脚本</strong> + <strong style="color:#111827;">行为规范文档</strong>（SKILL.md）。安装后，我的助手就知道"遇到生图需求时，该怎么跟 liblib.tv 通信"</p>
+      <p style="font-size:13px;color:#4B5563;line-height:2.0;text-align:justify;margin-bottom:10px;"><span style="color:#059669;font-weight:700;">第二层：会话创建与消息传递</span><br>我下达需求后，助手通过 Python 脚本调用 LibTV 的 OpenAPI，创建一个 AI 会话（类似微信聊天）。然后把我的原始需求<strong style="color:#111827;">原封不动</strong>作为消息发到这个会话里。这边是 HTTP 请求，那边是另一个 AI Agent 在接收</p>
+      <p style="font-size:13px;color:#4B5563;line-height:2.0;text-align:justify;"><span style="color:#059669;font-weight:700;">第三层：轮询与取件</span><br>消息发出去后，助手每隔几秒查询一次会话状态。后端 Agent 完成生图后，结果会出现在会话消息里。助手识别到结果 URL，自动下载到本地，展示给我</p>
+    </div>
+    <p class="body-text" style="margin-top:16px;">整个过程，我只需要说一句话。剩下的通信、等待、取件，全部由两个 Agent 之间自动完成</p>
+
+    <p class="body-text" style="margin-top:24px;"><strong style="color:#111827;">这种工作形式的本质意义是什么？</strong></p>
+    <div style="margin:16px 0;padding:20px;background:#fff;border-radius:16px;box-shadow:0 4px 20px rgba(5,150,105,0.12);border:1px solid rgba(5,150,105,0.1);">
+      <p style="font-size:14px;color:#111827;line-height:2.0;margin:0;text-align:justify;">用一个不太精确但很好理解的类比：<strong style="color:#059669;">你有一个私人助理，你的助理认识一个画师</strong></p>
+      <p style="font-size:13px;color:#4B5563;line-height:1.9;margin:12px 0 0;text-align:justify;">你不需要知道画师住在哪、用什么颜料、怎么沟通。你只需要跟你的助理说"帮我找他画张图"。你的助理知道该打哪个电话、怎么描述你的需求、什么时候去取画、取回来怎么交给你</p>
+      <p style="font-size:13px;color:#4B5563;line-height:1.9;margin:12px 0 0;text-align:justify;">Agent-to-Agent 的本质就是这件事的数字化版本。<strong style="color:#111827;">你拥有一个"认识所有人"的 AI 助理</strong>，每个专业领域都有一个对应的 AI 服务。你的助理负责理解你的意图、选择对的人、翻译需求、取回结果。你只需要跟你的助理说话</p>
+    </div>
+    <div style="margin:20px 0;padding:0 8px;">
+      <p style="font-size:13px;color:#4B5563;line-height:2.0;text-align:justify;margin-bottom:10px;"><span style="color:#059669;font-weight:700;">分权的价值：</span>前端 Agent 不需要懂画画，后端 Agent 不需要懂你的上下文。各自做各自最擅长的事，通过标准化的 API 接口协作。这跟人类社会的分工逻辑完全一致</p>
+      <p style="font-size:13px;color:#4B5563;line-height:2.0;text-align:justify;margin-bottom:10px;"><span style="color:#059669;font-weight:700;">组合的威力：</span>今天生图找 Liblib，明天做深度研究用另一个 Agent，后天写代码再换一个。你的私人助理可以接入无数个专业 Agent，每个都是各自领域的专家。能力的边界只取决于"你的助理认识谁"</p>
+      <p style="font-size:13px;color:#4B5563;line-height:2.0;text-align:justify;"><span style="color:#059669;font-weight:700;">真正的门槛：</span>不在技术实现（API 调用很简单），在于<strong style="color:#111827;">每个后端 Agent 的专业能力有多强</strong>。LibTV 的后端 Agent 为什么能"一句话生短剧"？因为它背后有一整套对视频创作领域的理解：分镜拆解、镜头语言、模型选择、prompt 工程。这些是前端 Agent 做不好的，也不应该让前端去做</p>
+    </div>
+    <div class="highlight-card">
+      <div class="big">Agent-to-Agent 的本质<br>不是"更聪明的AI"<br>是"更合理的分工"</div>
+      <div class="sub">让每个 Agent 只做自己最擅长的事，通过接口协作完成单靠任何一个都做不好的复杂任务</div>
+    </div>
+  </div>
+
+  <!-- FOOTER HIGHLIGHT -->
+  <div class="footer-highlight">搭工具链 → 找分享方案 → 修配置Bug → AI协作生图 → 调API → 理解Agent协作</div>
+
+  <!-- PART /// LAST -->
+  <div class="section" style="padding-bottom:24px;">
+    <div class="section-header">
+      <div style="text-align:center;flex-shrink:0;">
+        <div style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:#ECFDF5;border-radius:12px;box-shadow:0 2px 4px rgba(5,150,105,0.15);border:1px solid #A7F3D0;margin:0 auto 6px;font-size:16px;">📝</div>
+        <p style="margin:0;font-size:8px;font-weight:700;color:#9CA3AF;letter-spacing:2px;">/// LAST</p>
+      </div>
+      <div class="section-titles"><p class="section-title">写在最后</p><p class="section-sub">INSIGHT · 今天的三条经验 + 一个新认知</p></div>
+    </div>
+    <p class="body-text" style="margin-bottom:20px;">一天下来做了7件事，前面6件是<strong style="color:#111827;">工具链搭建</strong>，最后1件是<strong style="color:#111827;">认知升级</strong></p>
+    <p class="body-text">搭工具链的过程很具体：生成内容、部署分享、配置系统、扩展技能、调通 API。每一步都是一个坑，踩完之后你就有了<strong style="color:#111827;">可以持续运转的个人 AI 工作站</strong></p>
+    <p class="body-text">但真正让我觉得有意思的是第 7 件事——Agent-to-Agent。当你的 AI 助手开始和另一个 AI 协作，你不再是在"用一个工具"，而是在<strong style="color:#111827;">经营一个协作网络</strong>。你的助手就是你的节点，每个后端 Agent 都是另一个节点，节点之间通过 API 连接。你的能力边界，取决于你的网络有多广</p>
+    <div style="margin:20px 0;padding:16px 20px;background:#fff;border-radius:12px;box-shadow:0 4px 16px rgba(5,150,105,0.12);">
+      <p style="font-size:15px;color:#374151;line-height:1.6;margin:0;">一个人 + 一个 AI 助手 + N 个专业 Agent<br><span style="color:#059669;border-bottom:3px solid #FDE68A;">就是一个小型创意工作室</span></p>
+    </div>
+    <div style="margin-top:20px;">
+      <p style="font-size:13px;color:#4B5563;line-height:1.8;text-align:justify;margin-bottom:8px;"><span style="color:#059669;font-weight:700;">① GitHub Pages → Gitee Pages</span><br>分享场景决定部署方案，国内用 Gitee</p>
+      <p style="font-size:13px;color:#4B5563;line-height:1.8;text-align:justify;margin-bottom:8px;"><span style="color:#059669;font-weight:700;">② 设置面板 ≠ 底层文件</span><br>配置变更要做全链路校验</p>
+      <p style="font-size:13px;color:#4B5563;line-height:1.8;text-align:justify;margin-bottom:8px;"><span style="color:#059669;font-weight:700;">③ 装技能前先验密钥</span><br>API 密钥是前提条件，先确认再干活</p>
+      <p style="font-size:13px;color:#4B5563;line-height:1.8;text-align:justify;"><span style="color:#059669;font-weight:700;">④ Agent-to-Agent 的本质是分工</span><br>不是更聪明的 AI，是更合理的协作。让每个 Agent 只做自己最擅长的事</p>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <p class="cta-text">既然看到这里了，如果觉得有用，随手点个赞、在看、转发三连吧</p>
+    <div class="cta-btns">
+      <div class="cta-btn"><div class="cta-btn-icon">👍</div><div class="cta-btn-label">点赞</div></div>
+      <div class="cta-btn"><div class="cta-btn-icon">👀</div><div class="cta-btn-label">在看</div></div>
+      <div class="cta-btn"><div class="cta-btn-icon">↗️</div><div class="cta-btn-label">转发</div></div>
+    </div>
+    <div class="cta-end">THANKS FOR READING</div>
+  </div>
+
+</div>
+</body>
+</html>

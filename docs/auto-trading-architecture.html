@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenHanako × Alpaca MCP 自动炒股系统 — 架构设计</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: #fff;
+    color: #1a1a1a;
+    line-height: 1.85;
+    font-size: 15px;
+  }
+  a { color: #1a6cf5; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .container { max-width: 800px; margin: 0 auto; padding: 56px 28px 100px; }
+  .hero { margin-bottom: 48px; padding-bottom: 32px; border-bottom: 1px solid #eee; }
+  .eyebrow { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: #999; margin-bottom: 12px; }
+  h1 { font-size: 28px; font-weight: 700; line-height: 1.3; margin-bottom: 12px; }
+  .meta { font-size: 13px; color: #888; margin-bottom: 20px; }
+  .meta span { margin-right: 16px; }
+  p { margin-bottom: 16px; color: #333; }
+  h2 { font-size: 20px; font-weight: 700; margin: 48px 0 18px; padding-top: 32px; border-top: 1px solid #f0f0f0; }
+  h3 { font-size: 17px; font-weight: 600; margin: 28px 0 14px; }
+  h4 { font-size: 15px; font-weight: 600; margin: 20px 0 12px; color: #222; }
+  .lead { font-size: 16px; color: #111; margin: 24px 0; }
+  .code-block {
+    background: #f6f8fa;
+    border: 1px solid #e1e4e8;
+    border-radius: 6px;
+    padding: 14px 18px;
+    font-family: "SF Mono", "Fira Code", Consolas, monospace;
+    font-size: 12.5px;
+    line-height: 1.7;
+    margin: 16px 0;
+    overflow-x: auto;
+    white-space: pre;
+    color: #24292e;
+  }
+  .diagram {
+    background: #fafbfc;
+    border: 1px solid #e1e4e8;
+    border-radius: 6px;
+    padding: 16px 20px;
+    font-family: "SF Mono", Consolas, monospace;
+    font-size: 11.5px;
+    line-height: 1.6;
+    overflow-x: auto;
+    white-space: pre;
+    margin: 20px 0;
+    color: #444;
+  }
+  table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 13.5px; }
+  th { text-align: left; padding: 9px 13px; background: #f4f4f4; font-weight: 600; border-bottom: 2px solid #e0e0e0; }
+  td { padding: 9px 13px; border-bottom: 1px solid #eee; }
+  td code { background: #f0f0f0; padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+  ul, ol { margin: 12px 0 16px 22px; }
+  li { margin-bottom: 8px; }
+  .warning {
+    background: #fff8f0;
+    border-left: 3px solid #f59e0b;
+    padding: 14px 18px;
+    margin: 20px 0;
+  }
+  .warning p { margin-bottom: 0; font-size: 14px; }
+  .phase-list { list-style: none; margin-left: 0; }
+  .phase-list li { margin-bottom: 12px; padding-left: 20px; position: relative; }
+  .phase-list li::before { content: "→"; position: absolute; left: 0; color: #888; }
+  .check-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+  .check-box { width: 16px; height: 16px; border: 1.5px solid #ccc; border-radius: 3px; flex-shrink: 0; margin-top: 3px; }
+  .nav-footer { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 64px; padding-top: 40px; border-top: 1px solid #eee; }
+  .nav-link { padding: 18px 20px; border: 1px solid #eee; border-radius: 8px; transition: border-color 0.15s; }
+  .nav-link:hover { border-color: #bbb; text-decoration: none; }
+  .nav-link-next { text-align: right; }
+  .nav-label { font-size: 12px; color: #aaa; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+  .nav-title { font-size: 14px; font-weight: 600; }
+  footer { margin-top: 80px; padding-top: 28px; border-top: 1px solid #eee; font-size: 13px; color: #bbb; display: flex; justify-content: space-between; }
+  @media (max-width: 640px) {
+    h1 { font-size: 22px; }
+    .nav-footer { grid-template-columns: 1fr; }
+    .diagram { font-size: 10px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="hero">
+    <div class="eyebrow">🌸 OpenHanako · 架构设计</div>
+    <h1>OpenHanako × Alpaca MCP 自动炒股系统</h1>
+    <div class="meta">
+      <span>版本：v1.0</span>
+      <span>日期：2026-03-20</span>
+      <span>Alpaca 官方 MCP Server</span>
+    </div>
+    <p style="color:#555;font-size:15px;margin-top:12px;">基于 Alpaca 官方 MCP Server（<a href="https://github.com/alpacahq/alpaca-mcp-server" target="_blank">alpacahq/alpaca-mcp-server</a>，565+ stars，活跃维护）</p>
+  </div>
+
+  <h2>一、系统总览</h2>
+
+  <h3>1.1 目标</h3>
+  <p>构建一套基于 OpenHanako Agent + Alpaca MCP 的自动化交易系统，支持：</p>
+  <ul>
+    <li><strong>股票</strong>（美股）自动交易</li>
+    <li><strong>期货</strong>（Alpaca 支持期货）</li>
+    <li><strong>加密货币</strong>交易</li>
+    <li><strong>期权</strong>策略</li>
+    <li>自然语言驱动交易决策</li>
+  </ul>
+
+  <h3>1.2 核心约束</h3>
+  <table>
+    <tr><th>约束</th><th>说明</th></tr>
+    <tr><td>资金安全</td><td>必须有风控层，agent 不能直接裸调交易 API</td></tr>
+    <tr><td>可审计</td><td>每笔操作必须有日志，支持事后追溯</td></tr>
+    <tr><td>多用户</td><td>系统给其他人用，需要支持多账户/多配置</td></tr>
+    <tr><td>合规</td><td>Alpaca 本身是 SEC 注册券商，已解决基础合规</td></tr>
+    <tr><td>渐进上线</td><td>模拟盘 → 小资金实盘 → 正式实盘</td></tr>
+  </table>
+
+  <h2>二、架构全景图</h2>
+
+  <div class="diagram">┌─────────────────────────────────────────────────────────────┐
+│                      用户层 (User Layer)                      │
+│   ┌──────────────┐  ┌──────────────┐  ┌──────────────────┐  │
+│   │  Web Dashboard│  │  OpenHanako   │  │  Mobile / CLI    │  │
+│   └──────┬───────┘  └──────┬───────┘  └────────┬─────────┘  │
+└───────────┼────────────────┼────────────────────┘────────────┘
+            │                 │    自然语言 / API
+            ▼                 ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    Agent 层 (OpenHanako)                    │
+│   ┌────────────────────────────────────────────────────┐  │
+│   │              LLM (决策引擎)                         │  │
+│   └─────────────────────┬──────────────────────────────┘  │
+│   ┌─────────────────────▼──────────────────────────────┐  │
+│   │           MCP Client (工具调用层)                  │  │
+│   └────┬──────────┬──────────────┬──────────────┬─────┘  │
+└────────┼──────────┼──────────────┼──────────────┼─────────┘
+         │ MCP      │ MCP          │ MCP          │ MCP
+         ▼          ▼              ▼              ▼
+┌────────────┐ ┌────────────┐ ┌────────────┐ ┌────────────────┐
+│ Alpaca MCP │ │ Risk Guard │ │  策略分析   │ │   定时调度     │
+│   Server   │ │ MCP Server │ │ MCP Server │ │  MCP Server    │
+└─────┬──────┘ └─────┬──────┘ └─────┬───────┘ └───────┬──────┘
+      │               │              │                  │
+      └───────────────┼──────────────┘                  │
+                      ▼                                 │
+            ┌─────────────────┐  ← 定时触发 ──────────┘
+            │ Alpaca Trading  │
+            │     API         │
+            └────────┬────────┘
+                     ▼
+              ┌──────────────┐
+              │  金融市场     │
+              └──────────────┘</div>
+
+  <h2>三、四个 MCP Server 详细设计</h2>
+
+  <h3>(A) Alpaca 交易 MCP Server — 官方版直接用</h3>
+  <p><strong>来源</strong>：<a href="https://github.com/alpacahq/alpaca-mcp-server" target="_blank">alpacahq/alpaca-mcp-server</a>（官方，565+ stars）</p>
+
+  <table>
+    <tr><th>工具类别</th><th>具体工具</th><th>说明</th></tr>
+    <tr><td rowspan="4"><strong>账户管理</strong></td><td><code>get_account</code></td><td>查余额、购买力</td></tr>
+    <tr><td><code>get_positions</code></td><td>查持仓</td></tr>
+    <tr><td><code>get_position</code></td><td>单个持仓详情</td></tr>
+    <tr><td><code>liquidate_position</code></td><td>清仓/部分平仓</td></tr>
+    <tr><td rowspan="4"><strong>下单</strong></td><td><code>place_order</code></td><td>市价/限价/止损/追踪止损</td></tr>
+    <tr><td><code>cancel_order</code></td><td>撤单</td></tr>
+    <tr><td><code>cancel_all_orders</code></td><td>全部撤单</td></tr>
+    <tr><td><code>get_orders</code></td><td>查订单历史</td></tr>
+    <tr><td rowspan="3"><strong>市场数据</strong></td><td><code>get_quote</code> / <code>get_latest_trade</code></td><td>实时报价</td></tr>
+    <tr><td><code>get_bars</code> / <code>get_snapshot</code></td><td>K线/快照</td></tr>
+    <tr><td><code>get_stock_history</code></td><td>历史数据</td></tr>
+    <tr><td><strong>期权</strong></td><td><code>search_options</code> / <code>place_option_order</code></td><td>期权合约搜索/下单</td></tr>
+    <tr><td><strong>加密货币</strong></td><td><code>place_crypto_order</code></td><td>加密货币交易</td></tr>
+    <tr><td><strong>市场状态</strong></td><td><code>get_clock</code> / <code>get_calendar</code></td><td>开市时间/日历</td></tr>
+  </table>
+
+  <p><strong>安装方式：</strong></p>
+  <div class="code-block">uvx alpaca-mcp-server init</div>
+
+  <p><strong>OpenHanako MCP 配置：</strong></p>
+  <div class="code-block">{
+  "mcpServers": {
+    "alpaca-trade": {
+      "command": "uvx",
+      "args": ["alpaca-mcp-server", "serve"],
+      "env": {
+        "ALPACA_API_KEY": "&lt;用户API_KEY&gt;",
+        "ALPACA_SECRET_KEY": "&lt;用户SECRET_KEY&gt;",
+        "ALPACA_PAPER_TRADE": "true"
+      }
+    }
+  }
+}</div>
+
+  <h3>(B) 风控守卫 MCP Server — 需要自己写</h3>
+  <p><strong>定位</strong>：拦截 agent 的危险操作，强制执行风控规则</p>
+
+  <table>
+    <tr><th>工具名</th><th>输入</th><th>输出</th><th>说明</th></tr>
+    <tr><td><code>risk_check</code></td><td>symbol, action, quantity, price</td><td>{ approved, reason }</td><td>交易前置风控检查</td></tr>
+    <tr><td><code>get_risk_limits</code></td><td>user_id</td><td>{ max_position, max_loss, ... }</td><td>获取用户风控配置</td></tr>
+    <tr><td><code>set_risk_limits</code></td><td>user_id, limits</td><td>{ success }</td><td>设置风控参数</td></tr>
+    <tr><td><code>get_audit_log</code></td><td>user_id, date_range</td><td>[{timestamp, action, detail}]</td><td>查询操作审计日志</td></tr>
+    <tr><td><code>emergency_stop</code></td><td>user_id</td><td>{ success }</td><td>紧急熔断，全部撤单</td></tr>
+  </table>
+
+  <p><strong>风控检查流程（每次交易前触发）：</strong></p>
+  <div class="diagram">Agent 发起交易请求
+        │
+        ▼
+┌─ 1. 单笔金额限制 ──────────────────────┐
+│  超过单笔上限 → 拒绝 + 记录日志         │
+└──────────────┬──────────────────────────┘
+               │ 通过
+┌─ 2. 日内累计损失限制 ───────────────────┐
+│  当日亏损超阈值 → 拒绝 + 暂停交易        │
+└──────────────┬──────────────────────────┘
+               │ 通过
+┌─ 3. 单标的仓位上限 ────────────────────┐
+│  单个标的超总资产 X% → 拒绝              │
+└──────────────┬──────────────────────────┘
+               │ 通过
+┌─ 4. 总仓位上限 ────────────────────────┐
+│  总持仓超总资产 X% → 拒绝                │
+└──────────────┬──────────────────────────┘
+               │ 通过
+┌─ 5. 交易频率限制 ──────────────────────┐
+│  单分钟内下单超过 N 次 → 拒绝（防滥用）   │
+└──────────────┬──────────────────────────┘
+               │ 通过
+        ✅ 允许执行</div>
+
+  <p><strong>实现框架：Python + FastMCP</strong></p>
+  <div class="code-block">from mcp.server.fastmcp import FastMCP
+from datetime import datetime
+
+mcp = FastMCP("risk-guard")
+
+RISK_CONFIG = {
+    "max_single_order_usd": 10000,       # 单笔最大金额
+    "max_daily_loss_pct": 5,               # 日内最大亏损比例 (%)
+    "max_single_position_pct": 20,         # 单标的最大仓位 (%)
+    "max_total_position_pct": 80,          # 总仓位上限 (%)
+    "max_orders_per_minute": 10,           # 每分钟最大下单次数
+}
+
+AUDIT_LOG = []
+
+@mcp.tool()
+def risk_check(symbol: str, action: str, quantity: int,
+               price: float, account_value: float) -> dict:
+    order_value = quantity * price
+    checks = []
+
+    if order_value > RISK_CONFIG["max_single_order_usd"]:
+        checks.append(f"❌ 单笔金额 ${order_value:.0f} 超过上限")
+
+    if order_value > account_value * RISK_CONFIG["max_single_position_pct"] / 100:
+        checks.append(f"❌ 单标的仓位超过 {RISK_CONFIG['max_single_position_pct']}%")
+
+    audit_entry = {
+        "timestamp": datetime.now().isoformat(),
+        "symbol": symbol, "action": action,
+        "quantity": quantity, "price": price,
+        "approved": len(checks) == 0,
+        "reasons": checks
+    }
+    AUDIT_LOG.append(audit_entry)
+
+    return {
+        "approved": len(checks) == 0,
+        "reasons": checks if checks else ["✅ 风控检查通过"]
+    }
+
+@mcp.tool()
+def emergency_stop() -> dict:
+    return {"success": True, "message": "已执行紧急熔断"}
+
+@mcp.tool()
+def get_audit_log(limit: int = 20) -> list:
+    return AUDIT_LOG[-limit:]</div>
+
+  <h3>(C) 策略分析 MCP Server — 可选</h3>
+  <p><strong>定位</strong>：提供技术指标计算、策略回测、信号识别能力</p>
+
+  <table>
+    <tr><th>工具名</th><th>说明</th></tr>
+    <tr><td><code>calculate_indicator</code></td><td>计算技术指标（MA/RSI/MACD/Bollinger/ATR）</td></tr>
+    <tr><td><code>analyze_trend</code></td><td>趋势分析（上升/下降/盘整）</td></tr>
+    <tr><td><code>scan_screener</code></td><td>市场扫描（按条件筛选标的）</td></tr>
+    <tr><td><code>backtest_strategy</code></td><td>策略回测（历史数据模拟）</td></tr>
+  </table>
+
+  <div class="warning">
+    <p>💡 <strong>初期可以不做这个 Server</strong>，让 OpenHanako 的 LLM 直接分析 Alpaca MCP 提供的市场数据即可。等技术要求高了再加。</p>
+  </div>
+
+  <h3>(D) 定时任务调度 MCP Server — 自动化核心</h3>
+  <p><strong>典型调度场景：</strong></p>
+  <div class="code-block">09:00 ET  → 开盘前扫描（检查隔夜新闻、盘前数据）
+09:30 ET  → 开盘执行（执行策略信号）
+12:00 ET  → 午间检查（评估持仓，调整止损）
+15:30 ET  → 收盘前处理（评估日结，决定是否平仓）
+16:00 ET  → 收盘报告（生成当日交易报告）</div>
+
+  <h2>四、Agent 工作流设计</h2>
+
+  <h3>4.1 手动交易流（用户主动触发）</h3>
+  <div class="diagram">用户: "买入 100 股苹果，市价"
+         │
+         ▼
+OpenHanako Agent 接收指令
+         │
+         ▼
+[Step 1] alpaca-trade.get_account  → 检查购买力
+         │
+         ▼
+[Step 2] alpaca-trade.get_quote("AAPL")  → 获取当前价格
+         │
+         ▼
+[Step 3] risk-guard.risk_check  → 风控检查
+         │
+    ┌────┴────┐
+    │ 通过?    │
+    ├─ YES ──→│
+    │         ▼
+    │   [Step 4] alpaca-trade.place_order  → 执行下单
+    │         ▼
+    │   [Step 5] 返回成交确认给用户
+    │
+    └─ NO ──→ 告知用户被风控拦截及原因</div>
+
+  <h3>4.2 自动交易流（定时触发）</h3>
+  <div class="diagram">定时任务触发 (Cron)
+         │
+         ▼
+[Step 1] alpaca-trade.get_clock  → 检查市场是否开盘
+         │
+    ┌────┴────┐
+    │ 市场开?  │
+    ├─ NO ──→ 退出，等待下次触发
+    │
+    └─ YES ──→│
+              ▼
+    [Step 2] alpaca-trade.get_positions  → 获取持仓
+              ▼
+    [Step 3] alpaca-trade.get_snapshot  → 批量获取自选股行情
+              ▼
+    [Step 4] LLM 分析  → 判断买卖信号
+              ▼
+    [Step 5] risk-guard.risk_check  → 每个信号过风控
+              ▼
+    [Step 6] alpaca-trade.place_order  → 通过风控的执行
+              ▼
+    [Step 7] 生成交易报告  → 存入审计日志</div>
+
+  <h3>4.3 Agent System Prompt 要点</h3>
+  <div class="code-block">你是一个专业的自动交易 agent。你的职责是：
+
+1. **执行交易指令**：用户说"买入/卖出"时，严格按流程执行
+2. **风险第一**：每次交易前必须调用 risk_check，不通过不得下单
+3. **信息透明**：每次交易前后都要告知用户关键信息
+4. **不猜测**：不知道就说不知道，不做没有数据支撑的判断
+
+可用工具：
+- alpaca-trade.* : 交易执行（下单/撤单/查持仓/查行情）
+- risk-guard.*   : 风控检查（交易前置检查/审计日志/紧急熔断）
+- scheduler.*    : 定时任务（创建/查看调度计划）
+
+交易执行顺序：get_account → get_quote → risk_check → place_order → 确认</div>
+
+  <h2>五、实施路线图</h2>
+
+  <h3>Phase 1 — MVP（1-2 周）</h3>
+  <ul class="phase-list">
+    <li>安装配置 Alpaca MCP Server</li>
+    <li>OpenHanako 接入 Alpaca MCP</li>
+    <li>模拟盘跑通「自然语言下单」流程</li>
+    <li>基础风控：单笔金额限制</li>
+  </ul>
+
+  <h3>Phase 2 — 风控加固（2-3 周）</h3>
+  <ul class="phase-list">
+    <li>完成 risk-guard MCP Server</li>
+    <li>实现完整风控规则链</li>
+    <li>审计日志（SQLite）</li>
+    <li>紧急熔断功能</li>
+  </ul>
+
+  <h3>Phase 3 — 自动化（2-3 周）</h3>
+  <ul class="phase-list">
+    <li>实现 scheduler MCP Server</li>
+    <li>定时策略执行（开盘/收盘任务）</li>
+    <li>交易日报生成</li>
+    <li>多用户支持</li>
+  </ul>
+
+  <h3>Phase 4 — 生产化（3-4 周）</h3>
+  <ul class="phase-list">
+    <li>Docker 容器化部署</li>
+    <li>PostgreSQL + Redis</li>
+    <li>Web 监控面板</li>
+    <li>实盘灰度上线</li>
+  </ul>
+
+  <h2>六、关键风险和缓解</h2>
+
+  <table>
+    <tr><th>风险</th><th>影响</th><th>缓解措施</th></tr>
+    <tr><td>Agent 误判导致亏损</td><td>高</td><td>风控层强制拦截 + 单笔金额限制 + 日内亏损熔断</td></tr>
+    <tr><td>LLM 幻觉（编造数据）</td><td>中</td><td>强制调用 API 获取真实数据，禁止 LLM 猜测价格</td></tr>
+    <tr><td>API Key 泄露</td><td>高</td><td>加密存储 + 最小权限原则 + IP 白名单</td></tr>
+    <tr><td>Alpaca API 宕机</td><td>中</td><td>重试机制 + 降级策略（暂停交易）</td></tr>
+    <tr><td>MCP Server 崩溃</td><td>中</td><td>进程守护（supervisor/systemd）+ 健康检查</td></tr>
+    <tr><td>合规风险</td><td>高</td><td>Alpaca 已是 SEC 注册券商 + 系统内置审计日志</td></tr>
+  </table>
+
+  <h2>七、Alpaca 账户注册指引</h2>
+  <ol>
+    <li>访问 <a href="https://app.alpaca.markets" target="_blank">https://app.alpaca.markets</a></li>
+    <li>注册 <strong>Paper Trading</strong>（免费模拟盘账户）</li>
+    <li>在 Dashboard 生成 API Key 和 Secret Key</li>
+    <li>保存好 Key，配置到 MCP Server 的环境变量中</li>
+    <li><strong>实盘需要额外 KYC 审核和资金入账</strong></li>
+  </ol>
+
+  <div class="nav-footer">
+    <div class="nav-link">
+      <div class="nav-label">← 上一篇</div>
+      <div class="nav-title"><a href="./openhanako-vs-openclaw.html">OpenHanako vs OpenClaw 深度对比</a></div>
+    </div>
+    <div class="nav-link nav-link-next">
+      <div class="nav-label">← 系列索引</div>
+      <div class="nav-title"><a href="./series-index.html">所有文章</a></div>
+    </div>
+  </div>
+
+  <footer>
+    <span>huanyu16 · 原创内容</span>
+    <span>2026-03-20</span>
+  </footer>
+
+</div>
+</body>
+</html>

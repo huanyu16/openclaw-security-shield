@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>漫长的一天 | 2026.03.20</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: #F3F4F6;
+    color: #556578;
+    line-height: 1.75;
+    letter-spacing: 0.5px;
+  }
+  .container {
+    max-width: 677px;
+    margin: 0 auto;
+    background: #fff;
+    font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    color: #556578;
+    line-height: 1.75;
+    letter-spacing: 0.5px;
+    overflow-x: hidden;
+  }
+
+  /* === HEADER CARD === */
+  .header-card {
+    margin: 0 0 32px;
+    background: #fff;
+    border: 1.5px solid rgba(5, 150, 105, 0.15);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    width: 100%;
+  }
+  .header-inner { padding: 32px 28px 28px; }
+  .header-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 28px; }
+  .header-tag { font-size: 8px; font-weight: 700; color: #D1D5DB; letter-spacing: 2px; text-transform: uppercase; }
+  .header-date { font-size: 10px; color: #9CA3AF; letter-spacing: 1px; }
+  .header-body { display: flex; align-items: center; gap: 20px; }
+  .header-text { flex: 1; min-width: 0; }
+  .header-title { font-size: 24px; font-weight: 900; color: #111827; margin: 0; line-height: 1.05; letter-spacing: -2px; }
+  .header-title .green { color: #059669; }
+  .header-subtitle { font-size: 13px; color: #4B5563; margin: 10px 0 0; line-height: 1.7; text-align: justify; }
+  .header-hero-img {
+    width: 100%; height: auto; max-height: 220px;
+    object-fit: cover; border-radius: 12px;
+    margin-top: 20px; display: block;
+  }
+  .header-hero-text { color: #fff; font-size: 14px; font-weight: 700; letter-spacing: 1px; text-align: center; z-index: 1; text-shadow: 0 1px 3px rgba(0,0,0,0.15); }
+
+  /* === GREEN BAR === */
+  .green-bar {
+    background: linear-gradient(135deg, rgb(5, 150, 105), rgb(16, 185, 129));
+    padding: 12px 28px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .green-bar-text { font-size: 13px; color: rgba(255,255,255,0.9); font-weight: 600; letter-spacing: 1px; }
+  .green-bar-pills { display: flex; gap: 4px; }
+  .green-bar-pill { background: rgba(255,255,255,0.2); padding: 2px 10px; border-radius: 10px; font-size: 11px; color: #fff; font-weight: 600; }
+
+  /* === NAV SCROLL === */
+  .nav-scroll { margin: 0 20px 32px; }
+  .nav-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .nav-header-text { font-size: 10px; color: #9CA3AF; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; }
+  .nav-scroll-hint { font-size: 10px; color: #9CA3AF; }
+  .nav-items { overflow-x: scroll; white-space: nowrap; padding-bottom: 8px; }
+  .nav-card {
+    display: inline-block; white-space: normal; vertical-align: top;
+    width: 100px; border-radius: 12px; padding: 12px; margin-right: 8px;
+  }
+  .nav-card.active { background: linear-gradient(135deg, rgb(5, 150, 105), rgb(16, 185, 129)); color: #fff; }
+  .nav-card.inactive { background: #fff; border: 1px solid #E5E7EB; box-shadow: 0 2px 6px rgba(0,0,0,0.04); color: #374151; }
+  .nav-card-num { font-size: 8px; font-weight: 700; letter-spacing: 1.5px; opacity: 0.7; }
+  .nav-card-title { font-size: 14px; font-weight: 900; margin: 4px 0 2px; line-height: 1.2; }
+  .nav-card-desc { font-size: 10px; opacity: 0.8; line-height: 1.3; }
+
+  /* === CONTENT === */
+  .content { padding: 0 20px 20px; }
+  .intro-text { margin-bottom: 16px; font-size: 14px; line-height: 1.9; text-align: justify; color: #374151; }
+  .intro-text .gold-underline { color: #059669; border-bottom: 3px solid #FDE68A; }
+  .intro-text .green-bg { color: #059669; background: rgba(5,150,105,0.1); padding: 0 4px; border-radius: 2px; }
+
+  /* === TWO ENTRIES === */
+  .two-entries { background: #F9FAFB; padding: 16px; border-radius: 12px; border: 1px solid #F3F4F6; margin: 0 20px 24px; }
+  .two-entries-flex { display: flex; align-items: stretch; justify-content: center; gap: 6px; }
+  .two-entry-item { flex: 1; text-align: center; padding: 10px 8px; border-radius: 8px; }
+  .two-entry-item.active { background: linear-gradient(135deg, #059669, #10B981); color: #fff; }
+  .two-entry-item.inactive { background: #fff; border: 1px solid #E5E7EB; color: #374151; }
+  .two-entry-icon { font-size: 18px; margin-bottom: 4px; }
+  .two-entry-label { font-size: 12px; font-weight: 700; line-height: 1.3; }
+  .two-entry-sub { font-size: 10px; opacity: 0.7; margin-top: 2px; }
+
+  /* === SECTION === */
+  .section { margin-top: 36px; margin-bottom: 0; padding: 0 20px; }
+  .section-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+  .section-num { margin: 0; font-size: 28px; font-weight: 900; color: #059669; line-height: 1; letter-spacing: -2px; flex-shrink: 0; }
+  .section-titles { flex: 1; }
+  .section-part { margin: 0; font-size: 8px; font-weight: 700; color: #D1D5DB; letter-spacing: 2px; }
+  .section-title { margin: 0 0 1px; font-size: 17px; font-weight: 900; color: #111827; letter-spacing: 0.3px; }
+  .section-sub { margin: 0; font-size: 11px; font-weight: 600; color: #9CA3AF; letter-spacing: 1.5px; }
+
+  /* === LABEL PILL === */
+  .label { display: inline-block; font-size: 13px; font-weight: 700; color: #059669; background: rgba(5,150,105,0.08); padding: 3px 10px; border-radius: 999px; margin-bottom: 14px; }
+
+  /* === BODY TEXT === */
+  .body-text { margin-bottom: 16px; font-size: 14px; line-height: 1.9; text-align: justify; color: #374151; }
+
+  /* === QUESTION === */
+  .question { font-size: 15px; font-weight: 900; color: #111827; margin-bottom: 16px; }
+
+  /* === TOOL TAG === */
+  .tool-tag { display: inline-block; background: #111827; color: #fff; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 12px; margin-right: 6px; }
+  .tool-name { font-size: 14px; font-weight: 700; color: #111827; margin-bottom: 6px; margin-top: 12px; }
+  .tool-desc { font-size: 13px; color: #4B5563; line-height: 1.7; text-align: justify; }
+
+  /* === TIME TAG === */
+  .time-tag { display: inline-block; background: rgba(5,150,105,0.08); color: #059669; padding: 1px 6px; border-radius: 3px; font-size: 10px; font-weight: 600; margin-right: 4px; }
+
+  /* === HIGHLIGHT CARD === */
+  .highlight-card { background: #fff; border-radius: 12px; padding: 16px 20px; box-shadow: 0 4px 16px rgba(5,150,105,0.12); margin-bottom: 24px; text-align: center; }
+  .highlight-card .big { font-size: 15px; font-weight: 900; color: #059669; line-height: 1.6; }
+  .highlight-card .sub { font-size: 13px; color: #4B5563; margin-top: 4px; }
+
+  /* === QUOTE INSIGHT === */
+  .quote-insight { margin: 20px 20px 0; padding: 16px 20px; background: rgba(5,150,105,0.06); border-radius: 12px; border: 1px solid rgba(5,150,105,0.1); }
+  .quote-insight-label { font-size: 10px; font-weight: 700; color: #059669; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+  .quote-insight-text { font-size: 13px; color: #4B5563; line-height: 1.8; text-align: justify; }
+
+  /* === CODE BLOCK === */
+  .code-card { background: #1F2937; border-radius: 12px; padding: 16px 20px; margin-bottom: 24px; overflow-x: auto; }
+  .code-card code { font-family: "SF Mono", Consolas, "Courier New", monospace; font-size: 12px; color: #D1D5DB; line-height: 1.7; white-space: pre; }
+
+  /* === ICON ROW === */
+  .icon-row { display: flex; gap: 8px; margin: 16px 0; flex-wrap: wrap; }
+  .icon-item { display: flex; align-items: center; gap: 6px; background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 8px; padding: 6px 12px; font-size: 12px; color: #374151; }
+  .icon-item .icon-emoji { font-size: 16px; }
+
+  /* === FOOTER HIGHLIGHT === */
+  .footer-highlight { font-size: 14px; margin-bottom: 20px; text-align: center; color: #059669; font-weight: 700; letter-spacing: 1px; border-top: 1px solid #F3F4F6; border-bottom: 1px solid #F3F4F6; padding: 12px 20px; }
+
+  /* === CTA === */
+  .cta-section { text-align: center; padding: 20px 20px 32px; }
+  .cta-text { font-size: 13px; color: #6B7280; margin-bottom: 16px; }
+  .cta-btns { display: flex; justify-content: center; gap: 20px; }
+  .cta-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .cta-btn-icon { width: 36px; height: 36px; border-radius: 50%; background: rgba(5,150,105,0.08); display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  .cta-btn-label { font-size: 10px; color: #9CA3AF; }
+  .cta-end { margin-top: 24px; font-size: 11px; letter-spacing: 3px; color: #4B5563; font-weight: 700; }
+
+  /* === GREEN INFO BOX === */
+  .green-info-box { margin: 16px 0; padding: 16px 20px; background: linear-gradient(135deg, #ECFDF5, #F0FDF4); border-radius: 12px; border: 1px solid #A7F3D0; }
+  .green-info-box p { font-size: 14px; color: #374151; line-height: 1.9; margin: 0; text-align: justify; }
+
+  /* === GRAY INFO BOX === */
+  .gray-info-box { margin: 16px 0; padding: 16px 20px; background: linear-gradient(135deg, #F9FAFB, #F3F4F6); border-radius: 12px; border: 1px solid #E5E7EB; }
+  .gray-info-box p { font-size: 13px; color: #374151; line-height: 1.9; margin: 0; text-align: justify; }
+
+  /* === WHITE CARD === */
+  .white-card { margin: 16px 0; padding: 20px; background: #fff; border-radius: 16px; box-shadow: 0 4px 20px rgba(5,150,105,0.12); border: 1px solid rgba(5,150,105,0.1); }
+  .white-card p { font-size: 14px; color: #111827; line-height: 2.0; margin: 0; text-align: justify; }
+  .white-card .sub-text { font-size: 13px; color: #4B5563; margin-top: 12px; line-height: 1.9; }
+
+  /* === STEP LIST === */
+  .step-list { margin: 16px 0; padding: 0 8px; }
+  .step-list p { font-size: 13px; color: #4B5563; line-height: 2.0; text-align: justify; margin-bottom: 10px; }
+  .step-list p:last-child { margin-bottom: 0; }
+
+  /* === RED HIGHLIGHT === */
+  .highlight-red .big { color: #EF4444; }
+  .highlight-red { box-shadow: 0 4px 16px rgba(239,68,68,0.08); }
+
+  /* === NUMBERED INSIGHTS === */
+  .insight-list { margin-top: 20px; }
+  .insight-list p { font-size: 13px; color: #4B5563; line-height: 1.8; text-align: justify; margin-bottom: 8px; }
+  .insight-list p:last-child { margin-bottom: 0; }
+
+  @media (max-width: 700px) { .container { max-width: 100%; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER CARD -->
+  <div class="header-card">
+    <div class="header-inner">
+      <div class="header-meta">
+        <span class="header-tag">DIARY</span>
+        <span class="header-date">2026.03.20</span>
+      </div>
+      <div class="header-body">
+        <div class="header-text">
+          <p class="header-title">漫长的一天<br><span class="green">从凌晨开工到深夜修Bug</span></p>
+          <p class="header-subtitle">版本同步、Skill 重写、规格核对、部署排障、PR 细节、帮朋友修 Hanako——一个开发者普通但充实的一天</p>
+        </div>
+      </div>
+      <img class="header-hero-img" src="2026-03-20-hanako_03.png" alt="Hanako 深夜编程">
+    </div>
+    <div class="green-bar">
+      <span class="green-bar-text">📦 7 CASES + DEEP DIVE + CONCLUSION</span>
+      <div class="green-bar-pills">
+        <span class="green-bar-pill">记录</span>
+        <span class="green-bar-pill">经验</span>
+        <span class="green-bar-pill">复盘</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAV SCROLL -->
+  <div class="nav-scroll">
+    <div class="nav-header">
+      <span class="nav-header-text">📋 全部内容</span>
+      <span class="nav-scroll-hint">👉 滑动</span>
+    </div>
+    <div class="nav-items">
+      <div class="nav-card active"><div class="nav-card-num">PART 01</div><div class="nav-card-title">凌晨开工</div><div class="nav-card-desc">推文导出转PDF</div></div>
+      <div class="nav-card inactive"><div class="nav-card-num">PART 02</div><div class="nav-card-title">规格与闭环</div><div class="nav-card-desc">版本同步+Skill重写</div></div>
+      <div class="nav-card inactive"><div class="nav-card-num">PART 03</div><div class="nav-card-title">传奇交易系统</div><div class="nav-card-desc">Alpaca MCP架构</div></div>
+      <div class="nav-card inactive"><div class="nav-card-num">PART 04</div><div class="nav-card-title">系统卡顿</div><div class="nav-card-desc">进程排查+部署404</div></div>
+      <div class="nav-card inactive"><div class="nav-card-num">PART 05</div><div class="nav-card-title">对比与看板</div><div class="nav-card-desc">产品报告+费用PR</div></div>
+      <div class="nav-card inactive"><div class="nav-card-num">PART 06</div><div class="nav-card-title">修Hanako</div><div class="nav-card-desc">远程诊断配置污染</div></div>
+      <div class="nav-card inactive"><div class="nav-card-num">PART ///</div><div class="nav-card-title">写在最后</div><div class="nav-card-desc">经验总结</div></div>
+    </div>
+  </div>
+
+  <!-- INTRO -->
+  <div class="content">
+    <p class="intro-text">凌晨十二点多开工，午夜收尾。中间经历了<span class="gold-underline">版本冲突</span>、<span class="gold-underline">Skill 重写</span>、<span class="gold-underline">部署 404</span>、<span class="gold-underline">PR 细节遗漏</span>和<span class="gold-underline">远程修 Bug</span></p>
+    <p class="intro-text">没有什么惊天动地的大事，但每一件都做完之后，会有一种<span class="green-bg">踏实感</span></p>
+  </div>
+
+  <!-- TWO ENTRIES -->
+  <div class="two-entries">
+    <div class="two-entries-flex">
+      <div class="two-entry-item active"><div class="two-entry-icon">🔧</div><div class="two-entry-label">工具与基建</div><div class="two-entry-sub">版本 + Skill + 部署</div></div>
+      <div style="display:flex;align-items:center;color:#9CA3AF;font-size:16px;">×</div>
+      <div class="two-entry-item active"><div class="two-entry-icon">📝</div><div class="two-entry-label">内容与协作</div><div class="two-entry-sub">报告 + PR + 远程排障</div></div>
+    </div>
+  </div>
+
+  <!-- PART 01 -->
+  <div class="section">
+    <div class="section-header"><p class="section-num">01</p><div class="section-titles"><p class="section-part">PART</p><p class="section-title">凌晨，安静的开工</p></div></div>
+    <p class="section-sub">NIGHT · 推文导出</p>
+    <p class="question">我做了什么</p>
+    <p class="body-text">凌晨十二点多，周围很安静，这种时候最适合干一些<strong style="color:#111827;">不需要和人沟通的事情</strong></p>
+    <p class="body-text">把一篇 AI 推文导出成 HTML，再转成 PDF，丢到桌面。没什么难度，但做完之后有一种"今天没有白过"的感觉</p>
+    <p class="body-text">然后去睡了 😴</p>
+  </div>
+  <div class="quote-insight"><div class="quote-insight-label">💡 感受</div><div class="quote-insight-text">安静的时间段适合做机械性的、不需要上下文切换的事情。做完一件小事再睡，比刷手机睡得更踏实</div></div>
+
+  <!-- PART 02 -->
+  <div class="section">
+    <div class="section-header"><p class="section-num">02</p><div class="section-titles"><p class="section-part">PART</p><p class="section-title">上午，规格与闭环</p></div></div>
+    <p class="section-sub">SYNC · 版本同步 + Skill 重写 + 规格核对</p>
+    <p class="question">我做了什么</p>
+    <p class="body-text"><span class="time-tag">09:00+</span> 早上九点多，强制同步上游版本到 <strong style="color:#111827;">v0.48.3</strong>。强制两个字从来不是好兆头——果然有冲突，手动处理了几处</p>
+
+    <div class="icon-row">
+      <div class="icon-item"><span class="icon-emoji">🔍</span> 排查超时日志</div>
+      <div class="icon-item"><span class="icon-emoji">🐛</span> 提 GitHub Issue</div>
+      <div class="icon-item"><span class="icon-emoji">✏️</span> 重写 Bypass Skill</div>
+      <div class="icon-item"><span class="icon-emoji">✅</span> 核对 31 项规格</div>
+    </div>
+
+    <p class="body-text" style="margin-top:12px;">接着排查超时日志，发现服务端有请求超时的情况，认真看了几段堆栈，提了一个 GitHub issue。这种 issue 能不能被修不好说，但提了至少说明问题被记录下来了</p>
+
+    <div class="green-info-box">
+      <p>Bypass Skill 的根因找到了——不是逻辑错了，是<strong style="color:#111827;">边界条件的判断漏了一个分支</strong>。重写代码，重新发布到 GitHub，完整走了一遍"发现现象 → 分析根因 → 造工具 → 写博文 → 发布"的闭环</p>
+    </div>
+
+    <p class="body-text" style="margin-top:12px;">接下来花了大块时间核对项目规格说明。<span class="gold-underline"><strong style="color:#059669;">补全 12 项差异，逐条验证，31 项全部通过</strong></span></p>
+    <p class="body-text">规格核对这种事，做的时候枯燥，做完之后踏实</p>
+
+    <div class="highlight-card"><div class="big">闭环 ≠ 改完代码</div><div class="sub">问题不只是被修掉了，是被完整地理解了一遍，然后记录了下来</div></div>
+  </div>
+
+  <!-- PART 03 -->
+  <div class="section">
+    <div class="section-header"><p class="section-num">03</p><div class="section-titles"><p class="section-part">PART</p><p class="section-title">传奇交易系统</p></div></div>
+    <p class="section-sub">ARCHITECTURE · OpenHanako × Alpaca MCP 自动交易系统</p>
+    <p class="question">我在设计什么</p>
+    <p class="body-text">花了大块时间设计一套<strong style="color:#111827;">基于 OpenHanako Agent + Alpaca MCP 的自动化交易系统</strong>。支持股票、期货、加密货币、期权，全部用自然语言驱动</p>
+
+    <div class="icon-row">
+      <div class="icon-item"><span class="icon-emoji">📊</span> 股票（美股）</div>
+      <div class="icon-item"><span class="icon-emoji">📈</span> 期货</div>
+      <div class="icon-item"><span class="icon-emoji">₿</span> 加密货币</div>
+      <div class="icon-item"><span class="icon-emoji">📋</span> 期权策略</div>
+    </div>
+
+    <p class="body-text" style="margin-top:16px;">核心思路：<strong style="color:#111827;">Agent 不直接裸调交易 API</strong>，中间必须过风控层。整个系统分四层 MCP Server：</p>
+
+    <div style="margin:16px 0;padding:0 8px;">
+      <p style="font-size:13px;color:#4B5563;line-height:2.0;text-align:justify;margin-bottom:10px;"><span style="color:#059669;font-weight:700;">Alpaca 交易层（官方）</span>——直接用 alpacahq/alpaca-mcp-server，565+ stars，已提供完整的下单/撤单/查持仓/行情/期权/加密货币能力，一行命令装好</p>
+      <p style="font-size:13px;color:#4B5563;line-height:2.0;text-align:justify;margin-bottom:10px;"><span style="color:#059669;font-weight:700;">风控守卫层（自研）</span>——交易前置检查，五道关卡：单笔金额限制 → 日内累计亏损 → 单标的仓位上限 → 总仓位上限 → 交易频率限制。不通过直接拦截，附带审计日志和紧急熔断</p>
+      <p style="font-size:13px;color:#4B5563;line-height:2.0;text-align:justify;margin-bottom:10px;"><span style="color:#059669;font-weight:700;">策略分析层（可选）</span>——提供 MA/RSI/MACD/Bollinger 等技术指标计算、趋势分析、市场扫描、策略回测。初期可以不做，让 LLM 直接分析市场数据</p>
+      <p style="font-size:13px;color:#4B5563;line-height:2.0;text-align:justify;"><span style="color:#059669;font-weight:700;">定时调度层（自动化核心）</span>——开盘前扫描 → 开盘执行 → 午间检查 → 收盘处理 → 收盘报告。无需人工介入，Agent 按策略自动跑</p>
+    </div>
+
+    <div class="green-info-box">
+      <p><strong style="color:#111827;">典型交易流程：</strong>用户说"买入 100 股苹果" → Agent 调 get_account 检查购买力 → 调 get_quote 获取当前价格 → 调 <strong style="color:#059669;">risk_check 风控检查</strong> → 通过则 place_order 下单 → 返回成交确认</p>
+    </div>
+
+    <p class="body-text" style="margin-top:12px;">这套系统不是一个人用的玩具，要支持<strong style="color:#111827;">多用户多账户</strong>——每个用户独立 API Key、独立风控配置、独立审计日志</p>
+
+    <div class="highlight-card"><div class="big">Agent 不能裸调交易 API<br>风控层是生命线</div><div class="sub">模拟盘 → 小资金实盘 → 正式实盘，渐进上线。资金安全永远是第一优先级</div></div>
+  </div>
+
+  <!-- PART 04 -->
+  <div class="section">
+    <div class="section-header"><p class="section-num">04</p><div class="section-titles"><p class="section-part">PART</p><p class="section-title">下午，系统卡了一下</p></div></div>
+    <p class="section-sub">DEBUG · 进程排查 + 部署 404</p>
+    <p class="question">发生了什么</p>
+    <p class="body-text"><span class="time-tag">13:00+</span> 下午一点多，系统开始卡顿，响应变得迟钝。先查进程，发现几个不明进程占着 CPU，kill 掉，恢复了正常</p>
+    <p class="body-text">没什么技术含量，但排查的过程是必要的</p>
+
+    <p class="body-text" style="margin-top:16px;">然后推送转换工具到 GitHub，部署，页面 <strong style="color:#EF4444;">404</strong></p>
+    <p class="body-text">这种事最烦人。检查了一遍，发现是 <code style="background:#F3F4F6;padding:2px 6px;border-radius:3px;font-size:12px;color:#EF4444;">.gitignore</code> 里的 <code style="background:#F3F4F6;padding:2px 6px;border-radius:3px;font-size:12px;color:#EF4444;">*.html</code> 把部署文件拦住了。明明已经改过，但某个环节又把文件排除了</p>
+
+    <div class="highlight-card highlight-red"><div class="big" style="color:#EF4444;">gitignore 的二次伤害</div><div class="sub">问题本身不复杂，但找到那个藏起来的拦截点需要耐心。修复路径：强制添加 → 重新部署 → 页面正常</div></div>
+  </div>
+
+  <!-- PART 04 -->
+  <div class="section">
+    <div class="section-header"><p class="section-num">05</p><div class="section-titles"><p class="section-part">PART</p><p class="section-title">傍晚，对比与看板</p></div></div>
+    <p class="section-sub">REPORT · 产品对比 + 费用看板 PR</p>
+    <p class="question">我做了什么</p>
+    <p class="body-text">傍晚完成了一件拖了一段时间的事：<strong style="color:#111827;">OpenHanako 与 OpenClaw 的产品对比报告</strong>。两个项目定位不同、架构不同，写对比不是为了分出高下，而是把差异讲清楚，让需要选择的人能做出判断</p>
+
+    <div class="tool-tag">TOOL GitHub Pages</div>
+    <p class="tool-name">对比报告部署上线</p>
+    <p class="tool-desc">写完报告后直接部署到 GitHub Pages，生成在线可访问的链接</p>
+
+    <p class="body-text" style="margin-top:16px;">然后回到代码。<strong style="color:#111827;">费用看板功能，PR #125</strong>。带 UI 的费用看板，逻辑不复杂但 UI 细节多，做到晚上十点多才提交</p>
+
+    <div class="green-info-box">
+      <p>提交之后习惯性检查了一下——发现 <strong style="color:#111827;">UsageTab 没有注册到导航</strong>，配置里没有，UI 里自然也不显示。补了两行：导航文件加一项，i18n 文件补一个翻译字符串，页面正常了</p>
+    </div>
+
+    <p class="body-text" style="margin-top:12px;">然后看到 PR 列表里新功能和老代码混在一起。分开提交是基本功，但在同一个 PR 里混着改、混着提交，时间一长就容易乱。<strong style="color:#111827;">拆开，要求重新提</strong></p>
+
+    <div class="highlight-card"><div class="big">提交前多看一眼</div><div class="sub">这种小坑最容易被忽略——导航没注册、翻译没补齐。做完了不等于做对了</div></div>
+  </div>
+
+  <!-- PART 05 -->
+  <div class="section">
+    <div class="section-header"><p class="section-num">06</p><div class="section-titles"><p class="section-part">PART</p><p class="section-title">深夜，帮朋友修 Hanako</p></div></div>
+    <p class="section-sub">REMOTE · 配置污染级联故障</p>
+    <p class="question">发生了什么</p>
+    <p class="body-text">快到午夜的时候，朋友发来消息：<strong style="color:#111827;">Hanako 启动失败了</strong></p>
+
+    <div class="gray-info-box">
+      <p>截图里，两个错误堆在一起：<code style="background:#FEF2F2;color:#EF4444;padding:2px 6px;border-radius:3px;font-size:12px;">Cannot find yuan"trader"</code>，然后 <code style="background:#FEF2F2;color:#EF4444;padding:2px 6px;border-radius:3px;font-size:12px;">log.error is not a function</code>。典型的<strong style="color:#111827;">级联失败</strong>——第一个错误没处理好，连带着错误处理本身也崩了</p>
+    </div>
+
+    <p class="body-text" style="margin-top:12px;">注意到那个引号。<code style="background:#F3F4F6;padding:2px 6px;border-radius:3px;font-size:12px;">yuan"trader"</code>，带引号的。让朋友在终端跑了一行 grep：</p>
+
+    <div class="code-card"><code>grep -r 'yuan' ~/.hanako/agents/agent-trader/
+
+# 结果：
+# config.yaml:  yuan: trader</code></div>
+
+    <p class="body-text">原来配置文件里的 <code style="background:#F3F4F6;padding:2px 6px;border-radius:3px;font-size:12px;">yuan</code> 被设成了一个不存在的值。不是代码 bug，是<strong style="color:#111827;">配置被污染了</strong></p>
+    <p class="body-text">知道了根因，修复就简单了——一行 sed：</p>
+
+    <div class="code-card"><code>sed -i '' 's/yuan: trader/yuan: hanako/' \
+  ~/.hanako/agents/agent-trader/config.yaml</code></div>
+
+    <p class="body-text">改完，验证，重试，<strong style="color:#059669;">正常启动 ✅</strong></p>
+
+    <div class="white-card">
+      <p>这是今天最后一件事，也是最值得写的一件事。不是因为它有多难，而是因为它提醒了一件事：</p>
+      <p style="margin-top:12px;"><strong style="color:#059669;">最短的修复路径，永远是基于最准确的理解</strong></p>
+      <p class="sub-text" style="margin-top:12px;font-size:13px;color:#4B5563;">至于 <code style="background:#F3F4F6;padding:2px 6px;border-radius:3px;font-size:12px;">log.error is not a function</code> 这个次生 bug——它是另一个话题了，改天单独说</p>
+    </div>
+  </div>
+
+  <!-- FOOTER HIGHLIGHT -->
+  <div class="footer-highlight">推文导出 → 版本同步 → Skill重写 → 规格核对 → 交易系统设计 → 部署排障 → 产品报告 → 费用PR → 远程修Bug</div>
+
+  <!-- PART /// LAST -->
+  <div class="section" style="padding-bottom:24px;">
+    <div class="section-header">
+      <div style="text-align:center;flex-shrink:0;">
+        <div style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:#ECFDF5;border-radius:12px;box-shadow:0 2px 4px rgba(5,150,105,0.15);border:1px solid #A7F3D0;margin:0 auto 6px;font-size:16px;">📝</div>
+        <p style="margin:0;font-size:8px;font-weight:700;color:#9CA3AF;letter-spacing:2px;">/// LAST</p>
+      </div>
+      <div class="section-titles"><p class="section-title">写在最后</p><p class="section-sub">INSIGHT · 今天的五条经验</p></div>
+    </div>
+    <p class="body-text" style="margin-bottom:20px;">一天做了 9 件事，从凌晨到午夜。没有什么惊天动地的大事，但每一件都做完之后，会有一种踏实感</p>
+    <p class="body-text">这种踏实感不是来自"做了多少"，而是来自<strong style="color:#111827;">"每一件都做完了"</strong>。没留尾巴，没留 TODO，没留"改天再说"</p>
+
+    <div style="margin:20px 0;padding:16px 20px;background:#fff;border-radius:12px;box-shadow:0 4px 16px rgba(5,150,105,0.12);">
+      <p style="font-size:15px;color:#374151;line-height:1.6;margin:0;">技术工作的本质<br><span style="color:#059669;border-bottom:3px solid #FDE68A;">不是堆代码，是解决问题</span><br><span style="color:#059669;">而解决问题的基础，是真正理解系统是怎么运转的</span></p>
+    </div>
+
+    <div class="insight-list">
+      <p><span style="color:#059669;font-weight:700;">① 闭环 ≠ 改完代码</span><br>问题不只是被修掉了，是被完整地理解了一遍，然后记录了下来</p>
+      <p><span style="color:#059669;font-weight:700;">② gitignore 的二次伤害</span><br>问题本身不复杂，但找到那个藏起来的拦截点需要耐心</p>
+      <p><span style="color:#059669;font-weight:700;">③ 提交前多看一眼</span><br>导航没注册、翻译没补齐——做完了不等于做对了</p>
+      <p><span style="color:#059669;font-weight:700;">④ 最短的修复路径，基于最准确的理解</span><br>不是代码 bug，是配置被污染。理解对了，一行 sed 搞定</p>
+      <p><span style="color:#059669;font-weight:700;">⑤ Agent 不能裸调交易 API</span><br>风控层是生命线。模拟盘 → 小资金实盘 → 正式实盘，渐进上线</p>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <p class="cta-text">既然看到这里了，如果觉得有用，随手点个赞、在看、转发三连吧</p>
+    <div class="cta-btns">
+      <div class="cta-btn"><div class="cta-btn-icon">👍</div><div class="cta-btn-label">点赞</div></div>
+      <div class="cta-btn"><div class="cta-btn-icon">👀</div><div class="cta-btn-label">在看</div></div>
+      <div class="cta-btn"><div class="cta-btn-icon">↗️</div><div class="cta-btn-label">转发</div></div>
+    </div>
+    <div class="cta-end">THANKS FOR READING</div>
+  </div>
+
+</div>
+</body>
+</html>
