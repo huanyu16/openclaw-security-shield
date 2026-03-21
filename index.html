@@ -3,17 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🦞 你的私人AI助手，正在裸奔</title>
+<title>文章索引 · huanyu16</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-    background: #f5f5f5;
+    background: #fff;
     color: #1a1a1a;
     line-height: 1.8;
     font-size: 16px;
   }
-  a { color: #1a6cf5; text-decoration: none; }
+  a { color: inherit; text-decoration: none; }
   a:hover { text-decoration: underline; }
 
   /* ─── nav ─── */
@@ -24,377 +24,660 @@
     align-items: center;
     gap: 32px;
     height: 56px;
-    background: rgba(255,255,255,0.95);
-    backdrop-filter: blur(8px);
     position: sticky;
     top: 0;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(8px);
     z-index: 100;
   }
-  nav .logo { font-weight: 700; font-size: 15px; flex-shrink: 0; }
+  nav .logo {
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: -0.3px;
+    flex-shrink: 0;
+  }
   nav .logo span { color: #888; font-weight: 400; }
-  nav a { font-size: 14px; color: #666; transition: color 0.15s; }
-  nav a:hover { color: #1a1a1a; text-decoration: none; }
+  nav a.nav-link {
+    font-size: 14px;
+    color: #666;
+    transition: color 0.15s;
+  }
+  nav a.nav-link:hover { color: #1a1a1a; text-decoration: none; }
+
+  /* ─── container ─── */
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 72px 48px 120px;
+  }
 
   /* ─── hero ─── */
-  .hero {
-    background: #1a1a1a;
-    color: #fff;
-    padding: 80px 48px;
-    position: relative;
-    overflow: hidden;
+  .hero { margin-bottom: 64px; }
+  .hero-eyebrow {
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #999;
+    margin-bottom: 14px;
   }
-  .hero::before {
-    content: '';
-    position: absolute;
-    top: -40px; right: -40px;
-    width: 400px; height: 400px;
-    background: radial-gradient(circle, rgba(255,107,53,0.15) 0%, transparent 70%);
-    pointer-events: none;
-  }
-  .hero-icon { font-size: 48px; margin-bottom: 24px; }
   .hero h1 {
     font-size: 36px;
     font-weight: 700;
-    line-height: 1.3;
-    margin-bottom: 20px;
+    line-height: 1.25;
+    margin-bottom: 16px;
     letter-spacing: -0.5px;
   }
-  .hero-desc {
+  .hero p {
     font-size: 18px;
-    color: rgba(255,255,255,0.7);
-    max-width: 600px;
-    margin-bottom: 36px;
-  }
-  .hero-badges { display: flex; gap: 12px; flex-wrap: wrap; }
-  .badge {
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 6px;
-    padding: 4px 12px;
-    font-size: 13px;
-    color: rgba(255,255,255,0.8);
-  }
-  .hero-actions { display: flex; gap: 12px; margin-top: 32px; }
-  .btn-primary {
-    background: #ff6b35;
-    color: #fff;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-size: 15px;
-    font-weight: 600;
-    transition: background 0.15s;
-  }
-  .btn-primary:hover { background: #e55a25; text-decoration: none; }
-  .btn-secondary {
-    background: rgba(255,255,255,0.1);
-    color: rgba(255,255,255,0.9);
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-size: 15px;
-    border: 1px solid rgba(255,255,255,0.2);
-    transition: background 0.15s;
-  }
-  .btn-secondary:hover { background: rgba(255,255,255,0.2); text-decoration: none; }
-
-  /* ─── container ─── */
-  .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
-
-  /* ─── sections ─── */
-  section { padding: 64px 0; border-bottom: 1px solid #eee; }
-  section:last-child { border-bottom: none; }
-  h2 {
-    font-size: 22px;
-    font-weight: 700;
-    margin-bottom: 8px;
-    letter-spacing: -0.3px;
-  }
-  .section-lead {
     color: #666;
-    font-size: 15px;
-    margin-bottom: 32px;
+    max-width: 560px;
+    margin-bottom: 24px;
   }
+  .hero-divider { width: 40px; height: 3px; background: #1a1a1a; }
 
-  /* ─── pain cards ─── */
-  .pain-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-  .pain-card {
-    background: #fff;
-    border: 1px solid #eee;
-    border-radius: 12px;
-    padding: 24px;
-    transition: box-shadow 0.2s;
+  /* ─── reading path ─── */
+  .reading-path {
+    background: #f8f8f8;
+    border: 1px solid #e8e8e8;
+    border-radius: 8px;
+    padding: 28px 32px;
+    margin-bottom: 64px;
   }
-  .pain-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
-  .pain-icon { font-size: 28px; margin-bottom: 12px; }
-  .pain-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
-  .pain-card p { font-size: 14px; color: #555; }
-
-  /* ─── shield features ─── */
-  .shield-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
-  .shield-item {
-    background: #fff;
-    border: 1px solid #eee;
-    border-radius: 12px;
-    padding: 24px;
-    display: flex;
-    gap: 16px;
-    align-items: flex-start;
-  }
-  .shield-icon { font-size: 24px; flex-shrink: 0; }
-  .shield-item h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
-  .shield-item p { font-size: 14px; color: #555; }
-
-  /* ─── comparison ─── */
-  table { width: 100%; border-collapse: collapse; font-size: 14px; }
-  th { background: #f5f5f5; padding: 12px 16px; text-align: left; font-weight: 600; border-bottom: 2px solid #eee; }
-  td { padding: 12px 16px; border-bottom: 1px solid #f0f0f0; }
-  tr:hover td { background: #fafafa; }
-  .yes { color: #22c55e; font-weight: 600; }
-  .no { color: #ef4444; }
-
-  /* ─── install ─── */
-  .install-block {
-    background: #1a1a1a;
-    border-radius: 12px;
-    padding: 24px;
+  .reading-path-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #888;
     margin-bottom: 20px;
   }
-  .install-block h3 { color: #fff; font-size: 15px; margin-bottom: 12px; }
-  .install-block p { color: rgba(255,255,255,0.6); font-size: 13px; margin-bottom: 12px; }
-  code {
-    display: block;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 6px;
-    padding: 12px 16px;
-    font-family: 'SF Mono', 'Fira Code', monospace;
-    font-size: 13px;
-    color: #a3e635;
-    overflow-x: auto;
-    white-space: pre;
+  .path-steps {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+    row-gap: 12px;
   }
-  .cmd-comment { color: #6b7280; }
-
-  /* ─── cta ─── */
-  .cta-section {
-    background: linear-gradient(135deg, #ff6b35 0%, #e55a25 100%);
+  .path-step {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .path-num {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #1a1a1a;
     color: #fff;
-    padding: 64px 48px;
-    text-align: center;
-    border-radius: 16px;
-    margin: 48px 0;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
   }
-  .cta-section h2 { color: #fff; font-size: 28px; margin-bottom: 12px; }
-  .cta-section p { color: rgba(255,255,255,0.85); font-size: 16px; margin-bottom: 28px; }
-  .cta-section .btn-secondary {
-    background: #fff;
-    color: #e55a25;
+  .path-num.placeholder {
+    background: #ccc;
+  }
+  .path-text {
+    font-size: 14px;
+    color: #333;
+    font-weight: 500;
+  }
+  .path-text.placeholder { color: #aaa; }
+  .path-arrow {
+    color: #ccc;
+    font-size: 18px;
+    margin: 0 10px;
+    flex-shrink: 0;
+  }
+  .path-more {
+    font-size: 13px;
+    color: #aaa;
+    margin-left: 8px;
+  }
+
+  /* ─── stats ─── */
+  .stats {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 64px;
+  }
+  .stat {}
+  .stat-num {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -1px;
+  }
+  .stat-label {
+    font-size: 13px;
+    color: #888;
+    margin-top: 2px;
+  }
+
+  /* ─── series ─── */
+  .series-group { margin-bottom: 56px; }
+  .series-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .series-icon { font-size: 20px; }
+  .series-name {
+    font-size: 20px;
+    font-weight: 700;
+  }
+  .series-count {
+    font-size: 13px;
+    color: #999;
+  }
+  .series-divider {
+    flex: 1;
+    height: 1px;
+    background: #eee;
+  }
+
+  /* ─── article cards ─── */
+  .article-list { display: flex; flex-direction: column; gap: 12px; }
+  .article-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 18px 20px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .article-card:hover {
+    border-color: #ccc;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .article-card.soon {
+    background: #fafafa;
+    border-style: dashed;
+  }
+
+  .card-status {
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: block;
+  }
+  .status-dot.live { background: #22c55e; }
+  .status-dot.upcoming { background: #e5e5e5; border: 1px solid #ccc; }
+
+  .card-body { flex: 1; min-width: 0; }
+  .card-title {
+    font-size: 15px;
     font-weight: 600;
-    border: none;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
-  .cta-section .btn-secondary:hover { background: rgba(255,255,255,0.9); }
+  .card-title .soon-tag {
+    font-size: 11px;
+    font-weight: 600;
+    color: #888;
+    background: #f0f0f0;
+    padding: 1px 7px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+  }
+  .card-title a { color: #1a6cf5; }
+  .card-title a:hover { text-decoration: underline; }
+  .card-meta {
+    font-size: 13px;
+    color: #999;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .card-series-label {
+    font-size: 12px;
+    color: #aaa;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+
+  /* ─── prev/next nav ─── */
+  .article-nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 64px;
+    padding-top: 40px;
+    border-top: 1px solid #eee;
+  }
+  .nav-prev, .nav-next {
+    padding: 20px 24px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    transition: border-color 0.15s;
+  }
+  .nav-prev:hover, .nav-next:hover {
+    border-color: #bbb;
+    text-decoration: none;
+  }
+  .nav-next { text-align: right; }
+  .nav-label {
+    font-size: 12px;
+    color: #aaa;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .nav-title { font-size: 15px; font-weight: 600; }
 
   /* ─── footer ─── */
   footer {
+    margin-top: 80px;
+    padding-top: 32px;
     border-top: 1px solid #eee;
-    padding: 32px 0;
-    text-align: center;
     font-size: 13px;
-    color: #888;
+    color: #bbb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
-  footer a { color: #888; }
-  footer a:hover { color: #555; }
 
-  /* ─── responsive ─── */
-  @media (max-width: 768px) {
-    .pain-grid, .shield-grid { grid-template-columns: 1fr; }
-    .hero { padding: 48px 24px; }
+  @media (max-width: 640px) {
+    nav { padding: 0 20px; }
+    .container { padding: 48px 20px 80px; }
     .hero h1 { font-size: 26px; }
-    nav { padding: 0 20px; gap: 16px; }
-    .hero-actions { flex-direction: column; }
+    .stats { gap: 24px; }
+    .article-nav { grid-template-columns: 1fr; }
+    .path-arrow { margin: 0 6px; }
   }
 </style>
 </head>
 <body>
 
 <nav>
-  <div class="logo">huanyu16 <span>/ OpenClaw Security Shield</span></div>
-  <a href="#problem">问题</a>
-  <a href="#solution">解决方案</a>
-  <a href="#install">安装</a>
+  <div class="logo">huanyu16 <span>/ 文章索引</span></div>
+  <a href="" class="nav-link">首页</a>
+  <a href="#series-1" class="nav-link">OpenClaw 进阶</a>
+  <a href="#series-2" class="nav-link">工具开发</a>
+  <a href="#series-3" class="nav-link">OpenHanako</a>
+  <a href="#series-4" class="nav-link">工作日志</a>
+  <a href="#series-5" class="nav-link">JOJO</a>
 </nav>
 
-<div class="hero">
-  <div class="hero-icon">🦞</div>
-  <h1>你的私人 AI 助手，<br>正在裸奔</h1>
-  <p class="hero-desc">每一次安装 OpenClaw，都是一座敏感数据的金矿——API 密钥、对话历史、浏览器会话、账号密码。你告诉过 AI 的所有事情，它全都知道。而这些数据，没有任何保护。</p>
-  <div class="hero-badges">
-    <span class="badge">🔐 API 密钥加密</span>
-    <span class="badge">🧹 浏览器数据清理</span>
-    <span class="badge">👁️ 异常访问监控</span>
-    <span class="badge">💾 操作前自动备份</span>
-  </div>
-  <div class="hero-actions">
-    <a href="agent-naked-full.html" class="btn-primary">查看全文 →</a>
-    <a href="agent-naked-full.html" class="btn-secondary">阅读全文</a>
-  </div>
-</div>
-
 <div class="container">
 
-  <section id="problem">
-    <h2>你可能没有意识到的问题</h2>
-    <p class="section-lead">大多数用户在享受 AI 助手便利的同时，没有意识到自己的数据暴露在什么风险之下。</p>
-    <div class="pain-grid">
-      <div class="pain-card">
-        <div class="pain-icon">🔑</div>
-        <h3>API 密钥明文存储</h3>
-        <p>OpenClaw 的 API 密钥写在配置文件里，没有任何加密。Git 同步、网盘备份，一不小心就全网裸奔。</p>
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-eyebrow">Articles</div>
+    <h1>所有文章</h1>
+    <p>围绕 OpenClaw / OpenHanako 的实战记录、工具开发和行为分析。按系列组织，顺着读下去。</p>
+    <div class="hero-divider"></div>
+  </div>
+
+  <!-- Recommended Reading Path -->
+  <div class="reading-path">
+    <div class="reading-path-title">推荐阅读路径 · 从这里开始</div>
+    <div class="path-steps">
+      <div class="path-step">
+        <div class="path-num">1</div>
+        <div class="path-text"><a href="docs/agent-naked.html" style="color:#1a6cf5">🦞 AI助手正在裸奔</a></div>
       </div>
-      <div class="pain-card">
-        <div class="pain-icon">💬</div>
-        <h3>对话历史包含一切</h3>
-        <p>你告诉 AI 的密码、银行卡、合同内容、私人对话——全部明文存储在本地文件里，没有任何保护。</p>
+      <div class="path-arrow">→</div>
+      <div class="path-step">
+        <div class="path-num">2</div>
+        <div <span class="path-text">Hanako 执行力差异</div>
       </div>
-      <div class="pain-card">
-        <div class="pain-icon">🌐</div>
-        <h3>浏览器会话可被访问</h3>
-        <p>AI 操作浏览器时，你的登录状态、Cookies、缓存全部暴露给它。恶意脚本可以轻易读取这些数据。</p>
+      <div class="path-arrow">→</div>
+      <div class="path-step">
+        <div class="path-num">3</div>
+        <div <span class="path-text">Agent 撞墙与 Bypass</div>
       </div>
-      <div class="pain-card">
-        <div class="pain-icon">💾</div>
-        <h3>没有操作备份</h3>
-        <p>每次清理数据、删除文件，备份全靠手动。出错之后没有回退余地。</p>
+      <div class="path-arrow">→</div>
+      <div class="path-step">
+        <div class="path-num">4</div>
+        <div <span class="path-text">浏览器操作方案对比</div>
       </div>
-      <div class="pain-card">
-        <div class="pain-icon">🔍</div>
-        <h3>不知道谁在访问什么</h3>
-        <p>没有任何日志记录，没有访问监控。AI 读取了什么文件、访问了什么网页，你一无所知。</p>
-      </div>
-      <div class="pain-card">
-        <div class="pain-icon">📤</div>
-        <h3>意外泄露风险高</h3>
-        <p>GitHub 仓库同步、云盘备份、不小心分享了项目——任何一个环节出错，所有敏感数据全部外泄。</p>
-      </div>
+      <div class="path-more">+ 更多系列</div>
     </div>
-  </section>
+  </div>
 
-  <section id="solution">
-    <h2>OpenClaw Security Shield</h2>
-    <p class="section-lead">一键守护，一行命令完成所有保护。自动加密、自动匿名、自动监控、操作前自动备份。</p>
-    <div class="shield-grid">
-      <div class="shield-item">
-        <div class="shield-icon">🔐</div>
-        <div>
-          <h3>API 密钥加密</h3>
-          <p>PBKDF2 + AES-256 加密所有敏感配置，Git 同步和云盘备份安全无虞。需要密码才能解密使用。</p>
-        </div>
-      </div>
-      <div class="shield-item">
-        <div class="shield-icon">🙈</div>
-        <div>
-          <h3>对话数据匿名化</h3>
-          <p>自动检测并匿名化密码、银行卡、身份证号等敏感信息。对话历史照常可用，敏感数据不再裸奔。</p>
-        </div>
-      </div>
-      <div class="shield-item">
-        <div class="shield-icon">🧹</div>
-        <div>
-          <h3>浏览器数据清理</h3>
-          <p>一键清理 Cookies、缓存、存储的密码。保持登录态的同时清除敏感数据，不影响 AI 操作能力。</p>
-        </div>
-      </div>
-      <div class="shield-item">
-        <div class="shield-icon">👁️</div>
-        <div>
-          <h3>异常访问监控</h3>
-          <p>实时监控文件访问和网络请求，发现异常行为立即告警。AI 读取了什么，你全都知道。</p>
-        </div>
-      </div>
-      <div class="shield-item">
-        <div class="shield-icon">💾</div>
-        <div>
-          <h3>操作前自动备份</h3>
-          <p>加密备份、匿名备份、清理前备份——所有危险操作前自动创建可恢复快照，出错一键回退。</p>
-        </div>
-      </div>
-      <div class="shield-item">
-        <div class="shield-icon">🔍</div>
-        <div>
-          <h3>GitHub 泄露扫描</h3>
-          <p>检测配置文件中是否存在暴露到 GitHub 的敏感信息，提前发现泄露风险。</p>
-        </div>
-      </div>
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num">9</div>
+      <div class="stat-label">已发布文章</div>
     </div>
-  </section>
-
-  <section id="compare">
-    <h2>对比</h2>
-    <p class="section-lead">Shield 在每一个维度上都提供了无保护状态下不具备的能力。</p>
-    <table>
-      <thead>
-        <tr>
-          <th>能力</th>
-          <th>无保护</th>
-          <th>Security Shield</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>API 密钥存储</td><td class="no">明文</td><td class="yes">AES-256 加密</td></tr>
-        <tr><td>对话数据匿名化</td><td class="no">无</td><td class="yes">自动检测 + 匿名化</td></tr>
-        <tr><td>浏览器数据清理</td><td class="no">手动</td><td class="yes">一键按需清理</td></tr>
-        <tr><td>文件访问监控</td><td class="no">无</td><td class="yes">实时告警</td></tr>
-        <tr><td>操作前备份</td><td class="no">手动</td><td class="yes">自动快照</td></tr>
-        <tr><td>GitHub 泄露扫描</td><td class="no">无</td><td class="yes">主动检测</td></tr>
-      </tbody>
-    </table>
-  </section>
-
-  <section id="install">
-    <h2>安装</h2>
-    <p class="section-lead">一行命令即可安装，自动检测环境，无依赖冲突。</p>
-    <div class="install-block">
-      <h3>一键安装</h3>
-      <p>自动检测 OpenClaw 安装路径，安装所有依赖</p>
-      <code><span class="cmd-comment"># macOS / Linux</span>
-curl -fsSL https://raw.githubusercontent.com/huanyu16/openclaw-security-shield/main/install.sh | bash
-
-<span class="cmd-comment"># 或克隆安装</span>
-git clone https://github.com/huanyu16/openclaw-security-shield.git
-cd openclaw-security-shield
-./install.sh</code>
+    <div class="stat">
+      <div class="stat-num">0</div>
+      <div class="stat-label">待发布文章</div>
     </div>
-    <div class="install-block">
-      <h3>常用命令</h3>
-      <p>安装完成后使用以下命令</p>
-      <code><span class="cmd-comment"># 查看安全状态</span>
-shield status
-
-<span class="cmd-comment"># 一键保护（加密 + 匿名化 + 备份）</span>
-shield protect
-
-<span class="cmd-comment"># 清理浏览器数据</span>
-shield clean --cookies --cache
-
-<span class="cmd-comment"># 解锁使用（保护后）</span>
-shield unlock</code>
+    <div class="stat">
+      <div class="stat-num">4</div>
+      <div class="stat-label">系列</div>
     </div>
-  </section>
+  </div>
+
+  <!-- Series 1: OpenClaw 进阶实战 -->
+  <div class="series-group" id="series-1">
+    <div class="series-header">
+      <span class="series-icon">🚀</span>
+      <div class="series-name">OpenClaw 进阶实战</div>
+      <div class="series-count">5 篇 · Agent 工程</div>
+      <div class="series-divider"></div>
+    </div>
+    <div class="article-list">
+
+      <div class="article-card">
+        <div class="card-status"><div class="status-dot live"></div></div>
+        <div class="card-body">
+          <div class="card-title">
+            <a href="docs/hanako-execution-gap.html">同样的 Hanako，执行能力天差地别？</a>
+            
+          </div>
+          <div class="card-meta">
+            <span>🚀 OpenClaw 进阶</span>
+            <span>2026-03-20</span>
+            <span>分析 · 配置与模型</span>
+          </div>
+        </div>
+        <div class="card-series-label">#1</div>
+      </div>
+
+      <div class="article-card">
+        <div class="card-status"><div class="status-dot live"></div></div>
+        <div class="card-body">
+          <div class="card-title">
+            <a href="docs/agent-retry-loop.html">我写了一个分析 Agent 执行力的文章，然后做了一个 Skill 来解决它</a>
+            
+          </div>
+          <div class="card-meta">
+            <span>🚀 OpenClaw 进阶</span>
+            <span>2026-03-19</span>
+            <span>Bypass Skill · 问题解决</span>
+          </div>
+        </div>
+        <div class="card-series-label">#2</div>
+      </div>
+
+      <div class="article-card">
+        <div class="card-status"><div class="status-dot live"></div></div>
+        <div class="card-body">
+          <div class="card-title">
+            <a href="docs/browser-agent-choice.html">你的 Agent 应该怎样选择浏览器操作方案</a>
+            
+          </div>
+          <div class="card-meta">
+            <span>🚀 OpenClaw 进阶</span>
+            <span>2026-03-21</span>
+            <span>浏览器自动化 · 方案对比</span>
+          </div>
+        </div>
+        <div class="card-series-label">#3</div>
+      </div>
+
+      <div class="article-card">
+        <div class="card-status"><div class="status-dot live"></div></div>
+        <div class="card-body">
+          <div class="card-title">
+            <a href="docs/agent-recovery-strategy.html">OpenClaw 费用看板：UsageTab 开发全记录</a>
+            
+          </div>
+          <div class="card-meta">
+            <span>🚀 OpenClaw 进阶</span>
+            <span>2026-03-21</span>
+            <span>工具开发 · PR 实战</span>
+          </div>
+        </div>
+        <div class="card-series-label">#4</div>
+      </div>
+
+      <div class="article-card">
+        <div class="card-status"><div class="status-dot live"></div></div>
+        <div class="card-body">
+          <div class="card-title">
+            <a href="docs/agent-naked-full.html">🦞 你的"私人AI助手"，正在裸奔（完整版）</a>
+          </div>
+          <div class="card-meta">
+            <span>🚀 OpenClaw 进阶</span>
+            <span>2026-03-20</span>
+            <span>安全 · Agent 工程</span>
+          </div>
+        </div>
+        <div class="card-series-label">#5</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Series 2: 工具开发 -->
+  <div class="series-group" id="series-2">
+    <div class="series-header">
+      <span class="series-icon">🛠️</span>
+      <div class="series-name">工具开发记录</div>
+      <div class="series-count">5 篇 · Skill 与工具</div>
+      <div class="series-divider"></div>
+    </div>
+    <div class="article-list">
+
+      <div class="article-card">
+        <div class="card-status"><span class="status-dot live"></span></div>
+        <div class="card-body">
+          <div class="card-title">
+            <a href="https://github.com/huanyu16/openclaw-security-shield">🛡️ OpenClaw Security Shield — 一键守护你的智能体</a>
+          </div>
+          <div class="card-meta">
+            <span>🛠️ 工具开发</span>
+            <span>2026-03-20</span>
+            <span>安全 · 开源工具</span>
+          </div>
+        </div>
+        <div class="card-series-label">#1</div>
+      </div>
+
+      <div class="article-card">
+        <div class="card-status"><div class="status-dot live"></div></div>
+        <div class="card-body">
+          <div class="card-title">
+            <a href="docs/agent-retry-loop.html">Bypass Skill：从"反复撞墙"到"绕路走通"</a>
+            
+          </div>
+          <div class="card-meta">
+            <span>🛠️ 工具开发</span>
+            <span>2026-03-20</span>
+            <span>Bypass · 错误恢复</span>
+          </div>
+        </div>
+        <div class="card-series-label">#2</div>
+      </div>
+
+      <div class="article-card">
+        <div class="card-status"><div class="status-dot live"></div></div>
+        <div class="card-body">
+          <div class="card-title">
+            <a href="docs/a2a-pipeline-demo.html">A2A Pipeline：多 Agent 协作的另一种姿势</a>
+            
+          </div>
+          <div class="card-meta">
+            <span>🛠️ 工具开发</span>
+            <span>2026-03-20</span>
+            <span>A2A · 多 Agent</span>
+          </div>
+        </div>
+        <div class="card-series-label">#3</div>
+      </div>
+
+      <div class="article-card">
+        <div class="card-status"><div class="status-dot live"></div></div>
+        <div class="card-body">
+          <div class="card-title">
+            <a href="docs/answer-sheet-generator.html">答题卡生成器：HTML 完美、PDF 废稿的根因与解法</a>
+          </div>
+          <div class="card-meta">
+            <span>🛠️ 工具开发</span>
+            <span>2026-03-21</span>
+            <span>PDF · SVG · 印刷</span>
+          </div>
+        </div>
+        <div class="card-series-label">#4</div>
+      </div>
+
+      <div class="article-card">
+        <div class="card-status"><div class="status-dot live"></div></div>
+        <div class="card-body">
+          <div class="card-title">
+            <a href="docs/openhanako-autotrader.html">OpenHanako AutoTrader：让传奇交易员为你工作</a>
+          </div>
+          <div class="card-meta">
+            <span>🛠️ 工具开发</span>
+            <span>2026-03-21</span>
+            <span>交易 · AI · 风控</span>
+          </div>
+        </div>
+        <div class="card-series-label">#5</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Series 3: OpenHanako 深度研究 -->
+  <div class="series-group" id="series-3">
+    <div class="series-header">
+      <span class="series-icon">🌸</span>
+      <div class="series-name">OpenHanako 深度研究</div>
+      <div class="series-count">2 篇 · 项目对比与分析</div>
+      <div class="series-divider"></div>
+    </div>
+    <div class="article-list">
+
+      <div class="article-card">
+        <div class="card-status"><span class="status-dot live"></span></div>
+        <div class="card-body">
+          <div class="card-title">
+            <a href="https://huanyu16.github.io/openhanako-vs-openclaw/">OpenHanako vs OpenClaw：深度对比分析</a>
+          </div>
+          <div class="card-meta">
+            <span>🌸 OpenHanako</span>
+            <span>2026-03-19</span>
+            <span>对比 · 架构分析</span>
+          </div>
+        </div>
+        <div class="card-series-label">#1</div>
+      </div>
+
+      <div class="article-card">
+        <div class="card-status"><div class="status-dot live"></div></div>
+        <div class="card-body">
+          <div class="card-title">
+            <a href="docs/auto-trading-architecture.html">OpenHanako 自动交易架构全解析</a>
+            
+          </div>
+          <div class="card-meta">
+            <span>🌸 OpenHanako</span>
+            <span>2026-03-20</span>
+            <span>架构 · 交易系统</span>
+          </div>
+        </div>
+        <div class="card-series-label">#2</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Series 4: 工作日志 -->
+  <div class="series-group" id="series-4">
+    <div class="series-header">
+      <span class="series-icon">📓</span>
+      <div class="series-name">工作日志</div>
+      <div class="series-count">2 篇 · 过程记录</div>
+      <div class="series-divider"></div>
+    </div>
+    <div class="article-list">
+
+      <div class="article-card">
+        <div class="card-status"><div class="status-dot live"></div></div>
+        <div class="card-body">
+          <div class="card-title">
+            <a href="docs/agent-silent.html">漫长的一天 · 2026.03.20</a>
+            
+          </div>
+          <div class="card-meta">
+            <span>📓 工作日志</span>
+            <span>2026-03-20</span>
+            <span>日记</span>
+          </div>
+        </div>
+        <div class="card-series-label">#1</div>
+      </div>
+
+      <div class="article-card">
+        <div class="card-status"><div class="status-dot live"></div></div>
+        <div class="card-body">
+          <div class="card-title">
+            <a href="docs/wechat-diary-20260318.html">微信日记 · 2026.03.18</a>
+            
+          </div>
+          <div class="card-meta">
+            <span>📓 工作日志</span>
+            <span>2026-03-18</span>
+            <span>日记</span>
+          </div>
+        </div>
+        <div class="card-series-label">#2</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Series 5: JOJO OP分析 -->
+  <div class="series-group" id="series-5">
+    <div class="series-header">
+      <span class="series-icon">⚡</span>
+      <div class="series-name">JOJO 的奇妙冒险 · OP分镜分析</div>
+      <div class="series-count">1 篇 · 分镜与叙事</div>
+      <div class="series-divider"></div>
+    </div>
+    <div class="article-list">
+
+      <div class="article-card">
+        <div class="card-status"><div class="status-dot live"></div></div>
+        <div class="card-body">
+          <div class="card-title">
+            <a href="https://huanyu16.github.io/jojo-op-analysis/" target="_blank">JOJO的奇妙冒险 | OP分镜分析</a>
+          </div>
+          <div class="card-meta">
+            <span>⚡ JOJO</span>
+            <span>2026-03-21</span>
+            <span>分镜 · 叙事 · 动画</span>
+          </div>
+        </div>
+        <div class="card-series-label">#1</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Prev/Next navigation between articles -->
+  <div class="article-nav">
+    <div class="nav-prev">
+      <div class="nav-label">← 上一篇</div>
+      <div class="nav-title"><a href="docs/agent-naked.html">🦞 AI助手正在裸奔</a></div>
+    </div>
+    <div class="nav-next">
+      <div class="nav-label">下一篇</div>
+      <div class="nav-title" style="color:#aaa">待发布 · Hanako 执行力差异</div>
+    </div>
+  </div>
+
+  <footer>
+    <span>huanyu16 · 所有原创内容</span>
+    <span>2026-03-21</span>
+  </footer>
 
 </div>
-
-<div class="container">
-  <div class="cta-section">
-    <h2>让 AI 助手穿好衣服再上岗</h2>
-    <p>免费开源，一行命令安装。保护你的数据，从现在开始。</p>
-    <a href="agent-naked-full.html" class="btn-secondary">查看完整文章 →</a>
-  </div>
-</div>
-
-<footer>
-  <div class="container">
-    <p><a href="agent-naked-full.html">阅读完整文章</a> · MIT License · huanyu16</p>
-  </div>
-</footer>
-
 </body>
 </html>
