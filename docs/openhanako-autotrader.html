@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenHanako AutoTrader · 让传奇交易员为你工作</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: #f5f5f5;
+    color: #1a1a1a;
+    line-height: 1.8;
+    font-size: 16px;
+  }
+  a { color: #1a6cf5; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  nav {
+    border-bottom: 1px solid #eee;
+    padding: 0 48px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    height: 56px;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(8px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  nav .logo { font-weight: 700; font-size: 15px; flex-shrink: 0; }
+  nav .logo span { color: #888; font-weight: 400; }
+  nav a { font-size: 14px; color: #666; transition: color 0.15s; }
+  nav a:hover { color: #1a1a1a; text-decoration: none; }
+
+  .hero {
+    background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+    color: #fff;
+    padding: 80px 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(34,211,238,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-icon { font-size: 48px; margin-bottom: 24px; }
+  .hero h1 {
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 20px;
+    letter-spacing: -0.5px;
+  }
+  .hero-desc { font-size: 18px; color: rgba(255,255,255,0.7); max-width: 600px; margin-bottom: 36px; }
+  .hero-badges { display: flex; gap: 12px; flex-wrap: wrap; }
+  .badge {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 6px;
+    padding: 4px 12px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.8);
+  }
+  .hero-actions { display: flex; gap: 12px; margin-top: 32px; }
+  .btn-primary {
+    background: #22d3ee;
+    color: #0f2027;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    transition: background 0.15s;
+  }
+  .btn-primary:hover { background: #06b6d4; text-decoration: none; }
+  .btn-secondary {
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.9);
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 15px;
+    border: 1px solid rgba(255,255,255,0.2);
+    transition: background 0.15s;
+  }
+  .btn-secondary:hover { background: rgba(255,255,255,0.2); text-decoration: none; }
+
+  .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+  section { padding: 64px 0; border-bottom: 1px solid #eee; }
+  section:last-child { border-bottom: none; }
+  h2 { font-size: 22px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.3px; }
+  .section-lead { color: #666; font-size: 15px; margin-bottom: 32px; }
+
+  .pain-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .pain-card { background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 24px; }
+  .pain-icon { font-size: 28px; margin-bottom: 12px; }
+  .pain-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+  .pain-card p { font-size: 14px; color: #555; }
+
+  .strategies { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 32px 0; }
+  .strategy-card { background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 24px; }
+  .strategy-year { font-size: 12px; font-weight: 700; color: #22d3ee; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .strategy-name { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .strategy-author { font-size: 13px; color: #888; margin-bottom: 12px; }
+  .strategy-quote { font-size: 13px; color: #555; border-left: 3px solid #22d3ee; padding-left: 12px; font-style: italic; margin-bottom: 12px; }
+  .strategy-desc { font-size: 13px; color: #666; }
+
+  .flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin: 32px 0; }
+  .flow-step { text-align: center; padding: 0 8px; }
+  .flow-step .step-num {
+    width: 36px; height: 36px;
+    background: #22d3ee;
+    color: #0f2027;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700;
+    margin: 0 auto 12px;
+  }
+  .flow-step h4 { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+  .flow-step p { font-size: 13px; color: #666; }
+  .flow-arrow { color: #ddd; font-size: 20px; display: flex; align-items: center; }
+
+  .feat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .feat-item { background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 24px; display: flex; gap: 16px; align-items: flex-start; }
+  .feat-icon { font-size: 24px; flex-shrink: 0; }
+  .feat-item h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+  .feat-item p { font-size: 14px; color: #555; }
+
+  .risk-table { margin: 32px 0; }
+  .risk-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap: 0; background: #fff; border: 1px solid #eee; border-radius: 12px; overflow: hidden; font-size: 14px; }
+  .risk-header { background: #f5f5f5; padding: 12px 16px; font-weight: 600; }
+  .risk-cell { padding: 12px 16px; border-bottom: 1px solid #f0f0f0; }
+  .risk-cell:last-child { border-bottom: none; }
+  .risk-row:last-child .risk-cell { border-bottom: none; }
+  .risk-icon { font-size: 16px; }
+  .risk-name { font-weight: 600; }
+  .risk-lvl { font-weight: 600; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { background: #f5f5f5; padding: 12px 16px; text-align: left; font-weight: 600; border-bottom: 2px solid #eee; }
+  td { padding: 12px 16px; border-bottom: 1px solid #f0f0f0; }
+  tr:hover td { background: #fafafa; }
+  .yes { color: #22c55e; font-weight: 600; }
+  .no { color: #ef4444; }
+
+  .cta-section {
+    background: linear-gradient(135deg, #0f2027 0%, #203a43 100%);
+    color: #fff;
+    padding: 64px 48px;
+    text-align: center;
+    border-radius: 16px;
+    margin: 48px 0;
+  }
+  .cta-section h2 { color: #fff; font-size: 28px; margin-bottom: 12px; }
+  .cta-section p { color: rgba(255,255,255,0.7); font-size: 16px; margin-bottom: 28px; }
+  .cta-section .btn-secondary { background: #22d3ee; color: #0f2027; font-weight: 600; border: none; }
+  .cta-section .btn-secondary:hover { background: #06b6d4; }
+
+  footer { border-top: 1px solid #eee; padding: 32px 0; text-align: center; font-size: 13px; color: #888; }
+  footer a { color: #888; }
+  footer a:hover { color: #555; }
+
+  @media (max-width: 768px) {
+    .pain-grid, .feat-grid, .strategies { grid-template-columns: 1fr; }
+    .flow { grid-template-columns: 1fr; }
+    .flow-arrow { display: none; }
+    .risk-row { grid-template-columns: 1fr 1fr; }
+    .hero { padding: 48px 24px; }
+    .hero h1 { font-size: 26px; }
+    nav { padding: 0 20px; gap: 16px; }
+    .hero-actions { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">huanyu16 <span>/ OpenHanako AutoTrader</span></div>
+  <a href="#problem">问题</a>
+  <a href="#strategies">策略</a>
+  <a href="#install">安装</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-icon">📈</div>
+  <h1>让传奇交易员<br>为你全天候工作</h1>
+  <p class="hero-desc">集成了达瓦斯箱体、利弗莫尔突破、威廉姆斯 %R 三大经典策略，配合 AI 自然语言驱动和多层风控。你只需要说一句话，剩下的交给系统。</p>
+  <div class="hero-badges">
+    <span class="badge">🗣️ 自然语言交易</span>
+    <span class="badge">🧠 多策略融合</span>
+    <span class="badge">🛡️ 七层风控</span>
+    <span class="badge">🤖 7×24 自动调度</span>
+    <span class="badge">MIT License</span>
+    <span class="badge">模拟盘免费</span>
+  </div>
+  <div class="hero-actions">
+    <a href="https://github.com/huanyu16/openhanako-autotrader" class="btn-primary">查看源码 →</a>
+    <a href="https://github.com/huanyu16/openhanako-autotrader#readme" class="btn-secondary">安装文档 →</a>
+  </div>
+</div>
+
+<div class="container">
+
+  <section id="problem">
+    <h2>传统交易工具的四个死穴</h2>
+    <p class="section-lead">大多数散户在亏损，工具本身也是问题的一部分。</p>
+    <div class="pain-grid">
+      <div class="pain-card">
+        <div class="pain-icon">😓</div>
+        <h3>学不会</h3>
+        <p>TradingView、Thinkorswim、Wind……每个工具都要学几个月。写指标要学 Pine Script，做回测要学 Python，门槛太高。</p>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon">😱</div>
+        <h3>管不住手</h3>
+        <p>追涨杀跌、报复性交易、扛单不认亏。情绪化操作是散户亏钱的第一大原因，但没有工具帮你守住纪律。</p>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon">⏰</div>
+        <h3>盯不过来</h3>
+        <p>美股半夜开盘，你在中国睡觉。错过开盘窗口、来不及止损、错过最佳买卖点，这些每天都在发生。</p>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon">💸</div>
+        <h3>策略不靠谱</h3>
+        <p>各种「老师」推荐的策略，没有经过回测验证，没有风控，不知道什么时候该买什么时候该卖，全凭感觉。</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="strategies">
+    <h2>三个在历史上赚到过天量利润的交易员</h2>
+    <p class="section-lead">他们的方法，现在内置在你的系统里，经过 60+ 年市场验证。</p>
+    <div class="strategies">
+      <div class="strategy-card">
+        <div class="strategy-year">1907 — 1929</div>
+        <div class="strategy-name">杰西·利弗莫尔</div>
+        <div class="strategy-author">Jesse Livermore · 华尔街巨熊</div>
+        <div class="strategy-quote">"钱是坐着等来的，不是操作来的。"</div>
+        <div class="strategy-desc">1907 年一天赚 300 万美元，1929 年做空股市赚 1 亿美元（当时美国 GDP 的 1%）。发明突破交易法。</div>
+      </div>
+      <div class="strategy-card">
+        <div class="strategy-year">1957 — 1959</div>
+        <div class="strategy-name">尼古拉斯·达瓦斯</div>
+        <div class="strategy-author">Nicolas Darvas · 舞蹈家交易员</div>
+        <div class="strategy-quote">"我只在箱体被突破时买入，这比任何基本面分析都可靠。"</div>
+        <div class="strategy-desc">$36,000 起步，18 个月赚到 $2,250,000。发明「箱体理论」，至今仍是最有效的趋势跟踪方法之一。</div>
+      </div>
+      <div class="strategy-card">
+        <div class="strategy-year">1987</div>
+        <div class="strategy-name">拉瑞·威廉姆斯</div>
+        <div class="strategy-author">Larry Williams · 短线交易之王</div>
+        <div class="strategy-quote">"众人恐惧时贪婪，众人贪婪时恐惧。"</div>
+        <div class="strategy-desc">1987 年罗宾斯世界杯期货交易锦标赛冠军，$10,000 → $1,147,607（一年 11,376% 收益率）。发明 Williams %R 指标。</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="how">
+    <h2>工作方式：一句话交易</h2>
+    <p class="section-lead">不需要学任何工具，不需要写任何代码。你只需要像和朋友聊天一样说你想做什么。</p>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="step-num">1</div>
+        <h4>你说一句话</h4>
+        <p>"买入 100 股苹果" / "看看 NVDA 的信号" / "熔断！全部撤单"</p>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="step-num">2</div>
+        <h4>AI 分析策略</h4>
+        <p>自动调用 Darvas Box、Livermore 突破、Williams %R，融合输出综合信号</p>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="step-num">3</div>
+        <h4>风控检查</h4>
+        <p>仓位、止损、频率、日亏损……7 项风控规则逐条验证，不通过不下单</p>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="step-num">4</div>
+        <h4>执行并报告</h4>
+        <p>通过 Alpaca API 下单，实时返回成交确认，全程可审计追溯</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="features">
+    <h2>核心能力</h2>
+    <p class="section-lead">不只是交易，是一套完整的交易操作系统。</p>
+    <div class="feat-grid">
+      <div class="feat-item">
+        <div class="feat-icon">🗣️</div>
+        <div>
+          <h3>自然语言驱动</h3>
+          <p>用中文/英文和系统对话，不需要学习任何交易软件。说"买入"、"卖出"、"分析一下"，系统自动理解并执行。</p>
+        </div>
+      </div>
+      <div class="feat-item">
+        <div class="feat-icon">🧠</div>
+        <div>
+          <h3>多策略融合</h3>
+          <p>Darvas + Livermore + Williams + RSI + 趋势分析多维融合，输出 -10 到 +10 的综合评分，比单一指标更可靠。</p>
+        </div>
+      </div>
+      <div class="feat-item">
+        <div class="feat-icon">🛡️</div>
+        <div>
+          <h3>七层风控拦截</h3>
+          <p>白名单 → 做空限制 → 单笔限额 → 标的仓位 → 总仓位 → 日内亏损 → 交易频率。任何一关不通过，交易直接拒绝。</p>
+        </div>
+      </div>
+      <div class="feat-item">
+        <div class="feat-icon">🤖</div>
+        <div>
+          <h3>7×24 自动调度</h3>
+          <p>开盘前扫描 → 开盘执行 → 午间检查 → 收盘报告 → 每 5 分钟止损监控。你睡觉的时候，系统在替你盯盘。</p>
+        </div>
+      </div>
+      <div class="feat-item">
+        <div class="feat-icon">📊</div>
+        <div>
+          <h3>完整审计追溯</h3>
+          <p>每一笔交易、每一次风控拦截、每一次熔断，全部记录在 SQLite 审计日志中，随时可查可导。</p>
+        </div>
+      </div>
+      <div class="feat-item">
+        <div class="feat-icon">🌍</div>
+        <div>
+          <h3>多资产支持</h3>
+          <p>美股、期货、加密货币、期权，一个系统覆盖所有资产类型。从模拟盘到实盘平滑过渡。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="risk">
+    <h2>风控系统</h2>
+    <p class="section-lead">交易可以亏，但不能失控。四档风控模板，从新手到比赛选手，找到适合你的节奏。</p>
+    <div class="risk-table">
+      <div class="risk-row" style="background:#f5f5f5; font-weight:600; border-radius:12px 12px 0 0;">
+        <div class="risk-cell">模式</div>
+        <div class="risk-cell">单笔上限</div>
+        <div class="risk-cell">总仓位</div>
+        <div class="risk-cell">止损</div>
+        <div class="risk-cell">风险</div>
+      </div>
+      <div class="risk-row">
+        <div class="risk-cell risk-name">🛡️ 保守模式</div>
+        <div class="risk-cell">5%</div>
+        <div class="risk-cell">50%</div>
+        <div class="risk-cell">3%</div>
+        <div class="risk-cell risk-lvl" style="color:#22c55e;">低</div>
+      </div>
+      <div class="risk-row">
+        <div class="risk-cell risk-name">📦 达瓦斯模式</div>
+        <div class="risk-cell">15%</div>
+        <div class="risk-cell">70%</div>
+        <div class="risk-cell">5%</div>
+        <div class="risk-cell risk-lvl" style="color:#f59e0b;">中</div>
+      </div>
+      <div class="risk-row">
+        <div class="risk-cell risk-name">🔥 利弗莫尔模式</div>
+        <div class="risk-cell">30%</div>
+        <div class="risk-cell">80%</div>
+        <div class="risk-cell">8%</div>
+        <div class="risk-cell risk-lvl" style="color:#f97316;">高</div>
+      </div>
+      <div class="risk-row">
+        <div class="risk-cell risk-name">🏆 比赛模式</div>
+        <div class="risk-cell">80%</div>
+        <div class="risk-cell">100%</div>
+        <div class="risk-cell">15%</div>
+        <div class="risk-cell risk-lvl" style="color:#ef4444;">极高</div>
+      </div>
+    </div>
+    <p style="font-size:13px; color:#666; margin-top:16px;">🚨 <strong>紧急熔断：</strong>一句"熔断"，所有挂单撤销，交易暂停。不需要在多个平台间切换操作。</p>
+  </section>
+
+  <section id="compare">
+    <h2>对比</h2>
+    <table>
+      <thead>
+        <tr><th>能力</th><th>手动交易</th><th>传统量化平台</th><th>AutoTrader</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>上手门槛</td><td class="no">需学交易软件</td><td class="no">需学编程</td><td class="yes">说一句话就行</td></tr>
+        <tr><td>策略质量</td><td class="no">凭感觉</td><td class="warn">自己写</td><td class="yes">传奇交易员验证</td></tr>
+        <tr><td>风控</td><td class="no">靠自制力</td><td class="yes">有</td><td class="yes">7层自动拦截</td></tr>
+        <tr><td>24小时盯盘</td><td class="no">做不到</td><td class="yes">能</td><td class="yes">自动调度</td></tr>
+        <tr><td>自然语言交互</td><td class="no">✗</td><td class="no">✗</td><td class="yes">✓ 核心能力</td></tr>
+        <tr><td>审计追溯</td><td class="no">无</td><td class="warn">部分</td><td class="yes">全量日志</td></tr>
+        <tr><td>成本</td><td>免费</td><td>$50-200/月</td><td>免费开源</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+</div>
+
+<div class="container">
+  <div class="cta-section">
+    <h2>从模拟盘开始</h2>
+    <p>零成本体验传奇交易员的智慧。代码全部开源，没有任何隐藏费用。</p>
+    <a href="https://github.com/huanyu16/openhanako-autotrader" class="btn-secondary">GitHub 查看源码 →</a>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <p><a href="https://github.com/huanyu16/openhanako-autotrader">GitHub</a> · MIT License · 模拟盘免费 · huanyu16</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>答题卡生成器 · HTML→PDF 印刷级转换</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: #f5f5f5;
+    color: #1a1a1a;
+    line-height: 1.8;
+    font-size: 16px;
+  }
+  a { color: #1a6cf5; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  nav {
+    border-bottom: 1px solid #eee;
+    padding: 0 48px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    height: 56px;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(8px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  nav .logo { font-weight: 700; font-size: 15px; flex-shrink: 0; }
+  nav .logo span { color: #888; font-weight: 400; }
+  nav a { font-size: 14px; color: #666; transition: color 0.15s; }
+  nav a:hover { color: #1a1a1a; text-decoration: none; }
+
+  .hero {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: #fff;
+    padding: 80px 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(99,102,241,0.2) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-icon { font-size: 48px; margin-bottom: 24px; }
+  .hero h1 {
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 20px;
+    letter-spacing: -0.5px;
+  }
+  .hero-desc { font-size: 18px; color: rgba(255,255,255,0.7); max-width: 600px; margin-bottom: 36px; }
+  .hero-badges { display: flex; gap: 12px; flex-wrap: wrap; }
+  .badge {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 6px;
+    padding: 4px 12px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.8);
+  }
+  .hero-actions { display: flex; gap: 12px; margin-top: 32px; }
+  .btn-primary {
+    background: #6366f1;
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    transition: background 0.15s;
+  }
+  .btn-primary:hover { background: #4f46e5; text-decoration: none; }
+  .btn-secondary {
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.9);
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 15px;
+    border: 1px solid rgba(255,255,255,0.2);
+    transition: background 0.15s;
+  }
+  .btn-secondary:hover { background: rgba(255,255,255,0.2); text-decoration: none; }
+
+  .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+  section { padding: 64px 0; border-bottom: 1px solid #eee; }
+  section:last-child { border-bottom: none; }
+  h2 { font-size: 22px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.3px; }
+  .section-lead { color: #666; font-size: 15px; margin-bottom: 32px; }
+
+  .pain-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .pain-card { background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 24px; }
+  .pain-icon { font-size: 28px; margin-bottom: 12px; }
+  .pain-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+  .pain-card p { font-size: 14px; color: #555; }
+
+  .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 32px 0; }
+  .stat-box { background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 24px; text-align: center; }
+  .stat-num { font-size: 36px; font-weight: 700; color: #6366f1; margin-bottom: 4px; }
+  .stat-unit { font-size: 14px; color: #888; }
+  .stat-label { font-size: 13px; color: #555; margin-top: 4px; }
+
+  .flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin: 32px 0; position: relative; }
+  .flow-step { text-align: center; padding: 0 8px; }
+  .flow-step .step-num {
+    width: 36px; height: 36px;
+    background: #6366f1;
+    color: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700;
+    margin: 0 auto 12px;
+  }
+  .flow-step h4 { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+  .flow-step p { font-size: 13px; color: #666; }
+  .flow-arrow { color: #ddd; font-size: 20px; display: flex; align-items: center; padding: 0; }
+
+  .feat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .feat-item { background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 24px; display: flex; gap: 16px; align-items: flex-start; }
+  .feat-icon { font-size: 24px; flex-shrink: 0; }
+  .feat-item h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+  .feat-item p { font-size: 14px; color: #555; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { background: #f5f5f5; padding: 12px 16px; text-align: left; font-weight: 600; border-bottom: 2px solid #eee; }
+  td { padding: 12px 16px; border-bottom: 1px solid #f0f0f0; }
+  tr:hover td { background: #fafafa; }
+  .yes { color: #22c55e; font-weight: 600; }
+  .no { color: #ef4444; }
+  .warn { color: #f59e0b; }
+
+  .install-block { background: #1a1a2e; border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+  .install-block h3 { color: #fff; font-size: 15px; margin-bottom: 12px; }
+  .install-block p { color: rgba(255,255,255,0.6); font-size: 13px; margin-bottom: 12px; }
+  code {
+    display: block;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 13px;
+    color: #a5b4fc;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .cmd-comment { color: #6b7280; }
+
+  .cta-section {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    color: #fff;
+    padding: 64px 48px;
+    text-align: center;
+    border-radius: 16px;
+    margin: 48px 0;
+  }
+  .cta-section h2 { color: #fff; font-size: 28px; margin-bottom: 12px; }
+  .cta-section p { color: rgba(255,255,255,0.85); font-size: 16px; margin-bottom: 28px; }
+  .cta-section .btn-secondary { background: #fff; color: #4f46e5; font-weight: 600; border: none; }
+  .cta-section .btn-secondary:hover { background: rgba(255,255,255,0.9); }
+
+  footer { border-top: 1px solid #eee; padding: 32px 0; text-align: center; font-size: 13px; color: #888; }
+  footer a { color: #888; }
+  footer a:hover { color: #555; }
+
+  @media (max-width: 768px) {
+    .pain-grid, .feat-grid, .stats-row { grid-template-columns: 1fr; }
+    .flow { grid-template-columns: 1fr; }
+    .flow-arrow { display: none; }
+    .hero { padding: 48px 24px; }
+    .hero h1 { font-size: 26px; }
+    nav { padding: 0 20px; gap: 16px; }
+    .hero-actions { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">huanyu16 <span>/ 答题卡生成器</span></div>
+  <a href="#problem">问题</a>
+  <a href="#solution">方案</a>
+  <a href="#install">安装</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-icon">📄</div>
+  <h1>HTML 预览完美，<br>PDF 转出来是废稿</h1>
+  <p class="hero-desc">一个 CSS 细节毁掉整个印刷文件——Guide Lines 间距错乱、颜色失真、线条消失。三种工具全试过，答案藏在 SVG 的 viewBox 里。</p>
+  <div class="hero-badges">
+    <span class="badge">SVG + Playwright</span>
+    <span class="badge">误差 &lt; 0.5%</span>
+    <span class="badge">MIT License</span>
+    <span class="badge">Python</span>
+  </div>
+  <div class="hero-actions">
+    <a href="https://github.com/huanyu16/answer-sheet-generator" class="btn-primary">查看源码 →</a>
+    <a href="https://github.com/huanyu16/answer-sheet-generator#readme" class="btn-secondary">pip install →</a>
+  </div>
+</div>
+
+<div class="container">
+
+  <section id="problem">
+    <h2>问题：HTML → PDF 的一致性陷阱</h2>
+    <p class="section-lead">CSS mm 单位解释分歧、SVG mm 不被 Chromium 解析、repeating-gradient 不被支持——三层翻译全部出错。</p>
+    <div class="pain-grid">
+      <div class="pain-card">
+        <div class="pain-icon">📐</div>
+        <h3>CSS mm 单位解释分歧</h3>
+        <p>CSS 的 1mm = 3.78 CSS px，但 ReportLab 认为 1mm = 72/25.4 pt，WeasyPrint 又有自己的换算。同一个"7mm"，三个引擎算出三个不同的物理值。</p>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon">🎨</div>
+        <h3>CSS Gradient 不被支持</h3>
+        <p>repeating-linear-gradient 是 CSS3 特性，大部分 PDF 转换器（ReportLab、wkhtmltopdf 早期版）根本不支持，Guide Lines 直接消失或渲染错误。</p>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon">⚙️</div>
+        <h3>SVG mm 单位不生效</h3>
+        <p>换成 SVG line + stroke-width="0.2mm"，Chromium PDF 引擎不认 SVG 的 mm 单位，Guide Lines 间距直接偏到 9.54mm——比理论值大 36%。</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="solution">
+    <h2>核心方案</h2>
+    <p class="section-lead">不用 CSS Gradient，用 SVG line。不用第三方转换器，用 Chromium 本身。</p>
+
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="stat-num">6.99</div>
+        <div class="stat-unit">mm</div>
+        <div class="stat-label">Guide Line 实际间距，误差 &lt; 0.5%</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">100%</div>
+        <div class="stat-unit"></div>
+        <div class="stat-label">HTML ↔ PDF 渲染一致性</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">0.14</div>
+        <div class="stat-unit">mm</div>
+        <div class="stat-label">Guide Line 线宽，符合印刷标准</div>
+      </div>
+    </div>
+
+    <div class="flow">
+      <div class="flow-step">
+        <div class="step-num">1</div>
+        <h4>HTML 布局</h4>
+        <p>CSS @page + Flexbox 定义纸张尺寸和内容排版</p>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="step-num">2</div>
+        <h4>SVG Guide Lines</h4>
+        <p>viewBox + preserveAspectRatio，让 Chromium 正确解析 mm 映射</p>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="step-num">3</div>
+        <h4>Playwright</div>
+        <p>Chromium Headless 渲染，同一 Skia/PDF 引擎输出</p>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="step-num">4</div>
+        <h4>PDF 成品</h4>
+        <p>像素级精确，物理尺寸误差 &lt; 0.5%，直接印刷</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="compare">
+    <h2>对比</h2>
+    <p class="section-lead">和现有方案相比，SVG + Playwright 在精度、布局支持、维护成本上全面胜出。</p>
+    <table>
+      <thead>
+        <tr><th>维度</th><th>ReportLab</th><th>WeasyPrint</th><th>SVG + Playwright</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Guide Line 精度</td><td class="yes">✓ 精确</td><td class="warn">△ 6.76mm</td><td class="yes">✓ 6.99mm</td></tr>
+        <tr><td>CSS 布局支持</td><td class="no">✗ 零</td><td class="yes">✓ 完整</td><td class="yes">✓ 完整</td></tr>
+        <tr><td>HTML 预览一致性</td><td class="no">✗</td><td class="yes">✓ 高</td><td class="yes">✓ 100%</td></tr>
+        <tr><td>维护成本</td><td class="no">极高</td><td class="warn">中</td><td class="yes">低</td></tr>
+        <tr><td>PDF 引擎</td><td>ReportLab</td><td>WeasyPrint</td><td>Chromium</td></tr>
+        <tr><td>成本</td><td>免费</td><td>免费</td><td>免费开源</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="features">
+    <h2>核心能力</h2>
+    <p class="section-lead">不只是答题卡，是一套印刷级 PDF 生成方案。</p>
+    <div class="feat-grid">
+      <div class="feat-item">
+        <div class="feat-icon">📐</div>
+        <div>
+          <h3>物理尺寸精确控制</h3>
+          <p>Guide Lines 间距误差 &lt; 0.5%，线宽 0.14mm，完全符合印刷标准。测量工具实测可验证。</p>
+        </div>
+      </div>
+      <div class="feat-item">
+        <div class="feat-icon">🎨</div>
+        <div>
+          <h3>HTML 预览 = PDF 成品</h3>
+          <p>同一 Chromium Skia/PDF 引擎渲染，屏幕看到什么样，印刷出来就是什么样，零意外。</p>
+        </div>
+      </div>
+      <div class="feat-item">
+        <div class="feat-icon">⚡</div>
+        <div>
+          <h3>自动分页，不切割题目</h3>
+          <p>235mm 内容高度自动切页，遇到大题跨页自动在续页加题目标注，保持题目完整性。</p>
+        </div>
+      </div>
+      <div class="feat-item">
+        <div class="feat-icon">🏫</div>
+        <div>
+          <h3>多校通用配置</h3>
+          <p>改 PAPERS 配置即可生成任何学校、任何科目的答题卡。选择题、填空题、解答题三种题型全覆盖。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="install">
+    <h2>安装与使用</h2>
+    <p class="section-lead">四步生成印刷级答题卡：改配置 → 运行脚本 → 拿 HTML 预览 + PDF 印刷文件。</p>
+    <div class="install-block">
+      <h3>安装依赖</h3>
+      <code><span class="cmd-comment"># 安装 Playwright 浏览器</span>
+pip install playwright
+playwright install chromium
+
+<span class="cmd-comment"># 克隆项目</span>
+git clone https://github.com/huanyu16/answer-sheet-generator.git
+cd answer-sheet-generator
+
+<span class="cmd-comment"># 安装 Python 依赖</span>
+pip install -r requirements.txt</code>
+    </div>
+    <div class="install-block">
+      <h3>生成答题卡</h3>
+      <code><span class="cmd-comment"># 编辑 PAPERS 字典配置学校、科目、题数</span>
+<span class="cmd-comment"># 运行生成</span>
+python answer_sheet.py
+
+<span class="cmd-comment"># 输出：HTML 预览 + PDF 印刷文件</span></code>
+    </div>
+  </section>
+
+</div>
+
+<div class="container">
+  <div class="cta-section">
+    <h2>告别"HTML 对、PDF 错"</h2>
+    <p>改配置 → 运行脚本 → 拿文件。所有源码开源，没有任何依赖费用。</p>
+    <a href="https://github.com/huanyu16/answer-sheet-generator" class="btn-secondary">GitHub 查看源码 →</a>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <p><a href="https://github.com/huanyu16/answer-sheet-generator">GitHub</a> · MIT License · huanyu16</p>
+  </div>
+</footer>
+
+</body>
+</html>

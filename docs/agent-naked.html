@@ -1,844 +1,400 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🦞 你的"私人AI助手"，正在裸奔</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
-            background-color: #f5f5f5;
-            color: #333;
-            line-height: 1.8;
-            font-size: 16px;
-            padding: 0;
-            margin: 0;
-        }
-        
-        .container {
-            max-width: 680px;
-            margin: 0 auto;
-            background-color: #fff;
-            box-shadow: 0 0 20px rgba(0,0,0,0.05);
-        }
-        
-        /* 封面图 */
-        .cover {
-            width: 100%;
-            position: relative;
-        }
-        
-        .cover img {
-            width: 100%;
-            display: block;
-        }
-        
-        .cover-title {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 40px 24px 24px;
-            background: linear-gradient(transparent, rgba(0,0,0,0.8));
-            color: #fff;
-        }
-        
-        .cover-title h1 {
-            font-size: 24px;
-            font-weight: 600;
-            line-height: 1.4;
-            margin-bottom: 8px;
-        }
-        
-        .cover-title .date {
-            font-size: 13px;
-            opacity: 0.8;
-        }
-        
-        /* 文章内容 */
-        .article {
-            padding: 32px 24px;
-        }
-        
-        .section {
-            margin-bottom: 28px;
-        }
-        
-        .section-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #1a1a1a;
-            margin-bottom: 16px;
-            padding-left: 12px;
-            border-left: 4px solid #ff6b35;
-        }
-        
-        p {
-            margin-bottom: 16px;
-            text-align: justify;
-        }
-        
-        .highlight {
-            background: linear-gradient(180deg, transparent 60%, rgba(255,107,53,0.2) 60%);
-            padding: 0 2px;
-        }
-        
-        .quote {
-            background-color: #f8f8f8;
-            border-left: 4px solid #ff6b35;
-            padding: 16px 20px;
-            margin: 20px 0;
-            font-style: italic;
-            color: #555;
-        }
-        
-        .quote strong {
-            color: #ff6b35;
-        }
-        
-        /* 对话样式 */
-        .dialogue {
-            background-color: #f9f9f9;
-            border-radius: 12px;
-            padding: 20px;
-            margin: 20px 0;
-        }
-        
-        .dialogue-item {
-            margin-bottom: 16px;
-        }
-        
-        .dialogue-item:last-child {
-            margin-bottom: 0;
-        }
-        
-        .dialogue-label {
-            font-size: 12px;
-            color: #999;
-            margin-bottom: 4px;
-        }
-        
-        .dialogue-text {
-            font-size: 15px;
-        }
-        
-        /* 代码块 */
-        .code-block {
-            background-color: #1e1e1e;
-            border-radius: 8px;
-            padding: 16px;
-            margin: 20px 0;
-            overflow-x: auto;
-        }
-        
-        .code-block code {
-            font-family: "SF Mono", "Fira Code", Consolas, monospace;
-            font-size: 13px;
-            color: #d4d4d4;
-            white-space: pre;
-            line-height: 1.6;
-        }
-        
-        /* 文件目录 */
-        .file-tree {
-            background-color: #f8f9fa;
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            padding: 16px;
-            margin: 20px 0;
-            font-family: "SF Mono", "Fira Code", Consolas, monospace;
-            font-size: 13px;
-        }
-        
-        .file-tree .folder {
-            color: #6f42c1;
-        }
-        
-        .file-tree .file {
-            color: #e83e8c;
-        }
-        
-        .file-tree .arrow {
-            color: #999;
-        }
-        
-        /* 风险卡片 */
-        .risk-cards {
-            display: grid;
-            gap: 12px;
-            margin: 20px 0;
-        }
-        
-        .risk-card {
-            background: linear-gradient(135deg, #fff5f2 0%, #fff 100%);
-            border: 1px solid #ffe5dc;
-            border-radius: 12px;
-            padding: 16px;
-        }
-        
-        .risk-card-title {
-            font-weight: 600;
-            color: #ff6b35;
-            margin-bottom: 8px;
-            font-size: 15px;
-        }
-        
-        .risk-card-desc {
-            font-size: 14px;
-            color: #666;
-            margin: 0;
-        }
-        
-        /* 解决方卡 */
-        .solution-card {
-            background: linear-gradient(135deg, #e8f5e9 0%, #fff 100%);
-            border: 1px solid #c8e6c9;
-            border-radius: 16px;
-            padding: 24px;
-            margin: 24px 0;
-        }
-        
-        .solution-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #2e7d32;
-            margin-bottom: 16px;
-            text-align: center;
-        }
-        
-        .feature-list {
-            list-style: none;
-        }
-        
-        .feature-list li {
-            padding: 8px 0;
-            padding-left: 28px;
-            position: relative;
-            font-size: 15px;
-        }
-        
-        .feature-list li::before {
-            content: "🔐";
-            position: absolute;
-            left: 0;
-        }
-        
-        /* 结尾 */
-        .ending {
-            text-align: center;
-            padding: 32px 24px;
-            background: linear-gradient(180deg, #fff 0%, #f8f8f8 100%);
-            border-top: 1px solid #eee;
-        }
-        
-        .ending-title {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 16px;
-        }
-        
-        .link-box {
-            background-color: #fff;
-            border: 2px solid #ff6b35;
-            border-radius: 12px;
-            padding: 16px 24px;
-            margin: 16px auto;
-            max-width: 400px;
-        }
-        
-        .link-label {
-            font-size: 12px;
-            color: #999;
-            margin-bottom: 4px;
-        }
-        
-        .link-url {
-            font-size: 14px;
-            color: #ff6b35;
-            word-break: break-all;
-            font-family: monospace;
-        }
-        
-        .cta-button {
-            display: inline-block;
-            background: linear-gradient(135deg, #ff6b35 0%, #ff8f65 100%);
-            color: #fff;
-            padding: 14px 32px;
-            border-radius: 24px;
-            text-decoration: none;
-            font-weight: 600;
-            margin-top: 20px;
-            box-shadow: 0 4px 12px rgba(255,107,53,0.3);
-        }
-        
-        .cta-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(255,107,53,0.4);
-        }
-        
-        .footer-note {
-            font-size: 13px;
-            color: #999;
-            margin-top: 24px;
-        }
-        
-        /* 分隔线 */
-        .divider {
-            height: 1px;
-            background: linear-gradient(90deg, transparent, #ddd, transparent);
-            margin: 32px 0;
-        }
-        
-        /* 强调框 */
-        .emphasis-box {
-            background: linear-gradient(135deg, #fff8e1 0%, #fff 100%);
-            border: 1px solid #ffe082;
-            border-radius: 12px;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: center;
-        }
-        
-        .emphasis-box p {
-            margin: 0;
-            font-size: 15px;
-            color: #666;
-        }
-        
-        .emphasis-box strong {
-            color: #f57c00;
-        }
-        
-        /* 安全评分表 */
-        .score-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            font-size: 14px;
-        }
-        
-        .score-table th,
-        .score-table td {
-            padding: 12px 16px;
-            text-align: left;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .score-table th {
-            background: #f8f8f8;
-            font-weight: 600;
-            color: #333;
-        }
-        
-        .score-table td {
-            color: #666;
-        }
-        
-        .score-table .level {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-        
-        .score-table .level-high {
-            background: #fee;
-            color: #d32f2f;
-        }
-        
-        .score-table .level-medium {
-            background: #fff3e0;
-            color: #f57c00;
-        }
-        
-        .score-table .level-low {
-            background: #e8f5e9;
-            color: #388e3c;
-        }
-        
-        /* 技术架构图 */
-        .arch-diagram {
-            background: #f8f9fa;
-            border: 1px solid #e9ecef;
-            border-radius: 12px;
-            padding: 24px;
-            margin: 20px 0;
-            text-align: center;
-        }
-        
-        .arch-diagram .title {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 16px;
-        }
-        
-        .arch-diagram .layer {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-bottom: 16px;
-        }
-        
-        .arch-diagram .box {
-            background: #fff;
-            border: 2px solid #ff6b35;
-            border-radius: 8px;
-            padding: 12px 20px;
-            font-size: 13px;
-            color: #333;
-            min-width: 100px;
-        }
-        
-        .arch-diagram .arrow {
-            color: #999;
-            font-size: 20px;
-            margin: 8px 0;
-        }
-        
-        /* 对比表 */
-        .compare-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            font-size: 14px;
-        }
-        
-        .compare-table th,
-        .compare-table td {
-            padding: 12px 16px;
-            text-align: center;
-            border: 1px solid #eee;
-        }
-        
-        .compare-table th {
-            background: #ff6b35;
-            color: #fff;
-            font-weight: 600;
-        }
-        
-        .compare-table td:first-child {
-            text-align: left;
-            font-weight: 500;
-        }
-        
-        .compare-table .yes {
-            color: #388e3c;
-            font-weight: bold;
-        }
-        
-        .compare-table .no {
-            color: #d32f2f;
-        }
-        
-        /* 往期精选 */
-        .related-articles {
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 24px;
-            margin-top: 32px;
-        }
-        
-        .related-articles h3 {
-            font-size: 16px;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 16px;
-            padding-bottom: 12px;
-            border-bottom: 2px solid #ff6b35;
-        }
-        
-        .article-item {
-            display: block;
-            background: #fff;
-            border: 1px solid #eee;
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 12px;
-            text-decoration: none;
-            color: inherit;
-            transition: all 0.2s ease;
-        }
-        
-        .article-item:last-child {
-            margin-bottom: 0;
-        }
-        
-        .article-item:hover {
-            border-color: #ff6b35;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        
-        .article-item .tag {
-            font-size: 11px;
-            color: #ff6b35;
-            background: rgba(255,107,53,0.1);
-            padding: 2px 8px;
-            border-radius: 4px;
-            margin-right: 8px;
-        }
-        
-        .article-item .title {
-            font-weight: 600;
-            color: #333;
-            margin-top: 8px;
-        }
-        
-        .article-item .desc {
-            font-size: 13px;
-            color: #999;
-            margin-top: 4px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🦞 你的私人AI助手，正在裸奔</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: #f5f5f5;
+    color: #1a1a1a;
+    line-height: 1.8;
+    font-size: 16px;
+  }
+  a { color: #1a6cf5; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* ─── nav ─── */
+  nav {
+    border-bottom: 1px solid #eee;
+    padding: 0 48px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    height: 56px;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(8px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  nav .logo { font-weight: 700; font-size: 15px; flex-shrink: 0; }
+  nav .logo span { color: #888; font-weight: 400; }
+  nav a { font-size: 14px; color: #666; transition: color 0.15s; }
+  nav a:hover { color: #1a1a1a; text-decoration: none; }
+
+  /* ─── hero ─── */
+  .hero {
+    background: #1a1a1a;
+    color: #fff;
+    padding: 80px 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(255,107,53,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-icon { font-size: 48px; margin-bottom: 24px; }
+  .hero h1 {
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 20px;
+    letter-spacing: -0.5px;
+  }
+  .hero-desc {
+    font-size: 18px;
+    color: rgba(255,255,255,0.7);
+    max-width: 600px;
+    margin-bottom: 36px;
+  }
+  .hero-badges { display: flex; gap: 12px; flex-wrap: wrap; }
+  .badge {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 6px;
+    padding: 4px 12px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.8);
+  }
+  .hero-actions { display: flex; gap: 12px; margin-top: 32px; }
+  .btn-primary {
+    background: #ff6b35;
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    transition: background 0.15s;
+  }
+  .btn-primary:hover { background: #e55a25; text-decoration: none; }
+  .btn-secondary {
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.9);
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 15px;
+    border: 1px solid rgba(255,255,255,0.2);
+    transition: background 0.15s;
+  }
+  .btn-secondary:hover { background: rgba(255,255,255,0.2); text-decoration: none; }
+
+  /* ─── container ─── */
+  .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+
+  /* ─── sections ─── */
+  section { padding: 64px 0; border-bottom: 1px solid #eee; }
+  section:last-child { border-bottom: none; }
+  h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.3px;
+  }
+  .section-lead {
+    color: #666;
+    font-size: 15px;
+    margin-bottom: 32px;
+  }
+
+  /* ─── pain cards ─── */
+  .pain-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .pain-card {
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 24px;
+    transition: box-shadow 0.2s;
+  }
+  .pain-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+  .pain-icon { font-size: 28px; margin-bottom: 12px; }
+  .pain-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+  .pain-card p { font-size: 14px; color: #555; }
+
+  /* ─── shield features ─── */
+  .shield-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .shield-item {
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .shield-icon { font-size: 24px; flex-shrink: 0; }
+  .shield-item h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+  .shield-item p { font-size: 14px; color: #555; }
+
+  /* ─── comparison ─── */
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { background: #f5f5f5; padding: 12px 16px; text-align: left; font-weight: 600; border-bottom: 2px solid #eee; }
+  td { padding: 12px 16px; border-bottom: 1px solid #f0f0f0; }
+  tr:hover td { background: #fafafa; }
+  .yes { color: #22c55e; font-weight: 600; }
+  .no { color: #ef4444; }
+
+  /* ─── install ─── */
+  .install-block {
+    background: #1a1a1a;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  .install-block h3 { color: #fff; font-size: 15px; margin-bottom: 12px; }
+  .install-block p { color: rgba(255,255,255,0.6); font-size: 13px; margin-bottom: 12px; }
+  code {
+    display: block;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 13px;
+    color: #a3e635;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .cmd-comment { color: #6b7280; }
+
+  /* ─── cta ─── */
+  .cta-section {
+    background: linear-gradient(135deg, #ff6b35 0%, #e55a25 100%);
+    color: #fff;
+    padding: 64px 48px;
+    text-align: center;
+    border-radius: 16px;
+    margin: 48px 0;
+  }
+  .cta-section h2 { color: #fff; font-size: 28px; margin-bottom: 12px; }
+  .cta-section p { color: rgba(255,255,255,0.85); font-size: 16px; margin-bottom: 28px; }
+  .cta-section .btn-secondary {
+    background: #fff;
+    color: #e55a25;
+    font-weight: 600;
+    border: none;
+  }
+  .cta-section .btn-secondary:hover { background: rgba(255,255,255,0.9); }
+
+  /* ─── footer ─── */
+  footer {
+    border-top: 1px solid #eee;
+    padding: 32px 0;
+    text-align: center;
+    font-size: 13px;
+    color: #888;
+  }
+  footer a { color: #888; }
+  footer a:hover { color: #555; }
+
+  /* ─── responsive ─── */
+  @media (max-width: 768px) {
+    .pain-grid, .shield-grid { grid-template-columns: 1fr; }
+    .hero { padding: 48px 24px; }
+    .hero h1 { font-size: 26px; }
+    nav { padding: 0 20px; gap: 16px; }
+    .hero-actions { flex-direction: column; }
+  }
+</style>
 </head>
 <body>
-    <div class="container">
-        <!-- 封面 -->
-        <div class="cover">
-            <img src="https://raw.githubusercontent.com/huanyu16/openclaw-security-shield/main/cover.jpg" alt="Security Shield">
-            <div class="cover-title">
-                <h1>🦞 你的"私人AI助手"，正在裸奔</h1>
-                <div class="date">2026年3月20日 · 安全科普</div>
-            </div>
-        </div>
-        
-        <div class="article">
-            <!-- 01 -->
-            <div class="section">
-                <h2 class="section-title">01 · 朋友老张的焦虑</h2>
-                <p>我朋友老张最近很焦虑。</p>
-                <p>他跟我说，他发现自己的AI助手好像<span class="highlight">"不对劲"</span>——有时候问它问题，它会突然回复一些他从没聊过的内容。更诡异的是，有几次他让助手查邮件，发现邮件列表里多了好几封陌生的邮件。</p>
-                <div class="quote">
-                    <strong>"这玩意儿不会被人黑了吧？"</strong>他问我。
-                </div>
-                <p>我看了一眼他的配置，叹了口气。</p>
-                <div class="quote">
-                    <strong>"老张，你不是被黑了。你只是……一直在裸奔而已。"</strong>
-                </div>
-            </div>
-            
-            <div class="divider"></div>
-            
-            <!-- 02 -->
-            <div class="section">
-                <h2 class="section-title">02 · 裸奔？</h2>
-                <p>对，就是字面意思。</p>
-                <p>现在很多人都在用AI助手——帮写代码、查资料、管日程、甚至聊天解闷。听起来很美好对吧？</p>
-                <p>但问题来了：<strong>这些助手知道太多关于你的事了。</strong></p>
-                <p>你的API密钥、对话历史、浏览器cookies、访问过的网站、你告诉它的密码、你让它帮你处理的私密信息……全都在一个小小的文件夹里躺着。</p>
-                <p>而这个文件夹，可能正在：</p>
-                <div class="dialogue">
-                    <div class="dialogue-item">
-                        <div class="dialogue-text">📁 同步到你的iCloud</div>
-                    </div>
-                    <div class="dialogue-item">
-                        <div class="dialogue-text">📁 上传到了某个GitHub仓库</div>
-                    </div>
-                    <div class="dialogue-item">
-                        <div class="dialogue-text">📁 被某个恶意软件悄悄读取</div>
-                    </div>
-                    <div class="dialogue-item">
-                        <div class="dialogue-text">📁 静静躺在云盘里等着被"光顾"</div>
-                    </div>
-                </div>
-                <p>你说，这不是裸奔是什么？</p>
-            </div>
-            
-            <div class="divider"></div>
-            
-            <!-- 03 -->
-            <div class="section">
-                <h2 class="section-title">03 · 真实的案例</h2>
-                <p>让我给你看个真实的例子。</p>
-                <p>我检查了一个普通用户的OpenClaw（一个很流行的AI助手框架）的数据目录，发现了这些东西：</p>
-                <div class="file-tree">
-                    <div><span class="folder">~/.openclaw/</span></div>
-                    <div style="padding-left: 16px;">
-                        <div><span class="file">openclaw.json</span> <span class="arrow">←</span> API密钥明文存储</div>
-                        <div><span class="folder">memory/</span></div>
-                        <div style="padding-left: 16px;">
-                            <div><span class="file">main.sqlite</span> <span class="arrow">←</span> 所有对话历史</div>
-                        </div>
-                        <div><span class="folder">browser/</span></div>
-                        <div style="padding-left: 16px;">
-                            <div><span class="file">Cookies</span> <span class="arrow">←</span> 登录会话</div>
-                            <div><span class="file">Login Data</span> <span class="arrow">←</span> 保存的密码</div>
-                            <div><span class="file">Cache/</span> <span class="arrow">←</span> 访问记录</div>
-                        </div>
-                        <div><span class="folder">credentials/</span> <span class="arrow">←</span> 认证令牌</div>
-                    </div>
-                </div>
-                <p><strong>一个API密钥值多少钱？</strong></p>
-                <p>在黑市上，一个带额度的API密钥可以卖到几十到几百块不等。而你的对话历史、记忆数据、个人信息……这些东西的价值，可能远超你的想象。</p>
-            </div>
-            
-            <div class="divider"></div>
-            
-            <!-- 04 -->
-            <div class="section">
-                <h2 class="section-title">04 · 具体有哪些风险</h2>
-                <div class="risk-cards">
-                    <div class="risk-card">
-                        <div class="risk-card-title">🔴 风险一：密钥泄露</div>
-                        <p class="risk-card-desc">你的API密钥存在配置文件里，而且是明文。如果这个文件被同步到iCloud、被上传到GitHub、或者被恶意软件读取——你的额度可能在一夜之间被刷爆。</p>
-                    </div>
-                    <div class="risk-card">
-                        <div class="risk-card-title">🔴 风险二：记忆裸奔</div>
-                        <p class="risk-card-desc">你可能曾经让AI助手帮你记录过密码、银行卡号、或者聊过私密的事。这些全部存在记忆数据库里。一旦泄露，你的整个数字生活都被看光了。</p>
-                    </div>
-                    <div class="risk-card">
-                        <div class="risk-card-title">🔴 风险三：浏览器会话</div>
-                        <p class="risk-card-desc">如果AI助手可以操作浏览器，你的cookies、登录状态、网站访问记录都可能被滥用。你的社交账号、邮箱、甚至银行账户，都可能被别人"代操作"。</p>
-                    </div>
-                    <div class="risk-card">
-                        <div class="risk-card-title">🔴 风险四：文件访问</div>
-                        <p class="risk-card-desc">你的桌面文件、工作文档、下载文件夹……AI助手理论上可以读取你电脑上的任何东西。你真的确定，愿意让一个程序拥有完整访问权吗？</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="divider"></div>
-            
-            <!-- 05 -->
-            <div class="section">
-                <h2 class="section-title">05 · 安全风险等级表</h2>
-                <p>作为一个认真研究过这个问题的人，我给你整理了一个<strong>安全风险等级表</strong>，按照泄露后的影响程度和发生概率来评估：</p>
-                
-                <table class="score-table">
-                    <thead>
-                        <tr>
-                            <th>数据类型</th>
-                            <th>风险等级</th>
-                            <th>泄露后果</th>
-                            <th>发生概率</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>API 密钥</td>
-                            <td><span class="level level-high">极高</span></td>
-                            <td>额度被刷、账户被盗用</td>
-                            <td>中（云同步/GitHub）</td>
-                        </tr>
-                        <tr>
-                            <td>记忆数据库</td>
-                            <td><span class="level level-high">极高</span></td>
-                            <td>隐私曝光、密码泄露</td>
-                            <td>低（需直接访问）</td>
-                        </tr>
-                        <tr>
-                            <td>浏览器 Cookies</td>
-                            <td><span class="level level-medium">高</span></td>
-                            <td>账号被登录、历史曝光</td>
-                            <td>中（浏览器共享）</td>
-                        </tr>
-                        <tr>
-                            <td>浏览器缓存</td>
-                            <td><span class="level level-low">中</span></td>
-                            <td>浏览记录泄露</td>
-                            <td>高（清理不彻底）</td>
-                        </tr>
-                    </tbody>
-                </table>
-                
-                <p>简单来说：<strong>API密钥和记忆数据库是必须保护的，浏览器数据是可以定期清理的。</strong></p>
-            </div>
-            
-            <div class="divider"></div>
-            
-            <!-- 06 -->
-            <div class="section">
-                <h2 class="section-title">06 · 技术对比：有保护 vs 无保护</h2>
-                <p>很多人可能会问："我有必要保护吗？"让我给你看个对比：</p>
-                
-                <table class="compare-table">
-                    <thead>
-                        <tr>
-                            <th>功能</th>
-                            <th>无保护</th>
-                            <th>有保护</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>API 密钥</td>
-                            <td class="no">明文存储</td>
-                            <td class="yes">AES-256 加密</td>
-                        </tr>
-                        <tr>
-                            <td>记忆内容</td>
-                            <td class="no">完整历史</td>
-                            <td class="yes">敏感信息匿名化</td>
-                        </tr>
-                        <tr>
-                            <td>浏览器数据</td>
-                            <td class="no">Cookies+缓存保留</td>
-                            <td class="yes">一键清理</td>
-                        </tr>
-                        <tr>
-                            <td>文件监控</td>
-                            <td class="no">无</td>
-                            <td class="yes">实时告警</td>
-                        </tr>
-                        <tr>
-                            <td>数据备份</td>
-                            <td class="no">手动</td>
-                            <td class="yes">操作前自动备份</td>
-                        </tr>
-                        <tr>
-                            <td>GitHub 泄露检测</td>
-                            <td class="no">无</td>
-                            <td class="yes">一键扫描</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            
-            <div class="divider"></div>
-            
-            <!-- 07 -->
-            <div class="section">
-                <h2 class="section-title">07 · 技术架构：安全盾牌是怎么工作的</h2>
-                <p>说了这么多，你可能会好奇：这个"安全盾牌"到底是怎么工作的？其实原理很简单：</p>
-                
-                <div class="arch-diagram">
-                    <div class="title">安全盾牌架构</div>
-                    <div class="layer">
-                        <div class="box">用户命令</div>
-                    </div>
-                    <div class="arrow">↓</div>
-                    <div class="layer">
-                        <div class="box">命令层</div>
-                    </div>
-                    <div class="arrow">↓</div>
-                    <div class="layer">
-                        <div class="box">加密模块</div>
-                        <div class="box">扫描模块</div>
-                        <div class="box">监控模块</div>
-                    </div>
-                    <div class="arrow">↓</div>
-                    <div class="layer">
-                        <div class="box">加密存储</div>
-                        <div class="box">匿名化</div>
-                        <div class="box">告警日志</div>
-                    </div>
-                </div>
-                
-                <p><strong>加密模块</strong>：使用 PBKDF2 + AES-256 加密算法，这是什么概念呢？相当于给你的数据加了一把军事级别的锁。PBKDF2 是"密钥派生函数"，简单说就是把你的密码变成一把复杂的钥匙；AES-256 是"高级加密标准"，是美国政府用来加密机密信息用的。</p>
-                
-                <p><strong>扫描模块</strong>：自动检测记忆数据库里的敏感信息——密码、银行卡号、身份证号……然后把这些内容替换成 "****" 。你的AI助手还能正常使用，只是敏感信息被"打了码"。</p>
-                
-                <p><strong>监控模块</strong>：实时监控你的数据目录，如果发现有异常访问（比如恶意软件在偷偷读取文件），立刻发通知告警。</p>
-            </div>
-            
-            <div class="divider"></div>
-            
-            <!-- 08 -->
-            <div class="section">
-                <h2 class="section-title">08 · 怎么保护</h2>
-                <p>说了这么多，你可能会问：<em>"那我不用AI助手了？"</em></p>
-                <p>别急，没那么夸张。</p>
-                <p><strong>问题是真实存在的，但解决方案也是有的。</strong></p>
-                <p>关键是你要意识到：AI助手不是魔法，它是工具。而工具需要被正确地保护。</p>
-                <p>就像你不会把家门钥匙随便丢在门口一样，你的AI助手的数据也需要被妥善保管。</p>
-            </div>
-            
-            <!-- 09 -->
-            <div class="section">
-                <h2 class="section-title">09 · 解决方案</h2>
-                <p>我花了几天时间，研究并开发了一套"一键安全保护"的解决方案：</p>
-                <div class="emphasis-box">
-                    <p>🛡️ <strong>OpenClaw Security Shield</strong><br>安全盾牌</p>
-                </div>
-                <div class="solution-card">
-                    <div class="solution-title">它可以帮你：</div>
-                    <ul class="feature-list">
-                        <li><strong>加密敏感配置</strong> — 把API密钥加密存储，再也不怕同步泄露</li>
-                        <li><strong>清理敏感记忆</strong> — 自动发现并匿名化密码、银行卡等敏感内容</li>
-                        <li><strong>实时文件监控</strong> — 检测异常访问，有风险立刻告警</li>
-                        <li><strong>智能清理浏览器</strong> — 一键清理cookies和缓存</li>
-                        <li><strong>泄露检测</strong> — 扫描GitHub，看你的密钥有没有泄露</li>
-                    </ul>
-                </div>
-                <p>而且这一切，只需要一个命令：</p>
-                <div class="code-block">
-                    <code>security-shield protect</code>
-                </div>
-                <p>是的，就是这么简单。你不需要懂技术，不需要改代码，只需要运行一个命令，你的AI助手就能从"裸奔"变成"穿上衣服"。</p>
-            </div>
-            
-            <div class="divider"></div>
-            
-            <!-- 10 -->
-            <div class="section">
-                <h2 class="section-title">10 · 写在最后</h2>
-                <p>我知道很多人可能会觉得：<em>"我就是普通用户，又不是什么大人物，谁会来黑我啊？"</em></p>
-                <p>说实话，这种想法很正常。但你有没有想过：</p>
-                <div class="dialogue">
-                    <div class="dialogue-item">
-                        <div class="dialogue-text">你的API额度可能被悄悄用掉</div>
-                    </div>
-                    <div class="dialogue-item">
-                        <div class="dialogue-text">你的对话记录可能被打包出售</div>
-                    </div>
-                    <div class="dialogue-item">
-                        <div class="dialogue-text">你的个人信息可能出现在某个数据库里</div>
-                    </div>
-                </div>
-                <p>这些事情<strong>不会</strong>因为你不是"大人物"就不发生。恰恰相反，普通用户因为缺乏安全意识，反而更容易成为目标。</p>
-                <div class="emphasis-box">
-                    <p><strong>安全这件事，不是有钱人或大公司才需要担心的。<br>每一个普通用户，都应该重视自己的数字安全。</strong></p>
-                </div>
-            </div>
-            
-            <!-- 往期精选 -->
-            <div class="related-articles">
-                <h3>📚 往期精选</h3>
-                <a href="https://github.com/huanyu16/openclaw-security-shield" class="article-item">
-                    <span class="tag">Agent Engineering</span>
-                    <div class="title">一个 Agent 反复撞墙的故事，和它教我的事</div>
-                    <div class="desc">从执行力差异分析 Agent 行为模式，做了一个开源 Skill 来解决它</div>
-                </a>
-                <a href="https://github.com/huanyu16/openclaw-security-shield" class="article-item">
-                    <span class="tag">Analysis</span>
-                    <div class="title">为什么同样的 Hanako，执行能力天差地别</div>
-                    <div class="desc">配置、模型、工具箱——影响 Agent 表现的关键因素深度解析</div>
-                </a>
-                <a href="https://github.com/huanyu16/openclaw-security-shield" class="article-item">
-                    <span class="tag">Concept</span>
-                    <div class="title">Agent 冒险家工会构想</div>
-                    <div class="desc">多智能体协作的另一种可能——发布任务、匹配合适的 Agent 接单</div>
-                </a>
-            </div>
-        </div>
-        
-        <!-- 结尾 -->
-        <div class="ending">
-            <div class="ending-title">🦞 保护你的AI助手，从今天开始</div>
-            
-            <div class="link-box">
-                <div class="link-label">GitHub 仓库地址</div>
-                <div class="link-url">github.com/huanyu16/openclaw-security-shield</div>
-            </div>
-            
-            <a href="https://github.com/huanyu16/openclaw-security-shield" class="cta-button">
-                🔗 查看项目详情
-            </a>
-            
-            <p class="footer-note">
-                如果觉得有用，欢迎转发给需要的朋友<br><br>
-                * 封面图由 MiniMax 生成<br>
-                * 工具完全开源，免费使用
-            </p>
-        </div>
+
+<nav>
+  <div class="logo">huanyu16 <span>/ OpenClaw Security Shield</span></div>
+  <a href="#problem">问题</a>
+  <a href="#solution">解决方案</a>
+  <a href="#install">安装</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-icon">🦞</div>
+  <h1>你的私人 AI 助手，<br>正在裸奔</h1>
+  <p class="hero-desc">每一次安装 OpenClaw，都是一座敏感数据的金矿——API 密钥、对话历史、浏览器会话、账号密码。你告诉过 AI 的所有事情，它全都知道。而这些数据，没有任何保护。</p>
+  <div class="hero-badges">
+    <span class="badge">🔐 API 密钥加密</span>
+    <span class="badge">🧹 浏览器数据清理</span>
+    <span class="badge">👁️ 异常访问监控</span>
+    <span class="badge">💾 操作前自动备份</span>
+  </div>
+  <div class="hero-actions">
+    <a href="https://github.com/huanyu16/openclaw-security-shield" class="btn-primary">查看源码 →</a>
+    <a href="agent-naked-full.html" class="btn-secondary">阅读全文</a>
+  </div>
+</div>
+
+<div class="container">
+
+  <section id="problem">
+    <h2>你可能没有意识到的问题</h2>
+    <p class="section-lead">大多数用户在享受 AI 助手便利的同时，没有意识到自己的数据暴露在什么风险之下。</p>
+    <div class="pain-grid">
+      <div class="pain-card">
+        <div class="pain-icon">🔑</div>
+        <h3>API 密钥明文存储</h3>
+        <p>OpenClaw 的 API 密钥写在配置文件里，没有任何加密。Git 同步、网盘备份，一不小心就全网裸奔。</p>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon">💬</div>
+        <h3>对话历史包含一切</h3>
+        <p>你告诉 AI 的密码、银行卡、合同内容、私人对话——全部明文存储在本地文件里，没有任何保护。</p>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon">🌐</div>
+        <h3>浏览器会话可被访问</h3>
+        <p>AI 操作浏览器时，你的登录状态、Cookies、缓存全部暴露给它。恶意脚本可以轻易读取这些数据。</p>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon">💾</div>
+        <h3>没有操作备份</h3>
+        <p>每次清理数据、删除文件，备份全靠手动。出错之后没有回退余地。</p>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon">🔍</div>
+        <h3>不知道谁在访问什么</h3>
+        <p>没有任何日志记录，没有访问监控。AI 读取了什么文件、访问了什么网页，你一无所知。</p>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon">📤</div>
+        <h3>意外泄露风险高</h3>
+        <p>GitHub 仓库同步、云盘备份、不小心分享了项目——任何一个环节出错，所有敏感数据全部外泄。</p>
+      </div>
     </div>
+  </section>
+
+  <section id="solution">
+    <h2>OpenClaw Security Shield</h2>
+    <p class="section-lead">一键守护，一行命令完成所有保护。自动加密、自动匿名、自动监控、操作前自动备份。</p>
+    <div class="shield-grid">
+      <div class="shield-item">
+        <div class="shield-icon">🔐</div>
+        <div>
+          <h3>API 密钥加密</h3>
+          <p>PBKDF2 + AES-256 加密所有敏感配置，Git 同步和云盘备份安全无虞。需要密码才能解密使用。</p>
+        </div>
+      </div>
+      <div class="shield-item">
+        <div class="shield-icon">🙈</div>
+        <div>
+          <h3>对话数据匿名化</h3>
+          <p>自动检测并匿名化密码、银行卡、身份证号等敏感信息。对话历史照常可用，敏感数据不再裸奔。</p>
+        </div>
+      </div>
+      <div class="shield-item">
+        <div class="shield-icon">🧹</div>
+        <div>
+          <h3>浏览器数据清理</h3>
+          <p>一键清理 Cookies、缓存、存储的密码。保持登录态的同时清除敏感数据，不影响 AI 操作能力。</p>
+        </div>
+      </div>
+      <div class="shield-item">
+        <div class="shield-icon">👁️</div>
+        <div>
+          <h3>异常访问监控</h3>
+          <p>实时监控文件访问和网络请求，发现异常行为立即告警。AI 读取了什么，你全都知道。</p>
+        </div>
+      </div>
+      <div class="shield-item">
+        <div class="shield-icon">💾</div>
+        <div>
+          <h3>操作前自动备份</h3>
+          <p>加密备份、匿名备份、清理前备份——所有危险操作前自动创建可恢复快照，出错一键回退。</p>
+        </div>
+      </div>
+      <div class="shield-item">
+        <div class="shield-icon">🔍</div>
+        <div>
+          <h3>GitHub 泄露扫描</h3>
+          <p>检测配置文件中是否存在暴露到 GitHub 的敏感信息，提前发现泄露风险。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="compare">
+    <h2>对比</h2>
+    <p class="section-lead">Shield 在每一个维度上都提供了无保护状态下不具备的能力。</p>
+    <table>
+      <thead>
+        <tr>
+          <th>能力</th>
+          <th>无保护</th>
+          <th>Security Shield</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>API 密钥存储</td><td class="no">明文</td><td class="yes">AES-256 加密</td></tr>
+        <tr><td>对话数据匿名化</td><td class="no">无</td><td class="yes">自动检测 + 匿名化</td></tr>
+        <tr><td>浏览器数据清理</td><td class="no">手动</td><td class="yes">一键按需清理</td></tr>
+        <tr><td>文件访问监控</td><td class="no">无</td><td class="yes">实时告警</td></tr>
+        <tr><td>操作前备份</td><td class="no">手动</td><td class="yes">自动快照</td></tr>
+        <tr><td>GitHub 泄露扫描</td><td class="no">无</td><td class="yes">主动检测</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="install">
+    <h2>安装</h2>
+    <p class="section-lead">一行命令即可安装，自动检测环境，无依赖冲突。</p>
+    <div class="install-block">
+      <h3>一键安装</h3>
+      <p>自动检测 OpenClaw 安装路径，安装所有依赖</p>
+      <code><span class="cmd-comment"># macOS / Linux</span>
+curl -fsSL https://raw.githubusercontent.com/huanyu16/openclaw-security-shield/main/install.sh | bash
+
+<span class="cmd-comment"># 或克隆安装</span>
+git clone https://github.com/huanyu16/openclaw-security-shield.git
+cd openclaw-security-shield
+./install.sh</code>
+    </div>
+    <div class="install-block">
+      <h3>常用命令</h3>
+      <p>安装完成后使用以下命令</p>
+      <code><span class="cmd-comment"># 查看安全状态</span>
+shield status
+
+<span class="cmd-comment"># 一键保护（加密 + 匿名化 + 备份）</span>
+shield protect
+
+<span class="cmd-comment"># 清理浏览器数据</span>
+shield clean --cookies --cache
+
+<span class="cmd-comment"># 解锁使用（保护后）</span>
+shield unlock</code>
+    </div>
+  </section>
+
+</div>
+
+<div class="container">
+  <div class="cta-section">
+    <h2>让 AI 助手穿好衣服再上岗</h2>
+    <p>免费开源，一行命令安装。保护你的数据，从现在开始。</p>
+    <a href="https://github.com/huanyu16/openclaw-security-shield" class="btn-secondary">GitHub 查看源码 →</a>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <p><a href="https://github.com/huanyu16/openclaw-security-shield">GitHub</a> · MIT License · huanyu16</p>
+  </div>
+</footer>
+
 </body>
 </html>
