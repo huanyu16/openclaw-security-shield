@@ -3,607 +3,1021 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>文章索引 · huanyu16</title>
+<title>huanyu16 · 主页</title>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Noto+Serif+SC:wght@400;700&family=Ma+Shan+Zheng&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-    background: #fff;
-    color: #1a1a1a;
-    line-height: 1.8;
-    font-size: 16px;
-  }
-  a { color: inherit; text-decoration: none; }
-  a:hover { text-decoration: underline; }
+/* ─── Reset & Base ─── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --primary: #00d4ff;
+  --primary-dim: rgba(0,212,255,0.15);
+  --accent: #ff6b9d;
+  --accent2: #c084fc;
+  --bg-dark: #050810;
+  --bg-card: rgba(255,255,255,0.04);
+  --bg-card-hover: rgba(255,255,255,0.08);
+  --border: rgba(255,255,255,0.08);
+  --text: #e2e8f0;
+  --text-dim: rgba(226,232,240,0.5);
+  --font-display: 'ZCOOL KuaiLe', 'Ma Shan Zheng', cursive;
+  --font-serif: 'Noto Serif SC', serif;
+  --font-sans: 'Noto Sans SC', sans-serif;
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-dark);
+  color: var(--text);
+  line-height: 1.8;
+  overflow-x: hidden;
+}
+a { color: var(--primary); text-decoration: none; transition: color 0.2s; }
+a:hover { color: #fff; }
+::selection { background: var(--primary); color: var(--bg-dark); }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-dark); }
+::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 3px; }
 
-  /* ─── nav ─── */
-  nav {
-    border-bottom: 1px solid #eee;
-    padding: 0 48px;
-    display: flex;
-    align-items: center;
-    gap: 32px;
-    height: 56px;
-    position: sticky;
-    top: 0;
-    background: rgba(255,255,255,0.95);
-    backdrop-filter: blur(8px);
-    z-index: 100;
-  }
-  nav .logo {
-    font-weight: 700;
-    font-size: 15px;
-    letter-spacing: -0.3px;
-    flex-shrink: 0;
-  }
-  nav .logo span { color: #888; font-weight: 400; }
-  nav a.nav-link {
-    font-size: 14px;
-    color: #666;
-    transition: color 0.15s;
-  }
-  nav a.nav-link:hover { color: #1a1a1a; text-decoration: none; }
+/* ─── Animated Background ─── */
+#bg-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+.bg-gradient {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 40%, rgba(0,212,255,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 60% at 80% 60%, rgba(192,132,252,0.07) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 50% at 50% 90%, rgba(255,107,157,0.05) 0%, transparent 50%);
+  pointer-events: none;
+}
 
-  /* ─── container ─── */
-  .container {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 72px 48px 120px;
-  }
+/* ─── Layout ─── */
+.page-wrapper { position: relative; z-index: 1; }
+.container { max-width: 1100px; margin: 0 auto; padding: 0 32px; }
 
-  /* ─── hero ─── */
-  .hero { margin-bottom: 64px; }
-  .hero-eyebrow {
-    font-size: 12px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: #999;
-    margin-bottom: 14px;
-  }
-  .hero h1 {
-    font-size: 36px;
-    font-weight: 700;
-    line-height: 1.25;
-    margin-bottom: 16px;
-    letter-spacing: -0.5px;
-  }
-  .hero p {
-    font-size: 18px;
-    color: #666;
-    max-width: 560px;
-    margin-bottom: 24px;
-  }
-  .hero-divider { width: 40px; height: 3px; background: #1a1a1a; }
+/* ─── Header / Nav ─── */
+header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 0 32px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  backdrop-filter: blur(20px) saturate(180%);
+  background: rgba(5,8,16,0.7);
+  border-bottom: 1px solid var(--border);
+  transition: all 0.3s;
+}
+header.scrolled {
+  background: rgba(5,8,16,0.9);
+  box-shadow: 0 4px 30px rgba(0,0,0,0.5);
+}
+.logo {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.logo-icon {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, var(--primary), var(--accent2));
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
+nav { display: flex; gap: 8px; }
+nav a {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  color: var(--text-dim);
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+nav a:hover {
+  color: var(--primary);
+  background: var(--primary-dim);
+  border-color: rgba(0,212,255,0.2);
+  text-decoration: none;
+}
 
-  /* ─── reading path ─── */
-  .reading-path {
-    background: #f8f8f8;
-    border: 1px solid #e8e8e8;
-    border-radius: 8px;
-    padding: 28px 32px;
-    margin-bottom: 64px;
-  }
-  .reading-path-title {
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: #888;
-    margin-bottom: 20px;
-  }
-  .path-steps {
-    display: flex;
-    align-items: center;
-    gap: 0;
-    flex-wrap: wrap;
-    row-gap: 12px;
-  }
-  .path-step {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .path-num {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: #1a1a1a;
-    color: #fff;
-    font-size: 12px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-  .path-num.placeholder {
-    background: #ccc;
-  }
-  .path-text {
-    font-size: 14px;
-    color: #333;
-    font-weight: 500;
-  }
-  .path-text.placeholder { color: #aaa; }
-  .path-arrow {
-    color: #ccc;
-    font-size: 18px;
-    margin: 0 10px;
-    flex-shrink: 0;
-  }
-  .path-more {
-    font-size: 13px;
-    color: #aaa;
-    margin-left: 8px;
-  }
+/* ─── Hero Section ─── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 120px 0 80px;
+  position: relative;
+}
+.hero-inner {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 60px;
+  align-items: center;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--primary-dim);
+  border: 1px solid rgba(0,212,255,0.3);
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 13px;
+  color: var(--primary);
+  margin-bottom: 24px;
+  animation: fadeUp 0.8s ease both;
+}
+.hero-badge .dot {
+  width: 6px; height: 6px;
+  background: var(--primary);
+  border-radius: 50%;
+  animation: pulse 2s ease infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.5); }
+}
+.hero h1 {
+  font-family: var(--font-serif);
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 700;
+  line-height: 1.25;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, #fff 30%, var(--primary) 70%, var(--accent2) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: fadeUp 0.8s 0.1s ease both;
+}
+.hero-desc {
+  font-size: 17px;
+  color: var(--text-dim);
+  max-width: 560px;
+  margin-bottom: 36px;
+  animation: fadeUp 0.8s 0.2s ease both;
+}
+.hero-actions {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  animation: fadeUp 0.8s 0.3s ease both;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  text-decoration: none;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), #0099cc);
+  color: var(--bg-dark);
+  font-weight: 600;
+  box-shadow: 0 0 20px rgba(0,212,255,0.3);
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 30px rgba(0,212,255,0.5);
+  color: var(--bg-dark);
+}
+.btn-ghost {
+  background: var(--bg-card);
+  color: var(--text);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(10px);
+}
+.btn-ghost:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+.hero-stats {
+  display: flex;
+  gap: 32px;
+  margin-top: 48px;
+  animation: fadeUp 0.8s 0.4s ease both;
+}
+.stat { text-align: left; }
+.stat-num {
+  font-family: var(--font-display);
+  font-size: 28px;
+  color: var(--primary);
+  line-height: 1;
+}
+.stat-label { font-size: 12px; color: var(--text-dim); margin-top: 4px; }
 
-  /* ─── stats ─── */
-  .stats {
-    display: flex;
-    gap: 40px;
-    margin-bottom: 64px;
-  }
-  .stat {}
-  .stat-num {
-    font-size: 32px;
-    font-weight: 700;
-    letter-spacing: -1px;
-  }
-  .stat-label {
-    font-size: 13px;
-    color: #888;
-    margin-top: 2px;
-  }
+/* ─── Character / Mascot ─── */
+.hero-mascot {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeUp 1s 0.2s ease both;
+}
+.mascot-glow {
+  position: absolute;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(0,212,255,0.2) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: glowPulse 4s ease infinite;
+}
+@keyframes glowPulse {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.15); opacity: 1; }
+}
+.mascot-frame {
+  position: relative;
+  width: 300px;
+  height: 360px;
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid rgba(0,212,255,0.2);
+  background: linear-gradient(180deg, rgba(0,212,255,0.05), rgba(192,132,252,0.05));
+  backdrop-filter: blur(10px);
+}
+.mascot-frame img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+/* SVG Fallback character */
+.mascot-svg {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+}
+.floating-badge {
+  position: absolute;
+  bottom: 16px; left: 50%; transform: translateX(-50%);
+  background: rgba(5,8,16,0.85);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 12px;
+  color: var(--text-dim);
+  backdrop-filter: blur(10px);
+  white-space: nowrap;
+}
 
-  /* ─── series ─── */
-  .series-group { margin-bottom: 56px; }
-  .series-header {
-    display: flex;
-    align-items: baseline;
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-  .series-icon { font-size: 20px; }
-  .series-name {
-    font-size: 20px;
-    font-weight: 700;
-  }
-  .series-count {
-    font-size: 13px;
-    color: #999;
-  }
-  .series-divider {
-    flex: 1;
-    height: 1px;
-    background: #eee;
-  }
+/* ─── Section Titles ─── */
+.section-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+.section-eyebrow {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--primary);
+  margin-bottom: 12px;
+}
+.section-title {
+  font-family: var(--font-serif);
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, #fff, rgba(255,255,255,0.8));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.section-sub {
+  font-size: 15px;
+  color: var(--text-dim);
+  max-width: 480px;
+  margin: 0 auto;
+}
 
-  /* ─── article cards ─── */
-  .article-list { display: flex; flex-direction: column; gap: 12px; }
-  .article-card {
-    display: flex;
-    align-items: flex-start;
-    gap: 16px;
-    padding: 18px 20px;
-    border: 1px solid #eee;
-    border-radius: 8px;
-    transition: border-color 0.15s, box-shadow 0.15s;
-  }
-  .article-card:hover {
-    border-color: #ccc;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  }
-  .article-card.soon {
-    background: #fafafa;
-    border-style: dashed;
-  }
+/* ─── Series Cards ─── */
+section { padding: 96px 0; }
+.series-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+.series-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 28px;
+  transition: all 0.3s;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.series-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary), var(--accent2));
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.series-card:hover {
+  background: var(--bg-card-hover);
+  border-color: rgba(0,212,255,0.2);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 40px rgba(0,212,255,0.08);
+}
+.series-card:hover::before { opacity: 1; }
+.series-icon {
+  font-size: 32px;
+  margin-bottom: 16px;
+  display: block;
+}
+.series-card h3 {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #fff;
+}
+.series-card p {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+.series-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.series-meta .tag {
+  background: var(--primary-dim);
+  color: var(--primary);
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+}
+.series-articles {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.article-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-dim);
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  transition: color 0.2s;
+}
+.article-link:last-child { border-bottom: none; }
+.article-link:hover { color: var(--primary); }
+.article-link .arrow { color: var(--primary); opacity: 0; transition: opacity 0.2s; }
+.article-link:hover .arrow { opacity: 1; }
 
-  .card-status {
-    flex-shrink: 0;
-    margin-top: 3px;
-  }
-  .status-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    display: block;
-  }
-  .status-dot.live { background: #22c55e; }
-  .status-dot.upcoming { background: #e5e5e5; border: 1px solid #ccc; }
+/* Series accent colors */
+.series-card[data-series="openclaw"] { --card-accent: #00d4ff; }
+.series-card[data-series="tools"] { --card-accent: #c084fc; }
+.series-card[data-series="openhanako"] { --card-accent: #fb923c; }
+.series-card[data-series="worklog"] { --card-accent: #4ade80; }
+.series-card[data-series="jojo"] { --card-accent: #f472b6; }
 
-  .card-body { flex: 1; min-width: 0; }
-  .card-title {
-    font-size: 15px;
-    font-weight: 600;
-    margin-bottom: 4px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .card-title .soon-tag {
-    font-size: 11px;
-    font-weight: 600;
-    color: #888;
-    background: #f0f0f0;
-    padding: 1px 7px;
-    border-radius: 20px;
-    letter-spacing: 0.5px;
-  }
-  .card-title a { color: #1a6cf5; }
-  .card-title a:hover { text-decoration: underline; }
-  .card-meta {
-    font-size: 13px;
-    color: #999;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-  .card-series-label {
-    font-size: 12px;
-    color: #aaa;
-    margin-left: auto;
-    flex-shrink: 0;
-  }
+/* ─── About Section ─── */
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+}
+.about-text h3 {
+  font-family: var(--font-display);
+  font-size: 24px;
+  color: var(--primary);
+  margin-bottom: 16px;
+}
+.about-text p {
+  font-size: 15px;
+  color: var(--text-dim);
+  margin-bottom: 20px;
+  line-height: 1.9;
+}
+.skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+.skill-tag {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.links-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 28px;
+}
+.links-card h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-dim);
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.link-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  transition: all 0.2s;
+}
+.link-item:last-child { border-bottom: none; }
+.link-item:hover { padding-left: 8px; }
+.link-item .link-icon {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  background: var(--primary-dim);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.link-item .link-info { flex: 1; }
+.link-item .link-name { font-size: 14px; font-weight: 500; }
+.link-item .link-url { font-size: 11px; color: var(--text-dim); }
 
-  /* ─── prev/next nav ─── */
-  .article-nav {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-top: 64px;
-    padding-top: 40px;
-    border-top: 1px solid #eee;
-  }
-  .nav-prev, .nav-next {
-    padding: 20px 24px;
-    border: 1px solid #eee;
-    border-radius: 8px;
-    transition: border-color 0.15s;
-  }
-  .nav-prev:hover, .nav-next:hover {
-    border-color: #bbb;
-    text-decoration: none;
-  }
-  .nav-next { text-align: right; }
-  .nav-label {
-    font-size: 12px;
-    color: #aaa;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-  .nav-title { font-size: 15px; font-weight: 600; }
+/* ─── Footer ─── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 40px 0;
+  text-align: center;
+}
+footer p { font-size: 13px; color: var(--text-dim); }
+footer a { color: var(--text-dim); }
+footer a:hover { color: var(--primary); }
 
-  /* ─── footer ─── */
-  footer {
-    margin-top: 80px;
-    padding-top: 32px;
-    border-top: 1px solid #eee;
-    font-size: 13px;
-    color: #bbb;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+/* ─── Divider ─── */
+.divider {
+  width: 60px; height: 2px;
+  background: linear-gradient(90deg, var(--primary), var(--accent2));
+  margin: 0 auto 48px;
+  border-radius: 1px;
+}
 
-  @media (max-width: 640px) {
-    nav { padding: 0 20px; }
-    .container { padding: 48px 20px 80px; }
-    .hero h1 { font-size: 26px; }
-    .stats { gap: 24px; }
-    .article-nav { grid-template-columns: 1fr; }
-    .path-arrow { margin: 0 6px; }
-  }
+/* ─── Animations ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.animate-on-scroll.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+  .hero-inner { grid-template-columns: 1fr; }
+  .hero-mascot { display: none; }
+  .hero h1 { font-size: 32px; }
+  .about-grid { grid-template-columns: 1fr; }
+  .series-grid { grid-template-columns: 1fr; }
+  nav { display: none; }
+  .container { padding: 0 20px; }
+  header { padding: 0 20px; }
+}
+
+/* ─── Particles (canvas-based) ─── */
+canvas.particles {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
 </style>
 </head>
 <body>
 
-<nav>
-  <div class="logo">huanyu16 <span>/ 文章索引</span></div>
-  <a href="https://huanyu16.github.io/openclaw-security-shield/" class="nav-link">首页</a>
-  <a href="#series-1" class="nav-link">OpenClaw 进阶</a>
-  <a href="#series-2" class="nav-link">工具开发</a>
-  <a href="#series-3" class="nav-link">OpenHanako</a>
-  <a href="#series-4" class="nav-link">工作日志</a>
-</nav>
+<!-- Animated Background -->
+<canvas id="bg-canvas"></canvas>
+<div class="bg-gradient"></div>
 
-<div class="container">
+<div class="page-wrapper">
 
-  <!-- Hero -->
-  <div class="hero">
-    <div class="hero-eyebrow">Articles</div>
-    <h1>所有文章</h1>
-    <p>围绕 OpenClaw / OpenHanako 的实战记录、工具开发和行为分析。按系列组织，顺着读下去。</p>
-    <div class="hero-divider"></div>
+<!-- Header -->
+<header id="header">
+  <div class="logo">
+    <div class="logo-icon">⚡</div>
+    <span>huanyu16</span>
   </div>
+  <nav>
+    <a href="#series">系列</a>
+    <a href="#about">关于</a>
+    <a href="https://github.com/huanyu16" target="_blank">GitHub</a>
+    <a href="https://huanyu16.github.io" target="_blank">Pages</a>
+  </nav>
+</header>
 
-  <!-- Recommended Reading Path -->
-  <div class="reading-path">
-    <div class="reading-path-title">推荐阅读路径 · 从这里开始</div>
-    <div class="path-steps">
-      <div class="path-step">
-        <div class="path-num">1</div>
-        <div class="path-text"><a href="https://huanyu16.github.io/openclaw-security-shield/" style="color:#1a6cf5">🦞 AI助手正在裸奔</a></div>
-      </div>
-      <div class="path-arrow">→</div>
-      <div class="path-step">
-        <div class="path-num">2</div>
-        <div <span class="path-text">Hanako 执行力差异</div>
-      </div>
-      <div class="path-arrow">→</div>
-      <div class="path-step">
-        <div class="path-num">3</div>
-        <div <span class="path-text">Agent 撞墙与 Bypass</div>
-      </div>
-      <div class="path-arrow">→</div>
-      <div class="path-step">
-        <div class="path-num">4</div>
-        <div <span class="path-text">浏览器操作方案对比</div>
-      </div>
-      <div class="path-more">+ 更多系列</div>
-    </div>
-  </div>
-
-  <!-- Stats -->
-  <div class="stats">
-    <div class="stat">
-      <div class="stat-num">9</div>
-      <div class="stat-label">已发布文章</div>
-    </div>
-    <div class="stat">
-      <div class="stat-num">0</div>
-      <div class="stat-label">待发布文章</div>
-    </div>
-    <div class="stat">
-      <div class="stat-num">4</div>
-      <div class="stat-label">系列</div>
-    </div>
-  </div>
-
-  <!-- Series 1: OpenClaw 进阶实战 -->
-  <div class="series-group" id="series-1">
-    <div class="series-header">
-      <span class="series-icon">🚀</span>
-      <div class="series-name">OpenClaw 进阶实战</div>
-      <div class="series-count">4 篇 · Agent 工程</div>
-      <div class="series-divider"></div>
-    </div>
-    <div class="article-list">
-
-      <div class="article-card">
-        <div class="card-status"><div class="status-dot live"></div></div>
-        <div class="card-body">
-          <div class="card-title">
-            <a href="#series-1">同样的 Hanako，执行能力天差地别？</a>
-            
+<!-- Hero -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <div class="hero-badge">
+          <span class="dot"></span>
+          <span>OPEN TO COLLABORATION</span>
+        </div>
+        <h1>Build with<br>Precision.</h1>
+        <p class="hero-desc">
+          专注于 OpenClaw / OpenHanako 生态的工具开发者，Agent 工程实践者。
+          围绕 AI 助手的安全、开发与行为分析，持续产出深度内容。
+        </p>
+        <div class="hero-actions">
+          <a href="#series" class="btn btn-primary">探索系列 →</a>
+          <a href="https://github.com/huanyu16" target="_blank" class="btn btn-ghost">GitHub →</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat">
+            <div class="stat-num">11</div>
+            <div class="stat-label">文章</div>
           </div>
-          <div class="card-meta">
-            <span>🚀 OpenClaw 进阶</span>
-            <span>2026-03-20</span>
-            <span>分析 · 配置与模型</span>
+          <div class="stat">
+            <div class="stat-num">5</div>
+            <div class="stat-label">系列</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">6</div>
+            <div class="stat-label">开源项目</div>
           </div>
         </div>
-        <div class="card-series-label">#1</div>
       </div>
 
-      <div class="article-card">
-        <div class="card-status"><div class="status-dot live"></div></div>
-        <div class="card-body">
-          <div class="card-title">
-            <a href="#series-1">我写了一个分析 Agent 执行力的文章，然后做了一个 Skill 来解决它</a>
-            
-          </div>
-          <div class="card-meta">
-            <span>🚀 OpenClaw 进阶</span>
-            <span>2026-03-19</span>
-            <span>Bypass Skill · 问题解决</span>
+      <!-- Mascot Character -->
+      <div class="hero-mascot">
+        <div class="mascot-glow"></div>
+        <div class="mascot-frame">
+          <!--
+            角色图位置
+            替换 URL 为你的二次元角色图
+          -->
+          <img
+            src="https://image.pollinations.ai/prompt/Anime%20girl%20mascot%2C%20white%20hair%20blue%20eyes%2C%20tech%20suit%2C%20circuit%20lines%2C%20glowing%20shield%2C%20dark%20background%2C%20anime%20illustration"
+            alt="Hanako Mascot"
+            onerror="this.style.display='none'; document.getElementById('mascot-svg').style.display='flex';"
+          >
+          <div id="mascot-svg" class="mascot-svg" style="display:none;">
+            <svg viewBox="0 0 300 360" xmlns="http://www.w3.org/2000/svg" width="300" height="360">
+              <!-- Background glow -->
+              <defs>
+                <radialGradient id="bgGlow" cx="50%" cy="40%" r="60%">
+                  <stop offset="0%" stop-color="#00d4ff" stop-opacity="0.15"/>
+                  <stop offset="100%" stop-color="#050810" stop-opacity="0"/>
+                </radialGradient>
+                <linearGradient id="hairGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#e8f4ff"/>
+                  <stop offset="60%" stop-color="#a8d8ff"/>
+                  <stop offset="100%" stop-color="#00d4ff"/>
+                </linearGradient>
+                <linearGradient id="eyeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#00d4ff"/>
+                  <stop offset="100%" stop-color="#0066cc"/>
+                </linearGradient>
+                <filter id="glow">
+                  <feGaussianBlur stdDeviation="3" result="blur"/>
+                  <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+              </defs>
+              <!-- BG -->
+              <rect width="300" height="360" fill="url(#bgGlow)"/>
+              <!-- Hair back -->
+              <ellipse cx="150" cy="120" rx="90" ry="85" fill="url(#hairGrad)" opacity="0.6"/>
+              <!-- Body suit -->
+              <path d="M100 200 Q120 190 150 188 Q180 190 200 200 L210 360 L90 360 Z" fill="#0a1628"/>
+              <path d="M100 200 Q120 190 150 188 Q180 190 200 200 L205 280 Q150 290 95 280 Z" fill="#0d1f3c"/>
+              <!-- Circuit lines on suit -->
+              <path d="M110 220 L140 220 L150 260 L190 260" stroke="#00d4ff" stroke-width="0.8" fill="none" opacity="0.5"/>
+              <path d="M115 235 L135 235 L145 265 L185 265" stroke="#00d4ff" stroke-width="0.5" fill="none" opacity="0.3"/>
+              <!-- Collar -->
+              <path d="M120 190 Q150 185 180 190 L175 205 Q150 210 125 205 Z" fill="#0d1f3c" stroke="#00d4ff" stroke-width="0.5" opacity="0.8"/>
+              <!-- Shield emblem -->
+              <path d="M150 205 L162 210 L162 225 Q150 232 138 225 L138 210 Z" fill="none" stroke="#00d4ff" stroke-width="1.5" filter="url(#glow)"/>
+              <path d="M150 210 L157 214 L157 222 Q150 226 143 222 L143 214 Z" fill="#00d4ff" opacity="0.3"/>
+              <!-- Neck -->
+              <path d="M135 170 L135 190 L165 190 L165 170" fill="#f5e6d3"/>
+              <!-- Face -->
+              <ellipse cx="150" cy="140" rx="65" ry="70" fill="#f5e6d3"/>
+              <!-- Hair main -->
+              <path d="M85 130 Q90 60 150 50 Q210 60 215 130 Q200 100 150 95 Q100 100 85 130Z" fill="url(#hairGrad)"/>
+              <!-- Hair side strands left -->
+              <path d="M85 130 Q75 180 80 240 Q90 200 95 160 Q90 140 85 130Z" fill="#c8e4ff"/>
+              <!-- Hair side strands right -->
+              <path d="M215 130 Q225 180 220 240 Q210 200 205 160 Q210 140 215 130Z" fill="#c8e4ff"/>
+              <!-- Hair bangs -->
+              <path d="M100 115 Q105 130 115 140 Q100 130 100 115Z" fill="#e8f4ff"/>
+              <path d="M200 115 Q195 130 185 140 Q200 130 200 115Z" fill="#e8f4ff"/>
+              <path d="M130 100 Q135 115 145 130 Q130 115 130 100Z" fill="#e8f4ff"/>
+              <path d="M170 100 Q165 115 155 130 Q170 115 170 100Z" fill="#e8f4ff"/>
+              <!-- Eyes -->
+              <ellipse cx="130" cy="150" rx="14" ry="10" fill="#fff"/>
+              <ellipse cx="170" cy="150" rx="14" ry="10" fill="#fff"/>
+              <!-- Iris -->
+              <ellipse cx="130" cy="151" rx="9" ry="10" fill="url(#eyeGrad)" filter="url(#glow)"/>
+              <ellipse cx="170" cy="151" rx="9" ry="10" fill="url(#eyeGrad)" filter="url(#glow)"/>
+              <!-- Pupil -->
+              <ellipse cx="130" cy="152" rx="4" ry="5" fill="#001a33"/>
+              <ellipse cx="170" cy="152" rx="4" ry="5" fill="#001a33"/>
+              <!-- Eye highlights -->
+              <circle cx="134" cy="148" r="2" fill="#fff" opacity="0.9"/>
+              <circle cx="174" cy="148" r="2" fill="#fff" opacity="0.9"/>
+              <!-- Eyelashes -->
+              <path d="M116 145 Q120 140 126 143" stroke="#1a1a2e" stroke-width="1.2" fill="none"/>
+              <path d="M184 145 Q180 140 174 143" stroke="#1a1a2e" stroke-width="1.2" fill="none"/>
+              <!-- Eyebrows -->
+              <path d="M118 137 Q130 133 142 137" stroke="#a8c8e8" stroke-width="1.5" fill="none"/>
+              <path d="M158 137 Q170 133 182 137" stroke="#a8c8e8" stroke-width="1.5" fill="none"/>
+              <!-- Nose -->
+              <path d="M150 155 L148 162 L152 162" stroke="#e0c8b0" stroke-width="0.8" fill="none"/>
+              <!-- Mouth -->
+              <path d="M142 172 Q150 176 158 172" stroke="#d4a090" stroke-width="1.2" fill="none"/>
+              <!-- Blush -->
+              <ellipse cx="118" cy="162" rx="10" ry="5" fill="#ffb3b3" opacity="0.25"/>
+              <ellipse cx="182" cy="162" rx="10" ry="5" fill="#ffb3b3" opacity="0.25"/>
+              <!-- Ears -->
+              <ellipse cx="85" cy="145" rx="8" ry="12" fill="#f5e6d3"/>
+              <ellipse cx="215" cy="145" rx="8" ry="12" fill="#f5e6d3"/>
+              <!-- Floating particles -->
+              <circle cx="80" cy="100" r="2" fill="#00d4ff" opacity="0.6"/>
+              <circle cx="230" cy="120" r="1.5" fill="#c084fc" opacity="0.6"/>
+              <circle cx="70" cy="200" r="1" fill="#00d4ff" opacity="0.4"/>
+              <circle cx="240" cy="180" r="2" fill="#ff6b9d" opacity="0.4"/>
+              <circle cx="90" cy="300" r="1.5" fill="#00d4ff" opacity="0.3"/>
+              <circle cx="220" cy="290" r="1" fill="#c084fc" opacity="0.5"/>
+              <!-- Small floating shield -->
+              <g transform="translate(225, 80)" filter="url(#glow)">
+                <path d="M0 3 L7 6 L7 13 Q3.5 17 0 13 Z" fill="none" stroke="#00d4ff" stroke-width="0.8"/>
+              </g>
+              <!-- Code symbols floating -->
+              <text x="65" y="180" font-size="8" fill="#00d4ff" opacity="0.3" font-family="monospace">&lt;/&gt;</text>
+              <text x="220" y="220" font-size="7" fill="#c084fc" opacity="0.3" font-family="monospace">{}</text>
+            </svg>
           </div>
         </div>
-        <div class="card-series-label">#2</div>
+        <div class="floating-badge">⚡ Hanako · Agent Engineer</div>
       </div>
-
-      <div class="article-card">
-        <div class="card-status"><div class="status-dot live"></div></div>
-        <div class="card-body">
-          <div class="card-title">
-            <a href="#series-1">你的 Agent 应该怎样选择浏览器操作方案</a>
-            
-          </div>
-          <div class="card-meta">
-            <span>🚀 OpenClaw 进阶</span>
-            <span>2026-03-21</span>
-            <span>浏览器自动化 · 方案对比</span>
-          </div>
-        </div>
-        <div class="card-series-label">#3</div>
-      </div>
-
-      <div class="article-card">
-        <div class="card-status"><div class="status-dot live"></div></div>
-        <div class="card-body">
-          <div class="card-title">
-            <a href="#series-1">OpenClaw 费用看板：UsageTab 开发全记录</a>
-            
-          </div>
-          <div class="card-meta">
-            <span>🚀 OpenClaw 进阶</span>
-            <span>2026-03-21</span>
-            <span>工具开发 · PR 实战</span>
-          </div>
-        </div>
-        <div class="card-series-label">#4</div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- Series 2: 工具开发 -->
-  <div class="series-group" id="series-2">
-    <div class="series-header">
-      <span class="series-icon">🛠️</span>
-      <div class="series-name">工具开发记录</div>
-      <div class="series-count">3 篇 · Skill 与工具</div>
-      <div class="series-divider"></div>
-    </div>
-    <div class="article-list">
-
-      <div class="article-card">
-        <div class="card-status"><span class="status-dot live"></span></div>
-        <div class="card-body">
-          <div class="card-title">
-            <a href="https://huanyu16.github.io/openclaw-security-shield/">🛡️ OpenClaw Security Shield — 一键守护你的智能体</a>
-          </div>
-          <div class="card-meta">
-            <span>🛠️ 工具开发</span>
-            <span>2026-03-20</span>
-            <span>安全 · 开源工具</span>
-          </div>
-        </div>
-        <div class="card-series-label">#1</div>
-      </div>
-
-      <div class="article-card">
-        <div class="card-status"><div class="status-dot live"></div></div>
-        <div class="card-body">
-          <div class="card-title">
-            <a href="#series-2">Bypass Skill：从"反复撞墙"到"绕路走通"</a>
-            
-          </div>
-          <div class="card-meta">
-            <span>🛠️ 工具开发</span>
-            <span>2026-03-20</span>
-            <span>Bypass · 错误恢复</span>
-          </div>
-        </div>
-        <div class="card-series-label">#2</div>
-      </div>
-
-      <div class="article-card">
-        <div class="card-status"><div class="status-dot live"></div></div>
-        <div class="card-body">
-          <div class="card-title">
-            <a href="#series-2">A2A Pipeline：多 Agent 协作的另一种姿势</a>
-            
-          </div>
-          <div class="card-meta">
-            <span>🛠️ 工具开发</span>
-            <span>2026-03-20</span>
-            <span>A2A · 多 Agent</span>
-          </div>
-        </div>
-        <div class="card-series-label">#3</div>
-      </div>
-
     </div>
   </div>
+</section>
 
-  <!-- Series 3: OpenHanako 深度研究 -->
-  <div class="series-group" id="series-3">
-    <div class="series-header">
-      <span class="series-icon">🌸</span>
-      <div class="series-name">OpenHanako 深度研究</div>
-      <div class="series-count">2 篇 · 项目对比与分析</div>
-      <div class="series-divider"></div>
+<!-- Series -->
+<section id="series">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">Content Series</div>
+      <h2 class="section-title">探索所有系列</h2>
+      <p class="section-sub">按主题组织，从这里开始</p>
     </div>
-    <div class="article-list">
 
-      <div class="article-card">
-        <div class="card-status"><span class="status-dot live"></span></div>
-        <div class="card-body">
-          <div class="card-title">
-            <a href="https://huanyu16.github.io/openhanako-vs-openclaw/">OpenHanako vs OpenClaw：深度对比分析</a>
-          </div>
-          <div class="card-meta">
-            <span>🌸 OpenHanako</span>
-            <span>2026-03-19</span>
-            <span>对比 · 架构分析</span>
-          </div>
+    <div class="series-grid">
+
+      <!-- Series 1: OpenClaw 进阶 -->
+      <div class="series-card animate-on-scroll" data-series="openclaw">
+        <span class="series-icon">🚀</span>
+        <h3>OpenClaw 进阶实战</h3>
+        <p>围绕 OpenClaw 的配置优化、工具开发与 Agent 工程实践。</p>
+        <div class="series-meta">
+          <span>5 篇</span>
+          <span class="tag">Agent 工程</span>
         </div>
-        <div class="card-series-label">#1</div>
+        <div class="series-articles">
+          <a href="docs/agent-naked.html" class="article-link">
+            <span>→</span> 你的私人AI助手，正在裸奔
+          </a>
+          <a href="docs/hanako-execution-gap.html" class="article-link">
+            <span>→</span> 同样的 Hanako，执行能力天差地别？
+          </a>
+          <a href="docs/browser-agent-choice.html" class="article-link">
+            <span>→</span> 浏览器操作方案对比
+          </a>
+          <a href="docs/agent-recovery-strategy.html" class="article-link">
+            <span>→</span> OpenClaw 费用看板开发记录
+          </a>
+        </div>
       </div>
 
-      <div class="article-card">
-        <div class="card-status"><div class="status-dot live"></div></div>
-        <div class="card-body">
-          <div class="card-title">
-            <a href="#series-3">OpenHanako 自动交易架构全解析</a>
-            
-          </div>
-          <div class="card-meta">
-            <span>🌸 OpenHanako</span>
-            <span>2026-03-20</span>
-            <span>架构 · 交易系统</span>
-          </div>
+      <!-- Series 2: 工具开发 -->
+      <div class="series-card animate-on-scroll" data-series="tools">
+        <span class="series-icon">🛠️</span>
+        <h3>工具开发记录</h3>
+        <p>从实际问题出发，造工具、跑通流程、写成文章。</p>
+        <div class="series-meta">
+          <span>5 篇</span>
+          <span class="tag">Skill 与工具</span>
         </div>
-        <div class="card-series-label">#2</div>
+        <div class="series-articles">
+          <a href="docs/agent-naked.html" class="article-link">
+            <span>→</span> Security Shield 完整版
+          </a>
+          <a href="docs/answer-sheet-generator.html" class="article-link">
+            <span>→</span> 答题卡生成器：HTML→PDF
+          </a>
+          <a href="docs/openhanako-autotrader.html" class="article-link">
+            <span>→</span> AutoTrader 自动交易系统
+          </a>
+          <a href="docs/agent-retry-loop.html" class="article-link">
+            <span>→</span> Bypass Skill 开发记录
+          </a>
+        </div>
+      </div>
+
+      <!-- Series 3: OpenHanako 深度 -->
+      <div class="series-card animate-on-scroll" data-series="openhanako">
+        <span class="series-icon">🌸</span>
+        <h3>OpenHanako 深度研究</h3>
+        <p>OpenHanako 架构分析、项目对比、自动交易系统研究。</p>
+        <div class="series-meta">
+          <span>2 篇</span>
+          <span class="tag">项目对比与架构</span>
+        </div>
+        <div class="series-articles">
+          <a href="https://huanyu16.github.io/openclaw-security-shield/docs/openhanako-autotrader.html" class="article-link">
+            <span>→</span> AutoTrader 自动交易架构
+          </a>
+          <a href="https://huanyu16.github.io/openclaw-security-shield/docs/auto-trading-architecture.html" class="article-link">
+            <span>→</span> OpenHanako 架构全解析
+          </a>
+        </div>
+      </div>
+
+      <!-- Series 4: 工作日志 -->
+      <div class="series-card animate-on-scroll" data-series="worklog">
+        <span class="series-icon">📓</span>
+        <h3>工作日志</h3>
+        <p>开发过程记录、问题解决复盘、踩坑日志。</p>
+        <div class="series-meta">
+          <span>2 篇</span>
+          <span class="tag">过程记录</span>
+        </div>
+        <div class="series-articles">
+          <a href="docs/agent-silent.html" class="article-link">
+            <span>→</span> 漫长的一天 · 2026.03.20
+          </a>
+          <a href="docs/wechat-diary-20260318.html" class="article-link">
+            <span>→</span> 微信日记 · 2026.03.18
+          </a>
+        </div>
+      </div>
+
+      <!-- Series 5: JOJO -->
+      <div class="series-card animate-on-scroll" data-series="jojo">
+        <span class="series-icon">⚡</span>
+        <h3>JOJO 的奇妙冒险</h3>
+        <p>OP 分镜分析与叙事结构研究，动画爱好者作品。</p>
+        <div class="series-meta">
+          <span>1 篇</span>
+          <span class="tag">分镜与叙事</span>
+        </div>
+        <div class="series-articles">
+          <a href="https://huanyu16.github.io/jojo-op-analysis/" target="_blank" class="article-link">
+            <span>→</span> JOJO OP 分镜分析
+          </a>
+        </div>
       </div>
 
     </div>
   </div>
+</section>
 
-  <!-- Series 4: 工作日志 -->
-  <div class="series-group" id="series-4">
-    <div class="series-header">
-      <span class="series-icon">📓</span>
-      <div class="series-name">工作日志</div>
-      <div class="series-count">2 篇 · 过程记录</div>
-      <div class="series-divider"></div>
+<!-- About -->
+<section id="about">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">About</div>
+      <h2 class="section-title">关于</h2>
+      <div class="divider"></div>
     </div>
-    <div class="article-list">
 
-      <div class="article-card">
-        <div class="card-status"><div class="status-dot live"></div></div>
-        <div class="card-body">
-          <div class="card-title">
-            <a href="#series-4">漫长的一天 · 2026.03.20</a>
-            
-          </div>
-          <div class="card-meta">
-            <span>📓 工作日志</span>
-            <span>2026-03-20</span>
-            <span>日记</span>
-          </div>
+    <div class="about-grid">
+      <div class="about-text">
+        <h3>技术栈与方向</h3>
+        <p>
+          长期维护 OpenClaw / OpenHanako 生态，专注于 Agent 工程实践。
+          擅长从实际问题出发——做工具、写分析、跑流程、成文章。
+          遵循「现象→根因分析→造工具→写博文→发布」的闭环工作流。
+        </p>
+        <p>
+          涉及领域：浏览器自动化、Agent 安全、交易系统架构、MCP 协议、
+          AI 工作流设计。内容覆盖工具开发、技术分析、项目对比与过程记录。
+        </p>
+        <div class="skills-list">
+          <span class="skill-tag">OpenClaw</span>
+          <span class="skill-tag">OpenHanako</span>
+          <span class="skill-tag">MCP</span>
+          <span class="skill-tag">Browser Agent</span>
+          <span class="skill-tag">Python</span>
+          <span class="skill-tag">AI Security</span>
+          <span class="skill-tag">Trading Systems</span>
+          <span class="skill-tag">GitHub Pages</span>
         </div>
-        <div class="card-series-label">#1</div>
       </div>
 
-      <div class="article-card">
-        <div class="card-status"><div class="status-dot live"></div></div>
-        <div class="card-body">
-          <div class="card-title">
-            <a href="#series-4">微信日记 · 2026.03.18</a>
-            
+      <div class="links-card">
+        <h4>快速链接</h4>
+        <div class="link-item">
+          <div class="link-icon">📁</div>
+          <div class="link-info">
+            <div class="link-name">Security Shield</div>
+            <div class="link-url">github.com/huanyu16/openclaw-security-shield</div>
           </div>
-          <div class="card-meta">
-            <span>📓 工作日志</span>
-            <span>2026-03-18</span>
-            <span>日记</span>
-          </div>
+          <a href="https://github.com/huanyu16/openclaw-security-shield" target="_blank" style="color:var(--text-dim); font-size:12px;">↗</a>
         </div>
-        <div class="card-series-label">#2</div>
+        <div class="link-item">
+          <div class="link-icon">📊</div>
+          <div class="link-info">
+            <div class="link-name">AutoTrader</div>
+            <div class="link-url">github.com/huanyu16/openhanako-autotrader</div>
+          </div>
+          <a href="https://github.com/huanyu16/openhanako-autotrader" target="_blank" style="color:var(--text-dim); font-size:12px;">↗</a>
+        </div>
+        <div class="link-item">
+          <div class="link-icon">📄</div>
+          <div class="link-info">
+            <div class="link-name">Answer Sheet Generator</div>
+            <div class="link-url">github.com/huanyu16/answer-sheet-generator</div>
+          </div>
+          <a href="https://github.com/huanyu16/answer-sheet-generator" target="_blank" style="color:var(--text-dim); font-size:12px;">↗</a>
+        </div>
+        <div class="link-item">
+          <div class="link-icon">⚡</div>
+          <div class="link-info">
+            <div class="link-name">JOJO OP 分析</div>
+            <div class="link-url">huanyu16.github.io/jojo-op-analysis</div>
+          </div>
+          <a href="https://huanyu16.github.io/jojo-op-analysis/" target="_blank" style="color:var(--text-dim); font-size:12px;">↗</a>
+        </div>
+        <div class="link-item">
+          <div class="link-icon">🔗</div>
+          <div class="link-info">
+            <div class="link-name">GitHub Profile</div>
+            <div class="link-url">github.com/huanyu16</div>
+          </div>
+          <a href="https://github.com/huanyu16" target="_blank" style="color:var(--text-dim); font-size:12px;">↗</a>
+        </div>
       </div>
-
     </div>
   </div>
+</section>
 
-  <!-- Prev/Next navigation between articles -->
-  <div class="article-nav">
-    <div class="nav-prev">
-      <div class="nav-label">← 上一篇</div>
-      <div class="nav-title"><a href="https://huanyu16.github.io/openclaw-security-shield/">🦞 AI助手正在裸奔</a></div>
-    </div>
-    <div class="nav-next">
-      <div class="nav-label">下一篇</div>
-      <div class="nav-title" style="color:#aaa">待发布 · Hanako 执行力差异</div>
-    </div>
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <p>
+      <a href="https://github.com/huanyu16">GitHub</a> ·
+      <a href="https://huanyu16.github.io/openclaw-security-shield/">Articles</a> ·
+      huanyu16 · 2026
+    </p>
   </div>
-
-  <footer>
-    <span>huanyu16 · 所有原创内容</span>
-    <span>2026-03-21</span>
-  </footer>
+</footer>
 
 </div>
+
+<!-- Animated Particles Canvas Script -->
+<script>
+(function() {
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let w, h, particles = [];
+  const PARTICLE_COUNT = 60;
+  const CONNECTION_DIST = 160;
+
+  function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+
+  function rand(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+
+  function initParticles() {
+    particles = [];
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      particles.push({
+        x: rand(0, w),
+        y: rand(0, h),
+        vx: rand(-0.3, 0.3),
+        vy: rand(-0.3, 0.3),
+        r: rand(1, 2.5),
+        alpha: rand(0.2, 0.7),
+        color: Math.random() > 0.6 ? '#00d4ff' : (Math.random() > 0.5 ? '#c084fc' : '#ff6b9d')
+      });
+    }
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+
+    // Update & draw particles
+    for (let p of particles) {
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < 0) p.x = w;
+      if (p.x > w) p.x = 0;
+      if (p.y < 0) p.y = h;
+      if (p.y > h) p.y = 0;
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = p.alpha;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+
+    // Draw connections
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < CONNECTION_DIST) {
+          const alpha = (1 - dist / CONNECTION_DIST) * 0.15;
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = '#00d4ff';
+          ctx.globalAlpha = alpha;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+          ctx.globalAlpha = 1;
+        }
+      }
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  resize();
+  initParticles();
+  draw();
+  window.addEventListener('resize', () => { resize(); initParticles(); });
+
+  // Header scroll effect
+  window.addEventListener('scroll', () => {
+    const header = document.getElementById('header');
+    if (window.scrollY > 50) {
+      header.classList.add('scrolled');
+    } else {
+      header.classList.remove('scrolled');
+    }
+  });
+
+  // Scroll animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+})();
+</script>
+
 </body>
 </html>
